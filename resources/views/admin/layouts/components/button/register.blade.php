@@ -1,0 +1,1 @@
+<button type="button" class="btn btn-primary width-100" id="btn_register">{{ $register_mode == "create" ? '新規登録' : '更新' }}</button>

@@ -1,0 +1,235 @@
+@charset "UTF-8";
+/****************
+  app共通
+ ****************/
+
+.table.dataTable tbody td {
+  vertical-align: middle;
+}
+.list-button {
+  margin: 1px;
+}
+
+/* カーソルポインター*/
+.cursor-pointer {
+  cursor: pointer;
+}
+/* 各種幅設定*/
+.width-50 {
+  width: 50px;
+}
+.width-100 {
+  width: 100px;
+}
+.width-200 {
+  width: 200px;
+}
+.width-300 {
+  width: 300px;
+}
+.width-400 {
+  width: 400px;
+}
+
+/* Select Option 空白アリ時の　Placeholder */
+.select-placeholder {
+
+}
+.select-placeholder option[value=""][disabled] {
+  display: none;
+}
+
+/* メッセージModal表示位置調整 */
+.modal-top-100 {
+  top: 100px;
+}
+
+
+/* Datetimepicker 土日色変更 */
+.xdsoft_calendar thead tr th:nth-of-type(1){
+  color:#ff6666;
+}
+.xdsoft_calendar thead tr th:nth-of-type(7){
+  color:#6666ff;
+}
+.xdsoft_day_of_week0 div {
+  color:#ff6666;
+}
+.xdsoft_day_of_week6 div {
+  color:#6666ff;
+}
+.xdsoft_date div {
+  text-align: center;
+}
+
+/**/
+.table thead th, .table-bordered th {
+  border-top: 1px solid #c8ced3;
+  border-bottom: 1px solid #c8ced3;
+}
+
+/* sweet-counter*/
+.sweet-counter {
+  /*text-align: right;*/
+  /*float: right;*/
+  font-size: 0.85em;
+  color: #a9a9a9;
+}
+.number-only-text, .number-check {
+  text-align: right;
+}
+
+#lock{
+	z-index: 9997;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #000000;
+	opacity: 0.7;
+}
+
+#none_border {
+	visibility:hidden;
+	margin-top: 0.5rem;
+}
+
+#loading{
+	width: 5em;
+    height: 5em;
+    border-top: 1em solid rgba(255, 255, 255, 0.2);
+    border-right: 1em solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1em solid rgba(255, 255, 255, 0.2);
+    border-left: 1em solid rgba(255, 255, 255, 1);
+    animation: loaderAnime 1s infinite linear;
+    border-radius: 50%;
+    position: fixed;
+    bottom: 50%;
+    left: 50%;
+    margin: auto;
+    z-index: 9998;
+}
+@keyframes loaderAnime {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loging-message {
+	z-index: 9999;
+	color:#ffffff;
+   	position: absolute;
+    font-size: 30px;
+    opacity: 0.8;
+	bottom: 60%;
+    left: 45%;
+    animation: loading .7s infinite;
+}
+@keyframes loading {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(15px);
+  }
+}
+
+/*
+　店舗チェックボックス欄　アコーディオン
+*/
+.store-block{
+    margin-bottom: 30px;
+}
+.store-box{
+    margin: 0 auto;
+    background: #fff;
+    overflow: hidden;
+}
+.store-box-inner{
+    padding: 10px 20px;
+}
+.store-more{
+    font-size: 12px;
+    font-weight: bold;
+    height: 55px;
+    line-height: 80px;
+    margin-top: -25px;
+    text-align: center;
+    color: #2e9ce5;
+    cursor: pointer;
+
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 52%, rgba(240,240,247,1) 95%);
+    background: -webkit-linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 52%, rgba(240,240,247,1) 95%);
+    background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 52%, rgba(240,240,247,1) 95%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#bebec3",GradientType=1);
+}
+.store-more:after {
+    font-weight: bold;
+    content: '↓';
+    display: inline-block;
+    font-weight: bold;
+    font-size: 12px;
+    -webkit-transition: .3s;
+    transition: .3s;
+}
+.store-more.is-active:after {
+    font-weight: bold;
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+/* ドラッグアンドドロップのデザイン */
+.user-icon-dnd-wrapper {
+	top: 5px;
+  position: relative;
+  width: 350px;
+  height: 280px;
+}
+
+.preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 350px;
+  height: 250px;
+}
+
+.drop_area {
+  position: absolute;
+  top: 0;
+  left: 15px;
+  width: 352px;
+  height: 252px;
+  border: 1px dashed #aaa;
+  cursor: pointer;
+}
+
+.dashed {
+  border: 1px dashed #aaa;
+}
+
+.solid {
+  border: 1px solid #aaa;
+}
+
+#image {
+  position: absolute;
+  top: 0;
+  /* left: 0; */
+  width: 350px;
+  height: 250px;
+  opacity: 0;
+}
+
+#image:focus {
+  opacity: 1;
+}
+
+#image_delete {
+  padding-right: 20px;
+}

@@ -1,0 +1,1 @@
+<button type="button" class="btn btn-success width-100" id="btn_preview">詳細</button>

@@ -1,0 +1,1 @@
+<button type="button" class="btn btn-outline-warning width-100 mr-2" id="btn_qrcode">QRコード</button>

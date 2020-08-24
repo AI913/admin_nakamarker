@@ -1,0 +1,1 @@
+<button type="button" class="btn btn-primary width-100 mr-2" id="btn_search">検索</button>
