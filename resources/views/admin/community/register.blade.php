@@ -86,7 +86,6 @@
                                 <input type="hidden" name="id" id="id" value="{{ $data->id }}" />
                                 <input type="hidden" id="register_mode" name="register_mode" value="{{ $register_mode }}" />
                                 @include('admin.layouts.components.button.register', ['register_mode' => $register_mode])
-                                @include('admin.layouts.components.button.detail')
                                 @include('admin.layouts.components.button.cancel', ['url' => "/community"])
                             </div>
                         </div>
@@ -104,5 +103,5 @@
     <script>
         let register_mode = "{{ $register_mode == "create" ? 'create' : 'edit' }}";
     </script>
-    <script src="{{ asset('js/app/community.js') }}?v={{ config('const.app_version') }}"></script>
+    <script src="{{ asset('js/app/community.js') }}"></script>
 @endsection

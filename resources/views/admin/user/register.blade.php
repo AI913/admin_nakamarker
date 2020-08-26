@@ -98,7 +98,6 @@
                                 @if ($data->id !== \Auth::user()->id)
                                     @include('admin.layouts.components.button.register', ['register_mode' => $register_mode])
                                 @endif
-                                @include('admin.layouts.components.button.detail')
                                 @include('admin.layouts.components.button.cancel', ['url' => "/user"])
                             </div>
                         </div>
@@ -116,5 +115,5 @@
     <script>
         let register_mode = "{{ $register_mode == "create" ? 'create' : 'edit' }}";
     </script>
-    <script src="{{ asset('js/app/user.js') }}?v={{ config('const.app_version') }}"></script>
+    <script src="{{ asset('js/app/user.js') }}"></script>
 @endsection

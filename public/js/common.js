@@ -379,12 +379,16 @@ function getListLink(type, id, link, clazz) {
 }
 
 /**
- * 一覧詳細ボタンClickイベント定義
+ * 一覧の操作ボタンClickイベント定義(モーダルの表示処理実行)
  * @param url
  */
-function settingDetailAjax(url) {
+function settingDetailAjax(url, button) {
 
-    $(document).on('click', '.btn-detail', function() {
+    if(button == undefined) {
+        button = '.btn-detail';
+    }
+
+    $(document).on('click', button, function() {
         // 詳細画面表示クリア
         $('.detail-view').html("");
 
@@ -393,7 +397,7 @@ function settingDetailAjax(url) {
             .done(function(response){
                 if (response.status == 1) {
                     // 各機能別jsで定義する
-                    setDetailView(response.data);
+                    setDetailView(response.data, button);
                 } else {
                     alert('no data error');
                 }
@@ -405,13 +409,13 @@ function settingDetailAjax(url) {
  * DataTable各種設定・データ取得
  * @param elm_id  　　 tableのid
  * @param url　　  　　データ取得URL(ajax/~ )
- * @param data　　　　 データ
+ * @param data　　　　 検索対象データ
  * @param columns　　  各列ごとの表示定義
  * @param columnDefs   各列の装飾
  * @param search
  */
 function settingDataTables(elm_id, url, data, columns, columnDefs, search) {
-    
+    console.log(data)
     // DataTables設定
     let table = $('#'+elm_id).dataTable({
         "processing": true,

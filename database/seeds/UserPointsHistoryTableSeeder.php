@@ -17,8 +17,9 @@ class UserPointsHistoryTableSeeder extends Seeder
         // レコード15件分出力
         for($i=0; $i < 15; $i++){
             \App\Model\UserPointsHistory::create([
-                'give_point'     => $faker->numberBetween(100, 1000),
-                'pay_point'     => $faker->numberBetween(100, 1000),
+                'give_point'     => $faker->numberBetween(400, 1000),
+                'pay_point'      => $faker->numberBetween(100, 500),
+                'type'           => $faker->numberBetween(1, 2),
                 'user_id'        => $faker->numberBetween(1, 15),
                 'del_flg'        => 0,
                 'update_user_id' => $faker->numberBetween(1, 15),

@@ -13,6 +13,6 @@ class UserPointsHistory extends Model
     // usersテーブルと1対1のリレーション構築
     public function user()
     {
-        return $this->hasOne('App\Model\User', 'user_id', 'id');
+        return $this->hasOne('App\Model\User', 'id', 'user_id');
     }
 }

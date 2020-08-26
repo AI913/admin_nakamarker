@@ -10,6 +10,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class CommunityController extends BaseAdminController
 {
+    protected $mainService;
     protected $userService;
 
     public function __construct(CommunityService $mainService, UserService $userService)
@@ -18,6 +19,7 @@ class CommunityController extends BaseAdminController
         $this->mainService  = $mainService;
         $this->mainRoot     = "admin/community";
         $this->mainTitle    = 'コミュニティ管理';
+
         $this->userService = $userService;
     }
     
@@ -48,5 +50,39 @@ class CommunityController extends BaseAdminController
         return parent::index()->with([
             'status_list' => Common::getOpenStatusList(),
         ]);
+    }
+
+    /**
+     * モーダルに必要なデータを取得
+     * @param $user_id
+     * @return array
+     */
+    public function detail($id) {
+
+        // 詳細(Modal)のDataTable
+        // 〇検索条件
+        $conditions = [];
+        $conditions['id'] = $id;
+        // 〇ソート条件
+        $sort = [];
+        // 〇リレーション
+        $relations = [];
+        $data = $this->mainService->searchOne($conditions, $sort, $relations);
+        
+        return [
+            'status' => 1,
+            'data' => $data,
+        ]; 
+    }
+
+    /**
+     * ユーザ情報取得
+     * @param $id
+     * @throws \Exception
+     */
+    public function community_users($id, UserService $userService) {
+        
+        // コミュニティに紐づくユーザ情報を取得
+        return DataTables::eloquent($userService->isCommunityUserData($id))->make();
     }
 }

@@ -72,10 +72,10 @@
     {{-- @include('admin.layouts.components.remove_form', ['url' => url('admin/user/remove')]) --}}
 
     {{-- 詳細Modal読み込み --}}
-    {{-- @include('admin.user.detail') --}}
+    @include('admin.community.detail')
 
 @endsection
 
 @section('app_js')
-    <script src="{{ asset('js/app/community.js') }}?v={{ config('const.app_version') }}"></script>
+    <script src="{{ asset('js/app/community.js') }}"></script>
 @endsection

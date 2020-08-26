@@ -41,7 +41,7 @@ class UserPointsHistoryController extends BaseAdminController
         $sort = [];
         // 〇リレーション
         $relations = ['user' => []];
+        
         return DataTables::eloquent($this->mainService->searchQuery($conditions, $sort, $relations))->make();
     }
-
 }

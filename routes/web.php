@@ -25,12 +25,13 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/ajax/community',         'Admin\CommunityController@main_list');
     Route::get('/ajax/user-location',     'Admin\UserLocationController@main_list');
     Route::get('/ajax/community-location',     'Admin\CommunityLocationController@main_list');
-    Route::get('/ajax/user-points_history',     'Admin\UserPointsHistoryController@main_list');
+    Route::get('/ajax/user-points-history',     'Admin\UserPointsHistoryController@main_list');
+    Route::get('/ajax/community-history',     'Admin\CommunityHistoryController@main_list');
 
     // メールアドレス重複チェック
     Route::post('/ajax/is_duplicate_email','Admin\Ajax\AdminAjaxController@isDuplicateEmail');
 
-    /******************** 顧客管理(user) ********************/
+    /******************** ユーザ管理(user) ********************/
     Route::get('/user',             'Admin\UserController@index')->name('admin/user');
     Route::get('/user/create',      'Admin\UserController@create')->name('admin/user/create');
     Route::get('/user/edit/{id}',   'Admin\UserController@edit')->name('admin/user/edit');
@@ -38,8 +39,10 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('/user/save',       'Admin\UserController@save')->name('admin/user/save');
     Route::post('/user/remove',     'Admin\UserController@remove')->name('admin/user/remove');
 
-    // 顧客の登録場所管理(user)
+    // ユーザの登録場所管理(user)
     Route::get('/ajax/user/detail/{id}/user_locations',  'Admin\UserController@user_locations')->name('admin/user/detail/user_locations');
+    // ユーザの参加コミュニティ管理(user)
+    Route::get('/ajax/user/detail/{id}/user_communities',  'Admin\UserController@user_communities')->name('admin/user/detail/user_communities');
     
     /******************** マーカー管理(marker) ********************/
     Route::get('/marker',             'Admin\MarkerController@index')->name('admin/marker');
@@ -56,6 +59,9 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/community/detail/{id}', 'Admin\CommunityController@detail')->name('admin/community/detail');
     Route::post('/community/save',       'Admin\CommunityController@save')->name('admin/community/save');
     Route::post('/community/remove',     'Admin\CommunityController@remove')->name('admin/community/remove');
+
+    // コミュニティの所属ユーザ管理(community)
+    Route::get('/ajax/community/detail/{id}/community_users',  'Admin\CommunityController@community_users')->name('admin/user/detail/community_users');
 
     /******************** ユーザロケーション管理(user-location) ********************/
     Route::get('/user-location',             'Admin\UserLocationController@index')->name('admin/user-location');
@@ -79,6 +85,14 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/user-points-history/detail/{id}', 'Admin\UserPointsHistoryController@detail')->name('admin/user-points-history/detail');
     Route::post('/user-points-history/save',       'Admin\UserPointsHistoryController@save')->name('admin/user-points-history/save');
     Route::post('/user-points-history/remove',     'Admin\UserPointsHistoryController@remove')->name('admin/user-points-history/remove');
+
+    /******************** コミュニティ履歴管理(community-history) ********************/
+    Route::get('/community-history',             'Admin\CommunityHistoryController@index')->name('admin/community-history');
+    // Route::get('/community-history/create',      'Admin\CommunityHistoryController@create')->name('admin/community-history/create');
+    // Route::get('/community-history/edit/{id}',   'Admin\CommunityHistoryController@edit')->name('admin/community-history/edit');
+    Route::get('/community-history/detail/{id}', 'Admin\CommunityHistoryController@detail')->name('admin/community-history/detail');
+    Route::post('/community-history/save',       'Admin\CommunityHistoryController@save')->name('admin/community-history/save');
+    Route::post('/community-history/remove',     'Admin\CommunityHistoryController@remove')->name('admin/community-history/remove');
 
     /******************** お知らせ管理(news) ********************/
     Route::get('/news',             'Admin\NewsController@index')->name('admin/news');

@@ -157,7 +157,6 @@ abstract class BaseService{
         if ($limit > 0) {
             $query->limit($limit);
         }
-
         return $query;
     }
 

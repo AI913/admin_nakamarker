@@ -14,13 +14,14 @@ class CreateUserPointsHistoriesTable extends Migration
     public function up()
     {
         Schema::create('user_points_histories', function (Blueprint $table) {
-            $table->bigIncrements('id');                    // ID
-            $table->integer('give_point');                  // 付与ポイント
-            $table->integer('pay_point');                   // 消費ポイント
-            $table->dateTime('limit_date')->nullable();     // 有効期限日時
-            $table->unsignedInteger('user_id');             // ユーザID
-            $table->tinyInteger('del_flg')->default(0);     // 削除フラグ
-            $table->integer('update_user_id');              // 更新者ユーザID
+            $table->bigIncrements('id');                        // ID
+            $table->unsignedInteger('give_point')->default(0);  // 付与ポイント
+            $table->unsignedInteger('pay_point')->default(0);   // 消費ポイント
+            $table->integer('type');                            // 付与ポイントの種類
+            $table->dateTime('limit_date')->nullable();         // 有効期限日時
+            $table->unsignedInteger('user_id');                 // ユーザID
+            $table->tinyInteger('del_flg')->default(0);         // 削除フラグ
+            $table->integer('update_user_id');                  // 更新者ユーザID
             
             $table->timestamps();
 

@@ -71,5 +71,5 @@
 @endsection
 
 @section('app_js')
-    <script src="{{ asset('js/app/community_location.js') }}?v={{ config('const.app_version') }}"></script>
+    <script src="{{ asset('js/app/community_location.js') }}"></script>
 @endsection

@@ -9,26 +9,6 @@ $(function(){
         settingDetailAjax('/admin/user_location/detail/');
 
     }
-    // // プレビュー
-    // $('#btn_preview').on('click', function(){
-    //     // 画面内容をセット
-    //     setDetailView({
-    //         id: $('#id').val(),
-    //         name: $('#name').val(),
-    //         address: $('#address').val(),
-    //         latitude_1: $('#latitude_1').val(),
-    //         longitude_1: $('#longitude_1').val(),
-    //         latitude_2: $('#latitude_2').val(),
-    //         longitude_2: $('#longitude_2').val(),
-    //         memo_html: $('#memo').val(),
-    //         point: $('#point').val(),
-    //     });
-    // });
-    // // 地図を表示
-    // $(document).on('click', '.btn-map', function() {
-    //     showMap($(this).data('id'));
-    // });
-
 });
 
 /**
@@ -113,22 +93,7 @@ $(function(){
 function customCheck() {
 	var check = true;
 
-    // 店舗名の重複チェック結果
-    // isDuplicateStoreNameAjax().done(function(response) {
-    //     // エラーがない場合falseが返ってくる
-    //     if(response.is_name) {
-    //         // 重複チェックにエラーがある場合
-    //         $('#name').focus();
-    //         $('#name').after("<p class='error-area text-danger mb-0'>店舗名が重複しています</p>");
-    //         check = false;
-    //     }
-    //     // 重複がない場合のみsubmit
-    //     if (!check) {
-    //         return false;
-    //     }else{
-        	$('#main_form').submit();
-        // }
-    // });
+    $('#main_form').submit();
 }
 /**
  * 一覧初期化

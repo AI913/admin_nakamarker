@@ -90,7 +90,7 @@ function initList(search) {
         // tableのID
         'main_list',
         // 取得URLおよびパラメタ
-        '/ajax/user-points_history',
+        '/ajax/user-points-history',
         {
             'id':       $('#id').val(),
             'name':     $('#name').val(),
@@ -112,8 +112,6 @@ function initList(search) {
                     return p.user.status_name;
                 }
             },
-            {data: 'memo'},
-            
             {
                 data: function (p) {
                     // 登録場所・参加コミュニティ・編集ボタンの設定
@@ -124,9 +122,8 @@ function initList(search) {
         // 各列ごとの装飾
         [
             // ボタン部分
-            // { targets: [5], orderable: false, className: 'text-center', width: '150px'},
-            // { targets: [6], orderable: false, className: 'text-center', width: '150px'},
-            // { targets: [7], orderable: false, className: 'text-center', width: '150px'},
+            { targets: [5], orderable: false, className: 'text-center', width: '150px'},
+            { targets: [6], orderable: false, className: 'text-center', width: '150px'},
         ],
         search
     );

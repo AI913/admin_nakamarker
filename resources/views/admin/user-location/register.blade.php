@@ -100,7 +100,6 @@
                                 <input type="hidden" name="id" id="id" value="{{ $data->id }}" />
                                 <input type="hidden" id="register_mode" name="register_mode" value="edit" />
                                 @include('admin.layouts.components.button.register', ['register_mode' => 'edit'])
-                                @include('admin.layouts.components.button.detail')
                                 @include('admin.layouts.components.button.cancel', ['url' => "/user-location"])
                             </div>
                         </div>
@@ -118,5 +117,5 @@
 
 @section('app_js')
     {{-- アプリ機能用Js --}}
-    <script src="{{ asset('js/app/user_location.js') }}?v={{ config('const.app_version') }}"></script>
+    <script src="{{ asset('js/app/user_location.js') }}"></script>
 @endsection

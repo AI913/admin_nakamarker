@@ -8,27 +8,24 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\View;
 use App\Services\Model\UserService;
 use App\Services\Model\UserLocationService;
+use App\Services\Model\CommunityService;
 use App\Services\Model\ConfigService;
 
 class UserController extends BaseAdminController
 {
     protected $mainService;
-    protected $userLocationService;
 
     /**
      * 顧客管理コントローラー
      * Class UserController
      * @package App\Http\Controllers
      */
-    public function __construct(UserService $mainService, UserLocationService $userLocationService) 
+    public function __construct(UserService $mainService) 
     {
         parent::__construct();
         $this->mainService  = $mainService;
         $this->mainRoot     = "admin/user";
         $this->mainTitle    = 'ユーザ管理';
-
-        // UserLocationServiceをインスタンス化
-        $this->userLocationService = $userLocationService;
     }
     
     /**
@@ -58,6 +55,7 @@ class UserController extends BaseAdminController
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index() {
+        // dd($this->mainService->isUserLocationData(3));
         // ステータスリスト追加
         return parent::index()->with(
             ['status_list' => Common::getUserStatusList()]
@@ -65,7 +63,7 @@ class UserController extends BaseAdminController
     }
 
     /**
-     * 顧客詳細画面(未実装)
+     * モーダルに必要なデータを取得
      * @param $user_id
      * @return array
      */
@@ -74,43 +72,39 @@ class UserController extends BaseAdminController
         // 詳細(Modal)のDataTable
         // 〇検索条件
         $conditions = [];
-        $conditions['users.id'] = $id;
+        $conditions['id'] = $id;
         // 〇ソート条件
         $sort = [];
         // 〇リレーション
         $relations = [];
         $data = $this->mainService->searchOne($conditions, $sort, $relations);
         
-        // ユーザの登録場所とそれに紐づくマーカー情報を取得
-        $data['user_locations'] = $this->userLocationService->searchList(['user_locations.user_id' => $id], $sort, ['marker' => []]);
-        // 登録日を取得
-        $data['created_at'] = $data->created_at;
-        // 最終ログイン日時を取得
-        $data['login_time'] = $data->login_time;
-
         return [
+            'status' => 1,
             'data' => $data,
         ]; 
     }
 
     /**
-     * ユーザロケーション情報取得
+     * 登録場所情報の取得
      * @param $id
      * @throws \Exception
      */
-    public function user_locations($id) {
-
-        // 詳細(Modal)のDataTable
-        // 〇検索条件
-        $conditions = ['user_locations.user_id' => $id];
-
-        // 〇ソート条件
-        $sort = [];
-        // 〇リレーション
-        $relations = ['marker' => []];
+    public function user_locations($id, UserLocationService $userLocationService) {
         
         // ユーザの登録場所とそれに紐づくマーカー情報を取得
-        return DataTables::eloquent($this->userLocationService->searchQuery($conditions, $sort, $relations))->make();
+        return DataTables::eloquent($userLocationService->isUserLocationData($id))->make();
+    }
+
+    /**
+     * ユーザコミュニティ情報取得
+     * @param $id
+     * @throws \Exception
+     */
+    public function user_communities($id, CommunityService $communityService) {
+        
+        // ユーザに紐づいているコミュニティを取得
+        return DataTables::eloquent($communityService->isUserCommunityData($id))->make();
     }
 
     /**

@@ -87,5 +87,5 @@
 @endsection
 
 @section('app_js')
-    <script src="{{ asset('js/app/marker.js') }}?v={{ config('const.app_version') }}"></script>
+    <script src="{{ asset('js/app/marker.js') }}"></script>
 @endsection

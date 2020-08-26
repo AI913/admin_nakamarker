@@ -52,23 +52,12 @@ return [
     'no_image'  => 'no_image.png',
     'out_image' => 'out_images.png',
 
-    'default_point_name' => '通常コイン',
-
-    'information_type_app'      => 1,   // アプリ配信用
-    'information_type_reserve'  => 2,   // 予約配信用
-
-    'location_type_login'       => 1,   // ロケーション種別：ログイン
-    'location_type_store'       => 2,   // ロケーション種別：店舗
-    'location_type_geofence'    => 3,   // ロケーション種別：ジオフェンス
-    'location_type_change'      => 4,   // ロケーション種別：ポイント交換
-    'location_type_birthday'    => 5,   // ロケーション種別：誕生日ボーナス
-
-    'location_type_system'      => 99,  // ロケーション種別：システム付与
-
-    'service_type_delivery'     => 9,   // サービス券配信条件種別：即時配信
-
-    'default_radius'            => 10,  // 半径未入力時のデフォルト半径
-
-    'csv_chunk_size'            => 5000 // csvダウンロード時のchunk用定数
+    // コミュニティ申請状況
+    'community_history_apply'            => 1,
+    'community_history_approval'         => 2,
+    'community_history_reject'           => 3,
+    'community_history_apply_name'       => '申請中',
+    'community_history_approval_name'    => '承認済み',
+    'community_history_reject_name'      => '却下',
 
 ];

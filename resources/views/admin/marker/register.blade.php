@@ -124,5 +124,5 @@
     <script>
         let register_mode = "{{ $register_mode == "create" ? 'create' : 'edit' }}";
     </script>
-    <script src="{{ asset('js/app/marker.js') }}?v={{ config('const.app_version') }}"></script>
+    <script src="{{ asset('js/app/marker.js') }}"></script>
 @endsection

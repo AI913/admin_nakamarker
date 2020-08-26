@@ -111,7 +111,6 @@
                                 <input type="hidden" id="user_id" name="user_id" value="{{ $data->user_id ? $data->user_id : \Auth::user()->id }}" />
                                 <input type="hidden" id="register_mode" name="register_mode" value="{{ $register_mode }}" />
                                 @include('admin.layouts.components.button.register', ['register_mode' => $register_mode])
-                                @include('admin.layouts.components.button.detail')
                                 @include('admin.layouts.components.button.cancel', ['url' => "/community-location"])
                             </div>
                         </div>
@@ -129,5 +128,5 @@
     <script>
         let register_mode = "{{ $register_mode == "create" ? 'create' : 'edit' }}";
     </script>
-    <script src="{{ asset('js/app/community_location.js') }}?v={{ config('const.app_version') }}"></script>
+    <script src="{{ asset('js/app/community_location.js') }}"></script>
 @endsection

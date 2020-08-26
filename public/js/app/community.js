@@ -6,7 +6,7 @@ $(function(){
         initList(false);
 
         // 一覧詳細ボタンクリック
-        settingDetailAjax('/admin/stripe/detail/');
+        settingDetailAjax('/community/detail/', '.btn-user');
     }
 
     // 公開フラグのvalue値設定
@@ -17,29 +17,57 @@ $(function(){
             $('#status').val(0);
         }
     })
-    // //プレビュー
-    // $('#btn_preview').on('click', function(){
-    //     // 画面内容をセット
-    //     setDetailView({
-    //         "stripe_charge.stripe_code": $('#stripe_code').val(),
-    //         "stripe_charge.charge_time": $('#charge_time').val(),
-    //         "user.name": $('#name').val(),
-    //         "stripe_charge.amount": $('#amount').val(),
-    //     });
-    // });
 });
 
 /**
-* 一覧詳細(詳細ボタンがあるページは定義する)
-* @param data
-*/
-function setDetailView(data) {
-    $('#detail_stripe_code').html(data.stripe_code);
-    $('#detail_charge_time').html(data.charge_time);
-    $('#detail_user_name').html(data.user_name);
-    $('#detail_amount_format').html(data.amount);
-    $('#detail_modal').modal('show');
+ * 登録場所表示
+ * @param data
+ */
+function setDetailView(data, button) {
+    // モーダルに表示する会員情報
+    $('#detail_name').html(data.name);
+    $('#detail_status').html(data.status_name);
+
+    if(button == '.btn-user') {
+        if ($.fn.DataTable.isDataTable('#community_user_list')) {
+            $('#community_user_list').DataTable().destroy();
+        }
+
+        // DataTable設定
+        settingDataTables(
+            // 取得
+            // tableのID
+            'community_user_list',
+            // 取得URLおよびパラメタ
+            `/ajax/community/detail/${data.id}/community_users`,
+            {},
+            // 各列ごとの表示定義
+            [
+                {data: 'id'},
+                {data: 'name'},
+                {data: 'email'},
+                {data: 'updated_at'},  // 参加日時はcommunity_historiesテーブルのstatusカラムが"承認済み"の場合のupdated_atカラムを参照
+                {
+                    data: function(p) {
+                        // アカウントステータスが"アカウント停止"の場合は赤色で表示
+                        if(p.status === 4) {
+                            return (`<span style='color: red'>${p.status_name}</span>`);
+                        }
+                        // それ以外は普通に表示
+                        return p.status_name;
+                    }
+                },
+                {},     // ポイント数
+            ],
+            // 各列ごとの装飾
+            [],
+            false
+        );
+        $('#community_modal').modal('show');
+    }
+    console.log(data)
 }
+
 
 // @1 ファイルドロップ
 $(function () {
@@ -314,7 +342,7 @@ function initList(search) {
  */
 function getListLink(type, id, link, clazz) {
     if (type == "community") {
-        return '<a href="'+link+'" class="btn btn-warning text-white '+clazz+'" data-toggle="tooltip" title="参加ユーザ" data-placement="top"><i class="fas fa-users"></i></a>';
+        return '<a href="javascript:void(0)" class="btn btn-warning text-white btn-user '+clazz+'" data-toggle="tooltip" title="参加ユーザ" data-placement="top" data-id="'+id+'"><i class="fas fa-users"></i></a>';
     }
     if (type == "edit") {
         return '<a href="'+link+'" class="btn btn-primary '+clazz+'" data-toggle="tooltip" title="編集" data-placement="top"><i class="fas fa-edit fa-fw"></i></a>';
