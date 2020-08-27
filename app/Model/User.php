@@ -75,6 +75,11 @@ class User extends Authenticatable
         if ($this->status == config('const.user_app_account_stop'))   return config('const.user_app_account_stop_name');
     }
 
+    // communitiesテーブルと多対多のリレーション構築
+    public function community()
+    {
+        return $this->belongsToMany('App\Model\Community');
+    }
     // user_locationsテーブルと1対1のリレーション構築
     public function userLocation()
     {
@@ -85,9 +90,14 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\Model\CommunityLocation', 'id', 'user_id');
     }
-    // user_points_historyテーブルと1対1のリレーション構築
+    // user_points_historyテーブルと1対多のリレーション構築
     public function user_point_history()
     {
-        return $this->hasOne('App\Model\UserPointsHistory', 'id', 'user_id');
+        return $this->hasMany('App\Model\UserPointsHistory', 'id', 'user_id');
+    }
+    // newsテーブルと1対多のリレーション構築
+    public function news()
+    {
+        return $this->hasMany('App\Model\News', 'id', 'update_user_id');
     }
 }

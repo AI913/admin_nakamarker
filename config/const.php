@@ -60,4 +60,42 @@ return [
     'community_history_approval_name'    => '承認済み',
     'community_history_reject_name'      => '却下',
 
+    // ポイント付与種別
+    'point_buy'             => 1,
+    'point_gift'            => 2,
+    'point_advertise'       => 3,
+    'point_admin'           => 4,
+    'point_buy_name'        => '購入',
+    'point_gift_name'       => 'ギフト',
+    'point_advertise_name'  => '広告',
+    'point_admin_name'      => '管理者特権',
+
+    // ポイント有料フラグ種別
+    'charge_flg_off'        => 1,
+    'charge_flg_on'         => 2,
+    'charge_flg_off_name'   => '無料',
+    'charge_flg_on_name'    => '有料',
+    
+    // ニュース情報種別
+    'official_type'        => 1,
+    'community_type'       => 2,
+    'official_type_name'   => '公式情報',
+    'community_type_name'  => 'コミュニティ情報',
+
+    // プッシュ通知種別
+    'push_all'              => 1,
+    'push_condition'        => 2,
+    'push_all_name'         => '全員',
+    'push_condition_name'   => '条件あり',
+
+    //プッシュ通知状況
+    'push_before'           => 1,
+    'push_now'              => 2,
+    'push_after'            => 3,
+    'push_error'            => 9,
+    'push_before_name'      => '送信前',
+    'push_now_name'         => '送信中',
+    'push_after_name'       => '送信後',
+    'push_error_name'       => '送信エラー',
+
 ];

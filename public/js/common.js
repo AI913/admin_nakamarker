@@ -415,7 +415,6 @@ function settingDetailAjax(url, button) {
  * @param search
  */
 function settingDataTables(elm_id, url, data, columns, columnDefs, search) {
-    console.log(data)
     // DataTables設定
     let table = $('#'+elm_id).dataTable({
         "processing": true,

@@ -149,15 +149,41 @@ class Common {
             ['id' => config('const.open'),     'name' => config('const.open_name')],
         ];
     }
+
     /**
-     * お知らせ表示種別リスト
+     * 申請種別リスト
+     * @return array
+     */
+    public static function getEntryStatusList() {
+        return [
+            ['id' => config('const.community_history_apply'),     'name' => config('const.community_history_apply_name')],
+            ['id' => config('const.community_history_approval'),   'name' => config('const.community_history_approval_name')],
+            ['id' => config('const.community_history_reject'),     'name' => config('const.community_history_reject_name')],
+        ];
+    }
+
+    /**
+     * ポイント種別リスト
+     * @return array
+     */
+    public static function getPointStatusList() {
+        return [
+            ['id' => config('const.point_buy'),       'name' => config('const.point_buy_name')],
+            ['id' => config('const.point_gift'),      'name' => config('const.point_gift_name')],
+            ['id' => config('const.point_advertise'), 'name' => config('const.point_advertise_name')],
+            ['id' => config('const.point_admin'),     'name' => config('const.point_admin_name')],
+        ];
+    }
+
+    /**
+     * お知らせ種別リスト
      * @return number[][]|string[][]
      */
-    public static function getInformationAppViewList() {
+    public static function getNewsTypeList() {
 
         return [
-            ['id' => 0, 'name' => '表示しない'],
-            ['id' => 1, 'name' => '表示する'],
+            ['id' => config('const.official_type'), 'name' => config('const.official_type_name')],
+            ['id' => config('const.community_type'), 'name' => config('const.community_type_name')],
         ];
     }
     /**

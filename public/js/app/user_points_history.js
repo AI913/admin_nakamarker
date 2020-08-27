@@ -98,9 +98,11 @@ function initList(search) {
         // 各列ごとの表示定義
         [
             {data: 'id'},
+            {data: 'type_name'},
             {data: 'give_point'},
             {data: 'pay_point'},
-            {data: 'limit_date'},
+            {data: 'updated_at'},
+            {data: 'charge_name'},
             {data: 'user.name'},
             {
                 data: function(p) {
@@ -112,6 +114,7 @@ function initList(search) {
                     return p.user.status_name;
                 }
             },
+            {data: 'memo'},
             {
                 data: function (p) {
                     // 登録場所・参加コミュニティ・編集ボタンの設定
@@ -127,6 +130,10 @@ function initList(search) {
         ],
         search
     );
+    // $.ajax('/ajax/user-points-history')
+    // .done(function(response){
+    //     console.log(response)
+    // })
 }
 
 /**
@@ -136,14 +143,8 @@ function initList(search) {
  * @param link
  * @returns {string}
  */
-// function getListLink(type, id, link, clazz) {
-//     if (type == "location") {
-//         return '<a href="'+link+'" class="btn btn-success btn-detail '+clazz+'" data-toggle="tooltip" title="登録場所" data-placement="top" data-id="'+id+'"><i class="fas fa-search fa-fw"></i></a>';
-//     }
-//     if (type == "community") {
-//         return '<a href="'+link+'" class="btn btn-warning text-white '+clazz+'" data-toggle="tooltip" title="参加コミュニティ" data-placement="top"><i class="fas fa-users"></i></a>';
-//     }
-//     if (type == "edit") {
-//         return '<a href="'+link+'" class="btn btn-primary '+clazz+'" data-toggle="tooltip" title="編集" data-placement="top"><i class="fas fa-edit fa-fw"></i></a>';
-//     }
-// }
+function getListLink(type, id, link, clazz) {
+    if (type == "edit") {
+        return '<a href="'+link+'" class="btn btn-primary '+clazz+'" data-toggle="tooltip" title="ポイント付与" data-placement="top"><i class="fas fa-edit fa-fw"></i></a>';
+    }
+}

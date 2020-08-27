@@ -34,8 +34,8 @@ class UserPointsHistoryController extends BaseAdminController
     public function main_list(Request $request) {
         // 〇検索条件
         $conditions = [];
-        if ($request->id) { $conditions['user_points_history.id'] = $request->id; }
-        if ($request->name) { $conditions['user_points_history.name@like'] = $request->name; }
+        if ($request->id) { $conditions['user_points_histories.id'] = $request->id; }
+        if ($request->name) { $conditions['user_points_histories.user.name@like'] = $request->name; }
         
         // 〇ソート条件
         $sort = [];
@@ -43,5 +43,29 @@ class UserPointsHistoryController extends BaseAdminController
         $relations = ['user' => []];
         
         return DataTables::eloquent($this->mainService->searchQuery($conditions, $sort, $relations))->make();
+    }
+
+    /**
+     * ポイント履歴管理一覧
+     * @param RoleService $roleService
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function index() {
+        // 〇検索条件
+        // $conditions = [];
+        // // if ($request->id) { $conditions['user_points_histories.id'] = $request->id; }
+        // // if ($request->name) { $conditions['users.name@like'] = $request->name; }
+        
+        // // 〇ソート条件
+        // $sort = [];
+        // // 〇リレーション
+        // $relations = ['user' => []];
+        
+        // dd($this->mainService->searchQuery($conditions, $sort, $relations)->get());
+
+        // ステータスリスト追加
+        return parent::index()->with(
+            ['status_list' => Common::getPointStatusList()]
+        );
     }
 }

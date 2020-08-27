@@ -27,7 +27,7 @@
                             <input type="text" class="form-control search-text" value="" name="name" id="name" placeholder="名前">
                         </div>
                         <div class="col-lg-2">
-                            <input type="text" class="form-control search-text" value="" name="user_name" id="user_name" placeholder="保有ユーザ">
+                            <input type="text" class="form-control search-text" value="" name="user_name" id="user_name" placeholder="登録ユーザ">
                         </div>
                         <div class="col-lg-4">
                             @include('admin.layouts.components.button.search')

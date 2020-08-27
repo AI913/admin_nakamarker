@@ -19,7 +19,7 @@ class UserPointsHistoryTableSeeder extends Seeder
             \App\Model\UserPointsHistory::create([
                 'give_point'     => $faker->numberBetween(400, 1000),
                 'pay_point'      => $faker->numberBetween(100, 500),
-                'type'           => $faker->numberBetween(1, 2),
+                'type'           => $faker->numberBetween(1, 4),
                 'user_id'        => $faker->numberBetween(1, 15),
                 'del_flg'        => 0,
                 'update_user_id' => $faker->numberBetween(1, 15),

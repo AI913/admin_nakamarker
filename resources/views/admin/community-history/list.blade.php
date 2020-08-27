@@ -24,7 +24,20 @@
                             <input type="text" class="form-control search-text" value="" name="id" id="id" placeholder="ID">
                         </div>
                         <div class="col-lg-2">
-                            <input type="text" class="form-control search-text" value="" name="name" id="name" placeholder="ユーザ名">
+                            <input type="text" class="form-control search-text" value="" name="community_name" id="community_name" placeholder="コミュニティ名">
+                        </div>
+                        <div class="col-lg-2">
+                            <input type="text" class="form-control search-text" value="" name="user_name" id="user_name" placeholder="ユーザ名">
+                        </div>
+                        <div class="col-lg-2">
+                            @include('admin.layouts.components.select_option', [
+                                'label'         => '申請状況',
+                                'list'          => $status_list,
+                                'name'          => 'status',
+                                'selected_id'   => null,
+                                'class'         => 'search-select',
+                                'blank'         => true
+                            ])
                         </div>
                         <div class="col-lg-4">
                             @include('admin.layouts.components.button.search')
@@ -36,11 +49,10 @@
                         <thead>
                             <tr role="row">
                                 <th>ID</th>
-                                <th>付与ポイント</th>
-                                <th>消費ポイント</th>
-                                <th>イベント発生日時</th>
+                                <th>コミュニティ名</th>
                                 <th>ユーザ名</th>
-                                <th>アカウントの状態</th>
+                                <th>申請状況</th>
+                                <th>更新日時</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
@@ -63,5 +75,5 @@
 @endsection
 
 @section('app_js')
-    <script src="{{ asset('js/app/user_points_history.js') }}"></script>
+    <script src="{{ asset('js/app/community_history.js') }}"></script>
 @endsection

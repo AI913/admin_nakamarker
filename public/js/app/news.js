@@ -6,163 +6,21 @@ $(function(){
         initList(false);
 
         // 一覧詳細ボタンクリック
-        settingDetailAjax('/admin/information/detail/');
-
+        settingDetailAjax('/news/detail/');
     }
-
-    //プレビュー
-    $('#btn_preview').on('click', function(){
-        // 画面内容をセット
-        setDetailView({
-            title: $('#title').val(),
-            body: $('#body').val(),
-            image_url: $('#view_image').attr('src'),
-            open_date: getWeekYmdDate($('#open_date').val()),
-        });
-    });
-
-    // 配信条件設定
-    $(document).on('click', '.btn-condition', function(){
-        showCondition($(this).data('id'));
-    });
-    $(document).on('click', '.radio-age-type', function(){
-        if ($(this).val() == 1) {
-            $('#age_from_to').hide();
-        } else {
-            $('#age_from_to').show();
-        }
-    });
-
-    // 配信条件登録
-    $('#btn_condition_register').on('click', function(){
-        if (!confirm('配信条件を登録します。よろしいですか？')) {
-            return false;
-        }
-        // 画面ロック
-        lock();
-        registerCondition($('#information_id').val());
-        // ロード画面
-        loading_text();
-        loading();
-
-    });
-
-    $(document).on('click', '.btn-information-pickup', function(){
-        updatePickUp($(this));
-    });
 });
-//公開のラジオボタン選択時日時選択フォーム有効化
-$(function() {
-    if ($('input[name="open_status"]:checked').val() == 1) {
-        $('#open_date_label').append('<span class="text-danger open_asterisk">※</span>');
-    }
 
-    $('input[name="open_flg"]').change( function() {
-        var open_radio_val = $(this).val();
-        //特定のラジオボタンを押した時は無効化を削除
-        if(open_radio_val == 1){
-            $('#open_date').removeAttr('disabled');
-            $('#open_date').addClass("required-text");
-            $('#open_date_label').append('<span class="text-danger open_asterisk">※</span>');
-            //それ以外のラジオボタンを押した時は無効化を付与
-        } else {
-            $('#open_date').attr('disabled','disabled');
-            $('#open_date').removeClass("required-text");
-            $('.open_asterisk').remove();
-        }
-    });
-});
-function updatePickUp(button) {
-    $.ajax({
-        url:    '/admin/ajax/information/pickup/update',
-        type:   'POST',
-        headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        data:   {
-            'information_id': $(button).data('id'),
-            'pickup': $(button).data('pickup'),
-        }
-    }).done(function(response){
-        $(button).data('pickup', response)
-        if (response == 1) {
-            $(button).removeClass('btn-secondary');
-            $(button).addClass('btn-info');
-            $(button).html('表示する');
-        } else {
-            $(button).removeClass('btn-info');
-            $(button).addClass('btn-secondary');
-            $(button).html('表示しない');
-        }
-    });
-}
-
-/**
- * サービス券配信条件登録処理
- * @param service_id
- */
-function registerCondition(information_id) {
-    try {
-        $.ajax({
-            url:    '/admin/ajax/information/condition/register',
-            type:   'POST',
-            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            data:   {
-                'information_id': information_id,
-                'status': $('[name=status]:checked').val(),
-                'sex': $('[name=sex]:checked').val(),
-                'age': $('[name=age]:checked').val(),
-                'age_from': $('#age_from').val(),
-                'age_to': $('#age_to').val(),
-            }
-        }).done(function(response){
-            loading_finish();
-            $('#condition_modal').modal('hide');
-            $('#condition_message_body').html(response.message);
-            $('#condition_result_modal').modal('show');
-            $('#btn_search').trigger('click');
-        });
-    } catch (e) {
-        loading_finish();
-        alert(e);
-    }
-}
-/**
- * 配信条件設定表示
- * @param id
- */
-function showCondition(id) {
-    // 削除フォームIDをセット
-    $.ajax({url: '/admin/information/detail/' + id})
-    .done(function(response){
-        if (response.status == 1) {
-            let condition = response.data.condition_list;
-            $('#status_'+condition.status).prop('checked', true);
-            $('#sex_'+condition.sex).prop('checked', true);
-            $('#age_'+condition.age).prop('checked', true);
-            if ($('[name=age]:checked').val() == 2) {
-                $('#age_from_to').show();
-            } else {
-                $('#age_from_to').hide();
-            }
-            $('#age_from').val(condition.age_from);
-            $('#age_to').val(condition.age_to);
-            $('#information_id').val(response.data.id);
-            $('#condition_modal').modal('show');
-        } else {
-            alert('no data error');
-        }
-    });
-}
 /**
 * 一覧詳細(詳細ボタンがあるページは定義する)
 * @param data
 */
 function setDetailView(data) {
     $('#detail_title').html(data.title);
+    $('#detail_status').html(data.status_name);
     $('#detail_image_file').attr('src', data.image_url);
     $('#detail_body').html(replaceBR(data.body));
-    $('#detail_open_date').html(data.open_date);
+    $('#detail_open_date').html(data.condition_start_time);
     $('#detail_modal').modal('show');
-
 }
 
 /**
@@ -171,13 +29,6 @@ function setDetailView(data) {
  */
 function customCheck() {
     let check = true;
-    const check_store_length = $('input[name="store_id[]"]:checked').length;
-    if ($('#check_all').length > 0 && check_store_length == 0) {
-        $('.store_checkbox').after("<p class='error-area text-danger mb-0'>"+"店舗は一つ以上選択してください</p>");
-        $('#check_all').focus();
-        check = false;
-    }
-    if (!check) { return false; }
 
     // 固有チェック、なければform.submitを行う
     // 問題なければsubmit
@@ -194,52 +45,64 @@ function initList(search) {
         // tableのID
         'main_list',
         // 取得URLおよびパラメタ
-        '/admin/ajax/information',
+        '/ajax/news',
         {
             'id': $('#id').val(),
             'title': $('#title').val(),
-            'app_view_flg': $('#app_view_flg').val(),
-            'push_flg': $('#push_flg').val(),
+            'type': $('#type').val(),
+            'status': $('#status').val(),
         },
         // 各列ごとの表示定義
         [
             {data: 'id'},
             {data: 'title'},
 
-            // 項目を装飾する場合は、data: functionで別途定義
             {
+                // サムネイルの画像を表示(モーダル形式)
                 data: function (p) {
-                    return '<img src="' + p.image_url_small + '" height="50">';
+                    
+                    return `
+                        <a href="" data-toggle="modal" data-target="#modal${p.id}">
+                            <img src="${p.image_url}" height="45" width="65">
+                        </a>
+
+                        <div class="modal fade" id="modal${p.id}" tabindex="-1"
+                            role="dialog" aria-labelledby="label1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="label1">サムネイル</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                    <img src="${p.image_url}" id="image_modal" height="350" width="450">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
                 }
             },
 
-            {data: 'open_date'},
-            {data: 'status_name', name: 'open_date'},
-            {data: 'app_view_flg_name', name: 'app_view_flg'},
-
-            // ピックアップ
             {
-                data: function (p) {
-                    if (p.pickup_flg == 1) {
-                        return '<button class="btn btn-info text-white btn-information-pickup" data-id="'+p.id+'" data-pickup="'+p.pickup_flg+'">表示する</button>';
-                    } else {
-                        return '<button class="btn btn-secondary text-white btn-information-pickup" data-id="'+p.id+'" data-pickup="'+p.pickup_flg+'">表示しない</button>';
+                data: function(p) {
+                    // "非公開"の場合は赤色で表示
+                    if(p.status === 0) {
+                        return (`<span style='color: red'>${p.status_name}</span>`);
                     }
-                }, name: 'pickup_flg'
+                    // "公開"の場合は青色で表示
+                    return (`<span style='color: blue'>${p.status_name}</span>`);
+                }, name: 'status',
             },
-            
-            {data: 'push_flg_name', name: 'push_flg'},
-
-            // 配信条件
-            {
-                data: function (p) {
-                    // 詳細・編集・削除
-                    return '<button class="btn btn-warning text-white btn-condition" data-id="'+p.id+'">配信条件設定</button>';
-                }
-            },
-            
-            {data: 'update_user.name', name:'update_user.id'},
-            
+            {data: 'condition_start_time'},
+            {data: 'condition_end_time'},
+            {data: 'type_name'},
+            {data: 'user.name'},
             // 各操作列
             {
                 data: function (p) {
@@ -254,8 +117,9 @@ function initList(search) {
         // 操作列(ボタン等)や画像項目はソート不可・text-centerを付与する
         [
             { targets: [2], orderable: false, className: 'text-center', width: '80px'},
-            { targets: [8], orderable: false, className: 'text-center', width: '150px'},
-            { targets: [6, 10], orderable: false, className: 'text-center', width: '150px'}
+            { targets: [3], orderable: false, className: 'text-center', width: '100px'},
+            { targets: [6], orderable: false, className: 'text-center', width: '110px'},
+            { targets: [8], orderable: false, className: 'text-center', width: '150px'}
            ],
            search
     );

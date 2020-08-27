@@ -55,7 +55,6 @@ class UserController extends BaseAdminController
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index() {
-        // dd($this->mainService->isUserLocationData(3));
         // ステータスリスト追加
         return parent::index()->with(
             ['status_list' => Common::getUserStatusList()]

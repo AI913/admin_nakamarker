@@ -12,6 +12,11 @@ class Community extends BaseModel
      */
     protected $fillable = ['name', 'description', 'member', 'status', 'image_file', 'del_flg'];
 
+    // usersテーブルと多対多のリレーション構築
+    public function community()
+    {
+        return $this->belongsToMany('App\Model\User');
+    }
     // user_locationsテーブルと1対1のリレーション構築
     public function userLocation()
     {

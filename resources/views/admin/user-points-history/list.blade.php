@@ -36,11 +36,14 @@
                         <thead>
                             <tr role="row">
                                 <th>ID</th>
+                                <th>付与種別</th>
                                 <th>付与ポイント</th>
                                 <th>消費ポイント</th>
                                 <th>イベント発生日時</th>
+                                <th>有料フラグ</th>
                                 <th>ユーザ名</th>
                                 <th>アカウントの状態</th>
+                                <th>備考</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
