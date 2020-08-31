@@ -11,16 +11,13 @@ use Yajra\DataTables\Facades\DataTables;
 class CommunityController extends BaseAdminController
 {
     protected $mainService;
-    protected $userService;
 
-    public function __construct(CommunityService $mainService, UserService $userService)
+    public function __construct(CommunityService $mainService)
     {
         parent::__construct();
         $this->mainService  = $mainService;
         $this->mainRoot     = "admin/community";
         $this->mainTitle    = 'コミュニティ管理';
-
-        $this->userService = $userService;
     }
     
     /**

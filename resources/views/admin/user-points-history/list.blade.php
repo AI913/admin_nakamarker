@@ -26,6 +26,26 @@
                         <div class="col-lg-2">
                             <input type="text" class="form-control search-text" value="" name="name" id="name" placeholder="ユーザ名">
                         </div>
+                        <div class="col-lg-2">
+                            @include('admin.layouts.components.select_option', [
+                                'label'         => '付与種別',
+                                'list'          => $type_list,
+                                'name'          => 'type',
+                                'selected_id'   => null,
+                                'class'         => 'search-select',
+                                'blank'         => true
+                            ])
+                        </div>
+                        <div class="col-lg-2">
+                            @include('admin.layouts.components.select_option', [
+                                'label'         => '有料フラグ',
+                                'list'          => $charge_list,
+                                'name'          => 'charge_flg',
+                                'selected_id'   => null,
+                                'class'         => 'search-select',
+                                'blank'         => true
+                            ])
+                        </div>
                         <div class="col-lg-4">
                             @include('admin.layouts.components.button.search')
                             @include('admin.layouts.components.button.clear')
@@ -37,11 +57,11 @@
                             <tr role="row">
                                 <th>ID</th>
                                 <th>付与種別</th>
+                                <th>ユーザ名</th>
                                 <th>付与ポイント</th>
                                 <th>消費ポイント</th>
                                 <th>イベント発生日時</th>
                                 <th>有料フラグ</th>
-                                <th>ユーザ名</th>
                                 <th>アカウントの状態</th>
                                 <th>備考</th>
                                 <th>操作</th>
@@ -62,6 +82,9 @@
 
     {{-- 削除Form読み込み --}}
     {{-- @include('admin.layouts.components.remove_form', ['url' => url('admin/user/remove')]) --}}
+
+    {{-- 詳細Modal読み込み --}}
+    @include('admin.user-points-history.detail')
 
 @endsection
 

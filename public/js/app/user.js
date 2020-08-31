@@ -63,6 +63,11 @@ function setDetailView(data, button) {
     // モーダルに表示する会員情報
     $('#detail_name').html(data.name);
     $('#detail_status').html(data.status_name);
+    $('#detail_email').html(data.email);
+    $('#detail_login_time').html(data.login_time);
+    $('#detail_created_at').html(data.created_at);
+    $('#detail_user_agent').html(data.user_agent);
+    $('#detail_memo').html(data.memo);
 
     if(button == '.btn-location') {
         // 過去に表示したテーブルのリセット
@@ -305,8 +310,9 @@ function initList(search) {
                 data: function (p) {
                     // 登録場所・参加コミュニティ・編集ボタンの設定
                     return getListLink('location', p.id, '', 'list-button') +
-                        getListLink('community', p.id , '', 'list-button') +
-                        getListLink('edit', p.id, '/user/edit/'+p.id, 'list-button');
+                           getListLink('community', p.id , '', 'list-button') +
+                           getListLink('edit', p.id, '/user/edit/'+p.id, 'list-button') + 
+                           getListLink('remove', p.id ,'/community/detail/'+p.id, 'list-button');
                 }
             }
         ],
@@ -315,7 +321,7 @@ function initList(search) {
             // ボタン部分
             { targets: [5], orderable: false, className: 'text-center', width: '150px'},
             { targets: [6], orderable: false, className: 'text-center', width: '150px'},
-            { targets: [7], orderable: false, className: 'text-center', width: '150px'},
+            { targets: [7], orderable: false, className: 'text-center', width: '200px'},
         ],
         search
     );
@@ -377,5 +383,8 @@ function getListLink(type, id, link, clazz) {
     }
     if (type == "edit") {
         return '<a href="'+link+'" class="btn btn-primary '+clazz+'" data-toggle="tooltip" title="編集" data-placement="top"><i class="fas fa-edit fa-fw"></i></a>';
+    }
+    if (type == "remove") {
+        return '<a href="javascript:void(0)" class="btn btn-danger btn-remove '+clazz+'" data-toggle="tooltip" title="削除" data-placement="top" data-id="'+id+'"><i class="fas fa-trash-alt fa-fw"></i></a>';
     }
 }

@@ -36,10 +36,9 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <img id="detail_image_file" src="" width="300" height="250" class="detail-view">
+                                        <img id="detail_image_file" src="" width="400" height="300" class="detail-view">
                                     </div>
                                     <div class="col-sm-6">
-
                                         <p id="detail_body" class="detail-view text-gray"></p>
                                     </div>
                                 </div>

@@ -20,7 +20,7 @@ $(function(){
 });
 
 /**
- * 登録場所表示
+ * 会員情報表示
  * @param data
  */
 function setDetailView(data, button) {
@@ -39,7 +39,7 @@ function setDetailView(data, button) {
             // tableのID
             'community_user_list',
             // 取得URLおよびパラメタ
-            `/ajax/community/detail/${data.id}/community_users`,
+            '/ajax/community/detail/'+ data.id +'/community_users',
             {},
             // 各列ごとの表示定義
             [
@@ -51,13 +51,13 @@ function setDetailView(data, button) {
                     data: function(p) {
                         // アカウントステータスが"アカウント停止"の場合は赤色で表示
                         if(p.status === 4) {
-                            return (`<span style='color: red'>${p.status_name}</span>`);
+                            return ('<span style="color: red">'+ p.status_name +'</span>');
                         }
                         // それ以外は普通に表示
                         return p.status_name;
                     }
                 },
-                {},     // ポイント数
+                {data: 'memo'},     // 備考
             ],
             // 各列ごとの装飾
             [],
@@ -65,7 +65,6 @@ function setDetailView(data, button) {
         );
         $('#community_modal').modal('show');
     }
-    console.log(data)
 }
 
 
@@ -317,7 +316,8 @@ function initList(search) {
                 data: function (p) {
                     // 参加メンバー・編集ボタンの設定
                     return getListLink('community', p.id ,'/community/detail/'+p.id, 'list-button') +
-                    getListLink('edit', p.id, '/community/edit/'+p.id, 'list-button');
+                           getListLink('edit', p.id, '/community/edit/'+p.id, 'list-button') + 
+                           getListLink('remove', p.id ,'/community/detail/'+p.id, 'list-button');
                 }
             }
         ],
@@ -346,5 +346,8 @@ function getListLink(type, id, link, clazz) {
     }
     if (type == "edit") {
         return '<a href="'+link+'" class="btn btn-primary '+clazz+'" data-toggle="tooltip" title="編集" data-placement="top"><i class="fas fa-edit fa-fw"></i></a>';
+    }
+    if (type == "remove") {
+        return '<a href="javascript:void(0)" class="btn btn-danger btn-remove '+clazz+'" data-toggle="tooltip" title="削除" data-placement="top" data-id="'+id+'"><i class="fas fa-trash-alt fa-fw"></i></a>';
     }
 }

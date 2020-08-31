@@ -4,80 +4,184 @@ $(function(){
 
         // DataTables初期化
         initList(false);
+
+        // 一覧詳細ボタンクリック
+        settingDetailAjax('/user-points-history/detail/', '.btn-points');
     }
 
+    // ポイントを編集する場合はポイントIDをセット
+    $(document).on('click', '.btn-edit-points', function(){
+        $('input[name="id"]').val($(this).data('id'));
+        // 編集欄のボタンが押された場合はボタンテキストを変更する
+        if($('input[name="id"]').val() != '') {
+            $('.edit_point_label').text('ポイントの更新（ID：'+ $(this).data('id') +'）');
+            $('#detail_point_submit').text('更新');
+        }
+    });
+
+    // "閉じる"ボタン押下時にポイント入力フォームの値をリセットする
+    $(document).on('click', '.point_modal', function(){
+        $('#create_point').val('');
+        $('#select_point_type').val(null);
+        $('#select_charge_flg').val(null);
+        $('input[name="id"]').val('');
+        $('.edit_point_label').text('ポイントの付与（新規）');
+        $('#detail_point_submit').text('付与');
+    });
+    // リセットボタン押下時にポイント入力フォームの値をリセットする
+    $(document).on('click', '#detail_point_reset', function(){
+        $('#create_point').val('');
+        $('#select_point_type').val(null);
+        $('#select_charge_flg').val(null);
+        $('input[name="id"]').val('');
+        $('.edit_point_label').text('ポイントの付与（新規）');
+        $('#detail_point_submit').text('付与');
+    });
 });
+
+/**
+ * ポイント履歴情報表示 & ポイント付与欄表示
+ * @param data
+ */
+function setDetailView(data, button) {
+    // モーダルに表示する会員情報
+    $('#detail_name').html(data.user.name);
+    $('#detail_status').html(data.user.status_name);
+    $('#detail_type').html(data.type);
+    $('#detail_give_points').html(data.give_point);
+    $('#detail_pay_points').html(data.pay_point);
+    $('#detail_created_at').html(data.created_at);
+    $('#detail_charge_flg').html(data.charge_name);
+    $('#detail_memo').html(data.memo);
+    $('#detail_point_submit').attr('data-id', data.user_id); // ポイント付与フォームで利用
+
+    if(button == '.btn-points') {
+        if ($.fn.DataTable.isDataTable('#user_points_list')) {
+            $('#user_points_list').DataTable().destroy();
+        }
+        setPointTable(data.id);
+        $('#points_history_modal').modal('show');
+    }
+}
+
+/**
+ * ユーザごとのポイント履歴テーブルを生成
+ * @param id 
+ */
+function setPointTable(id) {
+    // DataTable設定
+    settingDataTables(
+        // 取得
+        // tableのID
+        'user_points_list',
+        // 取得URLおよびパラメタ
+        '/user-points-history/detail/'+ id +'/point_histories',
+        {},
+        // 各列ごとの表示定義
+        [
+            {data: 'id'},
+            {data: 'type_name'},
+            {data: 'give_point'},
+            {data: 'pay_point'},
+            {data: 'created_at'},
+            {
+                data: function(p) {
+                    // 有料フラグが"有料"の場合は赤色で表示
+                    if(p.charge_flg === 2) {
+                        return ('<span style="color: red">'+ p.charge_name +'</span>');
+                    }
+                    // それ以外は普通に表示
+                    return p.charge_name;
+                }
+            },
+            // ポイントの編集ボタン
+            {
+                data: function (p) {
+                    return getListLink('edit-point', p.id, '', 'list-button');
+                }
+            }
+        ],
+        // 各列ごとの装飾
+        [
+            // ボタン部分
+            { targets: [6], orderable: false, className: 'text-center', width: '120px'},
+        ],
+        false
+    );
+}
 
 /**
  * 画面固有チェック
  * @returns {boolean}
  */
-// function customCheck() {
-// 	var check = true;
-//     var char_count_check = true;
+$(function(){
 
-//     //メールアドレスの形式チェック
-//     var regexp_email = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/;
-//     if (regexp_email.test($('#email').val())) {
-//     } else {
-//     	$('#email').focus();
-//         $('#email').after("<p class='error-area text-danger mb-0'>メールアドレスの形式で入力してください</p>");
-//         check = false;
-//     }
+    $(document).on("click", '#detail_point_submit', function(){
+        if (!Number($('#create_point').val())) {
+            alert('ポイントが正しくありません');
+            $('#create_point').focus();
+            return false;
+        }
+        if ($('#select_point_type').val() == null) {
+            alert('付与種別が正しくありません');
+            $('#select_point_type').focus();
+            return false;
+        }
+        if ($('#select_charge_flg').val() == null) {
+            alert('有料フラグが正しくありません');
+            $('#select_point_type').focus();
+            return false;
+        }
+        updatePoints();
+    });
+});
 
-//     if (!check) {
-//         return false;
-//     }
-
-//     // パスワードの文字数チェック結果
-//     let password_char_count = $('.char-count-text').val().length;
-//     // 新規登録時は無条件でチェック
-//     // →新規登録時は文字数０の時、requiredのチェックがあるのでいらないが念の為
-//     if (register_mode == 'create') {
-//         char_count_check = characterCountCheck(password_char_count);
-//     }
-//     // 編集時はパスワードの文字数が０超のときにチェック
-//     if (register_mode == 'edit' && password_char_count > 0) {
-//         char_count_check = characterCountCheck(password_char_count);
-//     }
-
-//     // アカウントのステータス入力をチェック（アカウント停止時は除く）
-//     if ($('#btn_account_stop').text() == 'アカウントの停止' && $('input[type="radio"]:checked').val() == undefined) {
-//         $('#status_checked').after("<p class='error-area text-danger mb-0' style='padding-left: 155px'>ステータスを選択してください</p>");
-//         return false;
-//     }
-
-//     // メールアドレスの重複チェック結果
-//     // パスワードの文字数チェックのエラーがある場合、同時に出したいので少し冗長な書き方
-//     isDuplicateEmailAjax().done(function(response) {
-//         // エラーがない場合falseが返ってくる
-//         if(response.is_email) {
-//             if (!char_count_check) {
-//                 $('#password').focus();
-//                 $('#password').after("<p class='error-area text-danger mb-0'>パスワードは６文字以上入力してください</p>");
-//                 check = false;
-//             }
-//             // 重複チェックにエラーがある場合
-//             $('#email').focus();
-//             $('#email').after("<p class='error-area text-danger mb-0'>メールアドレスが重複しています</p>");
-//             check = false;
-//         } else {
-//             // 重複かつ文字数チェックでエラーがない場合のみsubmit
-//             if(char_count_check) {
-//             	check = true;
-//             } else {
-//                 $('#password').focus();
-//                 $('#password').after("<p class='error-area text-danger mb-0'>パスワードは６文字以上入力してください</p>");
-//                 check = false;
-//             }
-//         }
-//         if (!check) {
-//             return false;
-//         }else{
-//         	$('#main_form').submit();
-//         }
-//     });
-// }
+/**
+ * ポイントの更新処理
+ * @param {*} button 
+ */
+function updatePoints() {
+    $.ajax({
+        url: '/ajax/user-points-history/update_points',
+        type: 'POST',
+        dataType: 'json',
+        headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        data:   {
+            'id': $('input[name="id"]').val(),
+            'give_point': $('#create_point').val(),
+            'type': $('#select_point_type').val(),
+            'charge_flg': $('#select_charge_flg').val(),
+            'user_id': $('#detail_point_submit').attr("data-id"),
+        }
+    })
+        .done(function(response){
+            if(response.status == -1) {
+                alert('データの保存に失敗しました')
+            }
+            $('input[name="id"]').val('');
+            $('.edit_point_label').text('ポイントの付与（新規）');
+            $('#detail_point_submit').text('付与');
+            // 表のデータを再取得して更新
+            if(response.status == 1) {
+                $.ajax({url: '/user-points-history/detail/' + response.id})
+                    .done(function(response){
+                        if (response.status == 1) {
+                            // DataTablesの再作成
+                            if ($.fn.DataTable.isDataTable('#user_points_list')) {
+                                $('#user_points_list').DataTable().destroy();
+                            }
+                            
+                            setPointTable(response.data.id);
+                        } else {
+                            alert('no data error');
+                        }
+                    });
+            }
+        })
+        .fail(function(response){
+            alert('データの保存に失敗しました')
+        });
+}
 
 /**
  * DataTables一覧初期化
@@ -92,18 +196,29 @@ function initList(search) {
         // 取得URLおよびパラメタ
         '/ajax/user-points-history',
         {
-            'id':       $('#id').val(),
-            'name':     $('#name').val(),
+            'id':          $('#id').val(),
+            'type':        $('#type').val(),
+            'charge_flg':  $('#charge_flg').val(),
+            'name':        $('#name').val(),
         },
         // 各列ごとの表示定義
         [
             {data: 'id'},
             {data: 'type_name'},
+            {data: 'user.name'},
             {data: 'give_point'},
             {data: 'pay_point'},
-            {data: 'updated_at'},
-            {data: 'charge_name'},
-            {data: 'user.name'},
+            {data: 'created_at'},
+            {
+                data: function(p) {
+                    // 有料フラグが"有料"の場合は赤色で表示
+                    if(p.charge_flg === 2) {
+                        return ('<span style="color: red">'+ p.charge_name +'</span>');
+                    }
+                    // それ以外は普通に表示
+                    return p.charge_name;
+                }
+            },
             {
                 data: function(p) {
                     // アカウントステータスが"アカウント停止"の場合は赤色で表示
@@ -125,15 +240,12 @@ function initList(search) {
         // 各列ごとの装飾
         [
             // ボタン部分
-            { targets: [5], orderable: false, className: 'text-center', width: '150px'},
-            { targets: [6], orderable: false, className: 'text-center', width: '150px'},
+            { targets: [7], orderable: false, className: 'text-center', width: '120px'},
+            { targets: [8], orderable: false, className: 'text-center', width: '200px'},
+            { targets: [9], orderable: false, className: 'text-center', width: '120px'},
         ],
         search
     );
-    // $.ajax('/ajax/user-points-history')
-    // .done(function(response){
-    //     console.log(response)
-    // })
 }
 
 /**
@@ -145,6 +257,9 @@ function initList(search) {
  */
 function getListLink(type, id, link, clazz) {
     if (type == "edit") {
-        return '<a href="'+link+'" class="btn btn-primary '+clazz+'" data-toggle="tooltip" title="ポイント付与" data-placement="top"><i class="fas fa-edit fa-fw"></i></a>';
+        return '<a href="javascript:void(0)" class="btn btn-primary btn-points '+clazz+'" data-toggle="tooltip" title="ポイント付与" data-placement="top" data-id="'+id+'"><i class="fas fa-edit fa-fw"></i></a>';
+    }
+    if (type == "edit-point") {
+        return '<a href="javascript:void(0)" class="btn btn-primary btn-edit-points '+clazz+'" data-toggle="tooltip" title="編集" data-id="'+id+'"><i class="fas fa-edit fa-fw"></i></a>';
     }
 }

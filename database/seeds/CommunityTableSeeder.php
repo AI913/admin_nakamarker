@@ -23,5 +23,12 @@ class CommunityTableSeeder extends Seeder
                 'update_user_id' => $faker->numberBetween(1, 15),
             ]);
         }
+        \App\Model\Community::create([
+            'name' => 'aaa',
+            'status' => 1,
+            'del_flg' => 0,
+            'description' => 'これはみんなに使ってもらいたくて作成しました。使う場面は旅をしていてここがホットなスポットだ！インスタ映えするな！と思ったときに共有するために使っていただきたく思います。また、コミュニティでもどんどん活用してもらっても構いません。素敵なマーカーライフをエンジョイしましょう！',
+            'update_user_id' => $faker->numberBetween(1, 15),
+        ]);
     }
 }

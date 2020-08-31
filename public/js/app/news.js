@@ -8,7 +8,179 @@ $(function(){
         // 一覧詳細ボタンクリック
         settingDetailAjax('/news/detail/');
     }
+
+    // 公開フラグのvalue値設定
+    $('#open_flg').change(function() {
+        if($('#open_flg').prop('checked')) {
+            $('#status').val(1);
+        } else {
+            $('#status').val(0);
+        }
+    })
 });
+
+// @1 ファイルドロップ
+$(function () {
+    // #1 クリックで画像を選択する場合
+    $('#drop_area').on('click', function () {
+      $('#image').click();
+    });
+  
+    $('#image').on('change', function () {
+      // 画像が複数選択されていた場合(files.length : ファイルの数)
+      if (this.files.length > 1) {
+        alert('アップロードできる画像は1つだけです');
+        $('#image').val('');
+        return;
+      }
+
+      handleFiles($('#image')[0].files);
+    });
+    // #1
+
+    // ドラッグしている要素がドロップ領域に入ったとき・領域にある間
+    $('#drop_area').on('dragenter dragover', function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        $('#drop_area').removeClass('dashed'); // 点線の枠を設定したクラスをリセット
+        $('#drop_area').addClass('solid');  // 枠を実線にする
+    });
+
+    // ドラッグしている要素がドロップ領域から外れたとき
+    $('#drop_area').on('dragleave', function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+        $('#drop_area').removeClass('solid'); // 実線の枠を設定したクラスをリセット
+        $('#drop_area').addClass('dashed');  // 枠を点線に戻す
+    });
+
+    // #2ドラッグしている要素がドロップされたとき
+    $('#drop_area').on('drop', function (event) {
+        event.preventDefault();
+    
+        $('#image')[0].files = event.originalEvent.dataTransfer.files;
+    
+        // 画像が複数選択されていた場合
+        if ($('#image')[0].files.length > 1) {
+            alert('アップロードできる画像は1つだけです');
+            $('#image').val('');
+            return;
+        }
+
+        handleFiles($('#image')[0].files);
+
+    });
+    // #2
+
+    // 選択された画像ファイルの操作
+    function handleFiles(files) {
+        var file = files[0];
+        var reader = new FileReader();
+
+        // 画像ファイル以外の場合は何もしない
+        // A.indexOf(B)はAにBの値を含むかを判別！含む場合は0以上の値を返し、含まない場合は-1を返す
+        if(file.type.indexOf("image") < 0){
+            alert('画像ファイル以外はアップロード出来ません');
+            return false;
+        }
+
+        reader.onload = (function (file) {  // 読み込みが完了したら
+            
+            // previeクラスのdivにimgタグを以下のプロパティ付きで実装
+            return function(e) {
+                $('.preview').empty();
+                $('.preview').append($('<img>').attr({
+                    src: e.target.result, // readAsDataURLの読み込み結果がresult
+                    width: "350px",
+                    height: "250px",
+                    class: "preview",
+                    title: file.name
+                }));  // previewに画像を表示
+            };   
+        })(file);
+
+        reader.readAsDataURL(file); // ファイル読み込みを非同期でバックグラウンドで開始
+
+        // 削除フラグを解除
+        $('#img_delete').val(0);
+    }
+
+
+    // drop_area以外でファイルがドロップされた場合、ファイルが開いてしまうのを防ぐ
+    $(document).on('dragenter', function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    });
+    $(document).on('dragover', function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    });
+    $(document).on('drop', function (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    });
+});
+// @1
+
+
+// @2 プレビュー画像削除時の設定
+$(function(){
+    // 画像のセット
+    let outImage = 'http://nakamarker.localhost/images/noImage/no_image.png';
+    
+    $('#delete_flg').change(function() {
+        // 画像の強制削除フラグ確認
+        if($('#delete_flg').prop('checked') === true) {
+            outImage = 'http://nakamarker.localhost/images/noImage/out_images.png';
+            $('#delete_flg_on').val(true);
+        }
+        if($('#delete_flg').prop('checked') === false) {
+            outImage = 'http://nakamarker.localhost/images/noImage/no_image.png';
+            $('#delete_flg_on').val(false);
+        }
+        $preview = $(".preview");
+
+        // 強制削除の画像以外で画像ファイルがアップロードされていないことが条件
+        if($('#image').val() === "" && $('#image_flg').val() === "") {
+            $preview.append($('<img>').attr({
+                src: outImage,
+                width: "350px",
+                height: "250px",
+                class: "preview",
+            }));
+        }
+    })
+
+    $('#cancel').on('click', function(){
+        $preview = $(".preview");
+
+        // 画像ファイルと既存のプレビューを削除
+        $preview.empty();
+        $('#image').val(null);
+        if($('#image_flg').val()) {
+            $('#image_flg').val(null);
+
+            // 編集時に"強制削除フラグ"を一度もタッチしなかった場合の処理
+            if($('#delete_flg_on').val() == "") {
+                $('#delete_flg_on').val(false);
+            }
+        }
+
+        // .prevewの領域の中にロードした画像を表示するimageタグを追加
+        $preview.append($('<img>').attr({
+            src: outImage,
+            width: "350px",
+            height: "250px",
+            class: "preview",
+        }));
+
+        $('#drop_area').removeClass('solid'); // 枠を点線に戻す
+
+        // 削除フラグを設定
+        $('#img_delete').val(1);
+    });
+});
+// @2
 
 /**
 * 一覧詳細(詳細ボタンがあるページは定義する)
@@ -108,7 +280,7 @@ function initList(search) {
                 data: function (p) {
                     // 詳細・編集・削除
                     return getListLink('detail', p.id, '', 'list-button') +
-                        getListLink('edit', 0, '/admin/information/edit/'+p.id, 'list-button') +
+                        getListLink('edit', 0, '/news/edit/'+p.id, 'list-button') +
                         getListLink('remove', p.id, '', 'list-button');
                 }
             }

@@ -2,7 +2,7 @@
 
 @section('app_title')
     {{-- タイトル --}}
-    ポイント履歴一覧
+    コミュニティ履歴一覧
 @endsection
 
 @section('app_style')
@@ -10,7 +10,7 @@
 
 @section('app_bread')
     {{-- パンくず --}}
-    <li class="breadcrumb-item">ポイント履歴一覧</li>
+    <li class="breadcrumb-item">コミュニティ履歴一覧</li>
 @endsection
 
 @section('app_content')
@@ -52,6 +52,7 @@
                                 <th>コミュニティ名</th>
                                 <th>ユーザ名</th>
                                 <th>申請状況</th>
+                                <th>参加ユーザ数</th>
                                 <th>更新日時</th>
                                 <th>操作</th>
                             </tr>
@@ -71,6 +72,9 @@
 
     {{-- 削除Form読み込み --}}
     {{-- @include('admin.layouts.components.remove_form', ['url' => url('admin/user/remove')]) --}}
+
+    {{-- 詳細Modal読み込み --}}
+    @include('admin.community-history.detail')
 
 @endsection
 

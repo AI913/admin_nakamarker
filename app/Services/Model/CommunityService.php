@@ -16,7 +16,11 @@ class CommunityService extends BaseService
         $this->model = $model;
     }
 
-    // ユーザ一覧ページに表示するコミュニティデータを取得
+    
+    /**
+     * ユーザ一覧ページに表示するコミュニティデータを取得
+     * 引数:ユーザID
+     */
     public function isUserCommunityData($user_id) {
         $query = $this->model()->query();
     
@@ -27,5 +31,17 @@ class CommunityService extends BaseService
               ->where('community_histories.status', '=', config('const.community_history_approval'));
               
         return $query;
+    }
+
+    /**
+     * コミュニティの参加ユーザ数保存処理
+     * 引数:コミュニティの参加人数
+     */
+    public function member_save($count_member) {
+        $query = $this->model()->query();
+
+        $query->member = $count_member;
+
+        return $query->save();
     }
 }

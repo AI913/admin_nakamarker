@@ -176,6 +176,17 @@ class Common {
     }
 
     /**
+     * ポイント有料フラグリスト
+     * @return array
+     */
+    public static function getPointChargeFlagList() {
+        return [
+            ['id' => config('const.charge_flg_off'),     'name' => config('const.charge_flg_off_name')],
+            ['id' => config('const.charge_flg_on'),      'name' => config('const.charge_flg_on_name')],
+        ];
+    }
+
+    /**
      * お知らせ種別リスト
      * @return number[][]|string[][]
      */

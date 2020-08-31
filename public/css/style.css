@@ -233,3 +233,7 @@
 #image_delete {
   padding-right: 20px;
 }
+
+.edit_point_label {
+  font-weight: bold;
+}

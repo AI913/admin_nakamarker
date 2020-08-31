@@ -15,5 +15,4 @@ class UserPointsHistoryService extends BaseService
     public function __construct(UserPointsHistory $model) {
         $this->model = $model;
     }
-
 }
