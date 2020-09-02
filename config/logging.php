@@ -101,4 +101,9 @@ return [
         ],
     ],
 
+    /**
+     * LogへのSQLの出力を設定
+     */
+    'enable_sql_log' => env('ENABLE_SQL_LOG', false),
+
 ];

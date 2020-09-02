@@ -31,7 +31,6 @@ function updateStatus(button) {
             'status': $(button).data('status'),
         }
     }).done(function(response){
-        console.log(response)
         $(button).data('status', response)
         if (response == 1) {
             $(button).removeClass('btn-danger');
@@ -46,7 +45,7 @@ function updateStatus(button) {
             $(button).addClass('btn-danger');
             $(button).html('却下');
         }
-    });
+    })
 }
 
 /**
@@ -91,9 +90,9 @@ function setDetailView(data, button) {
     }
 }
 
-/**
- * DataTables一覧初期化
- */
+// /**
+//  * DataTables一覧初期化
+//  */
 function initList(search) {
     
     // DataTable設定

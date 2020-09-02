@@ -6,7 +6,7 @@ $(function(){
         initList(false);
 
         // 一覧詳細ボタンクリック
-        settingDetailAjax('/user-points-history/detail/', '.btn-points');
+        // settingDetailAjax('/user-points-history/detail/', '.btn-points');
     }
 
     // ポイントを編集する場合はポイントIDをセット
@@ -140,48 +140,48 @@ $(function(){
  * ポイントの更新処理
  * @param {*} button 
  */
-function updatePoints() {
-    $.ajax({
-        url: '/ajax/user-points-history/update_points',
-        type: 'POST',
-        dataType: 'json',
-        headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        data:   {
-            'id': $('input[name="id"]').val(),
-            'give_point': $('#create_point').val(),
-            'type': $('#select_point_type').val(),
-            'charge_flg': $('#select_charge_flg').val(),
-            'user_id': $('#detail_point_submit').attr("data-id"),
-        }
-    })
-        .done(function(response){
-            if(response.status == -1) {
-                alert('データの保存に失敗しました')
-            }
-            $('input[name="id"]').val('');
-            $('.edit_point_label').text('ポイントの付与（新規）');
-            $('#detail_point_submit').text('付与');
-            // 表のデータを再取得して更新
-            if(response.status == 1) {
-                $.ajax({url: '/user-points-history/detail/' + response.id})
-                    .done(function(response){
-                        if (response.status == 1) {
-                            // DataTablesの再作成
-                            if ($.fn.DataTable.isDataTable('#user_points_list')) {
-                                $('#user_points_list').DataTable().destroy();
-                            }
+// function updatePoints() {
+//     $.ajax({
+//         url: '/ajax/user-points-history/update_points',
+//         type: 'POST',
+//         dataType: 'json',
+//         headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//         data:   {
+//             'id': $('input[name="id"]').val(),
+//             'give_point': $('#create_point').val(),
+//             'type': $('#select_point_type').val(),
+//             'charge_flg': $('#select_charge_flg').val(),
+//             'user_id': $('#detail_point_submit').attr("data-id"),
+//         }
+//     })
+//         .done(function(response){
+//             if(response.status == -1) {
+//                 alert('データの保存に失敗しました')
+//             }
+//             $('input[name="id"]').val('');
+//             $('.edit_point_label').text('ポイントの付与（新規）');
+//             $('#detail_point_submit').text('付与');
+//             // 表のデータを再取得して更新
+//             if(response.status == 1) {
+//                 $.ajax({url: '/user-points-history/detail/' + response.id})
+//                     .done(function(response){
+//                         if (response.status == 1) {
+//                             // DataTablesの再作成
+//                             if ($.fn.DataTable.isDataTable('#user_points_list')) {
+//                                 $('#user_points_list').DataTable().destroy();
+//                             }
                             
-                            setPointTable(response.data.id);
-                        } else {
-                            alert('no data error');
-                        }
-                    });
-            }
-        })
-        .fail(function(response){
-            alert('データの保存に失敗しました')
-        });
-}
+//                             setPointTable(response.data.id);
+//                         } else {
+//                             alert('no data error');
+//                         }
+//                     });
+//             }
+//         })
+//         .fail(function(response){
+//             alert('データの保存に失敗しました')
+//         });
+// }
 
 /**
  * DataTables一覧初期化

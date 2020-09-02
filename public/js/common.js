@@ -391,7 +391,7 @@ function settingDetailAjax(url, button) {
     $(document).on('click', button, function() {
         // 詳細画面表示クリア
         $('.detail-view').html("");
-
+        
         // 削除フォームIDをセット
         $.ajax({url: url + $(this).data('id')})
             .done(function(response){

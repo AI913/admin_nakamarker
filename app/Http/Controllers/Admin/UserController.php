@@ -8,24 +8,30 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\View;
 use App\Services\Model\UserService;
 use App\Services\Model\UserLocationService;
+use App\Services\Model\UserPointsHistoryService;
 use App\Services\Model\CommunityService;
+use App\Services\Model\CommunityHistoryService;
 use App\Services\Model\ConfigService;
 
 class UserController extends BaseAdminController
 {
     protected $mainService;
+    protected $userPointHistoryService;
 
     /**
      * 顧客管理コントローラー
      * Class UserController
      * @package App\Http\Controllers
      */
-    public function __construct(UserService $mainService) 
+    public function __construct(UserService $mainService, UserPointsHistoryService $userPointHistoryService) 
     {
         parent::__construct();
         $this->mainService  = $mainService;
         $this->mainRoot     = "admin/user";
         $this->mainTitle    = 'ユーザ管理';
+
+        // user_points_historiesテーブルの操作クラスをインスタンス化
+        $this->userPointHistoryService = $userPointHistoryService;
     }
     
     /**
@@ -42,11 +48,7 @@ class UserController extends BaseAdminController
         if ($request->email) { $conditions['users.email@like'] = $request->email; }
         if ($request->status) { $conditions['users.status'] = $request->status; }
         
-        // 〇ソート条件
-        $sort = [];
-        // 〇リレーション
-        $relations = [];
-        return DataTables::eloquent($this->mainService->searchQuery($conditions, $sort, $relations))->make();
+        return DataTables::eloquent($this->mainService->isUserPointData($conditions))->make();
     }
 
     /**
@@ -55,6 +57,7 @@ class UserController extends BaseAdminController
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index() {
+        // dd($this->mainService->isUserPointData()->get());
         // ステータスリスト追加
         return parent::index()->with(
             ['status_list' => Common::getUserStatusList()]
@@ -67,7 +70,7 @@ class UserController extends BaseAdminController
      * @return array
      */
     public function detail($id) {
-
+        
         // 詳細(Modal)のDataTable
         // 〇検索条件
         $conditions = [];
@@ -77,7 +80,7 @@ class UserController extends BaseAdminController
         // 〇リレーション
         $relations = [];
         $data = $this->mainService->searchOne($conditions, $sort, $relations);
-        
+
         return [
             'status' => 1,
             'data' => $data,
@@ -107,6 +110,63 @@ class UserController extends BaseAdminController
     }
 
     /**
+     * 特定ユーザの履歴を取得
+     * @param $id
+     * @throws \Exception
+     */
+    public function point_histories($id) {
+        
+        // 詳細(Modal)のDataTable
+        // 〇検索条件
+        $conditions = [];
+        $conditions['user_id'] = $id;
+        // 〇ソート条件
+        $sort = [];
+        // 〇リレーション
+        $relations = ['user' => []];
+
+        // コミュニティに紐づく申請状況の履歴を取得
+        return DataTables::eloquent($this->userPointHistoryService->searchQuery($conditions, $sort, $relations))->make();
+    }
+
+    /**
+     * ユーザーポイント履歴の作成・編集処理
+     * @param Request $request
+     * @param UserPointService $userPointService
+     * @return array
+     * @throws \Exception
+     */
+    public function updatePoints(Request $request) {
+
+        if (!$request->user_id) {
+            return ['status' => -1];
+        }
+
+        // 保存データを配列に格納
+        $data = [
+            'type'              => $request->type,
+            'give_point'        => $request->give_point,
+            'pay_point'         => 0,
+            'charge_flg'        => $request->charge_flg,
+            'user_id'           => $request->user_id,
+            'update_user_id'    => \Auth::user()->id,
+        ];
+
+        if(!empty($request->id)) {
+            $data['id'] = $request->id;
+        }
+
+        // ポイント履歴の更新or作成
+        if($this->userPointHistoryService->save($data)) {
+            return [
+                'status' => 1,
+                'id' => $request->user_id 
+            ];
+        }
+        return ['status' => -1];
+    }
+
+    /**
      * 保存前処理
      * @param Request $request
      * @return array
@@ -129,39 +189,6 @@ class UserController extends BaseAdminController
 
         return $input;
     }
-
-    /**
-     * ユーザーポイント履歴取得(未実装)
-     * @param $id
-     * @param $type
-     * @param $used
-     * @param UserPointService $userPointService
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception
-     */
-//     public function user_point($id, $type, $used, UserPointService $userPointService) {
-// //        // 〇検索条件
-// //        $conditions = [];
-// //        $conditions['user_points.user_id'] = $id;
-// //        // 〇ソート条件
-// //        $sort = [];
-// //        $sort['user_points.id'] = 'desc';
-// //        // 〇リレーション
-// //        $relations = ['location_store' => [], 'location_geofence' => []];
-
-//         $conditions['not_receive_flg'] = true;
-//         // 種別
-//         if ($type) {
-//             $conditions['point_type'] = $type;
-//         }
-//         // 未使用
-//         if ($used) {
-//             $conditions['used'] = true;
-//             $conditions['limit_date'] = true;
-//         }
-
-//         return DataTables::eloquent($userPointService->getUserPointHistoryQuery($id, $conditions))->make();
-//     }
 
     /**
      * ユーザー論理削除

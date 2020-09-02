@@ -11,7 +11,7 @@ class UserPointsHistory extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'give_point', 'pay_point', 'limit_date', 'user_id'
+        'give_point', 'pay_point', 'limit_date', 'user_id', 'type', 'charge_flg'
     ];
 
     /**

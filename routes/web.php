@@ -42,6 +42,10 @@ Route::middleware('auth:admin')->group(function () {
 
     // ユーザの登録場所管理(user)
     Route::get('/ajax/user/detail/{id}/user_locations',  'Admin\UserController@user_locations')->name('admin/user/detail/user_locations');
+    // 特定ユーザのポイント履歴管理
+    Route::get('/user-points-history/detail/{id}/point_histories', 'Admin\UserController@point_histories')->name('admin/user-points-history/detail/point_histories');
+    // 特定ユーザのポイント更新
+    Route::post('/ajax/user-points-history/update_points', 'Admin\UserController@updatePoints')->name('admin/user-points-history/update_points');
     // ユーザの参加コミュニティ管理(user)
     Route::get('/ajax/user/detail/{id}/user_communities',  'Admin\UserController@user_communities')->name('admin/user/detail/user_communities');
     
@@ -87,8 +91,8 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('/user-points-history/save',       'Admin\UserPointsHistoryController@save')->name('admin/user-points-history/save');
     Route::post('/user-points-history/remove',     'Admin\UserPointsHistoryController@remove')->name('admin/user-points-history/remove');
     // 特定ユーザのポイント履歴管理
-    Route::get('/user-points-history/detail/{id}/point_histories', 'Admin\UserPointsHistoryController@point_histories')->name('admin/user-points-history/detail/point_histories');
-    // 特定ユーザのポイント更新
+    // Route::get('/user-points-history/detail/{user_id}/point_histories', 'Admin\UserPointsHistoryController@point_histories')->name('admin/user-points-history/detail/point_histories');
+    // // 特定ユーザのポイント更新
     Route::post('/ajax/user-points-history/update_points', 'Admin\UserPointsHistoryController@updatePoints')->name('admin/user-points-history/update_points');
 
     /******************** コミュニティ履歴管理(community-history) ********************/

@@ -26,9 +26,8 @@ class CommunityService extends BaseService
     
         $query->leftJoin('community_histories', 'communities.id', 'community_histories.community_id')
               ->leftJoin('users', 'community_histories.user_id', 'users.id')
-              ->select('communities.*')
-              ->where('community_histories.user_id', '=', $user_id)
-              ->where('community_histories.status', '=', config('const.community_history_approval'));
+              ->select('communities.*', 'users.id as user_id', 'community_histories.status as entry_status')
+              ->where('community_histories.user_id', '=', $user_id);
               
         return $query;
     }

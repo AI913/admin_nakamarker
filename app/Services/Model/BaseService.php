@@ -246,7 +246,7 @@ abstract class BaseService{
      * @param bool $del_flg
      * @return mixed
      */
-    private function getConditions($query, $table, $conditions=[], $del_flg = true) {
+    protected function getConditions($query, $table, $conditions=[], $del_flg = true) {
         $table = $table.".";
 
         foreach($conditions as $key => $value) {

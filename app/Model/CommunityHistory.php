@@ -6,6 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class CommunityHistory extends BaseModel
 {
+    // /**
+    //  * 保存対象(attribute)
+    //  * @var array
+    //  */
+    // protected $fillable = [
+    //     'status', 'update_user_id', 'updated_at',
+    // ];
+
     /**
      * 申請状況を返す
      * (数値からconst.phpで定義した文字列へと変換)

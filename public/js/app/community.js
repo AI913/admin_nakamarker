@@ -17,7 +17,48 @@ $(function(){
             $('#status').val(0);
         }
     })
+
+    // 申請状況カラムのボタンが押下されたとき
+    $(document).on('click', '.btn-status', function(){
+        // 申請状況の値を更新
+        updateStatus($(this));
+    });
 });
+
+/**
+ * 申請状況の編集処理
+ * @param {*} button 
+ */
+function updateStatus(button) {
+    console.log($(button).data('status'))
+    $.ajax({
+        url:    '/ajax/community-history/update_status',
+        type:   'POST',
+        dataType: 'json',
+        headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        data:   {
+            'user_id': $(button).data('user_id'),
+            'community_id': $(button).data('community_id'),
+            'status': $(button).data('status'),
+        }
+    }).done(function(response){
+        console.log(response)
+        $(button).data('status', response)
+        if (response == 1) {
+            $(button).removeClass('btn-danger');
+            $(button).addClass('btn-info');
+            $(button).html('申請中');
+        } else if (response == 2) {
+            $(button).removeClass('btn-info');
+            $(button).addClass('btn-success');
+            $(button).html('承認済み');
+        } else if (response == 3) {
+            $(button).removeClass('btn-success');
+            $(button).addClass('btn-danger');
+            $(button).html('却下');
+        }
+    })
+}
 
 /**
  * 会員情報表示
@@ -57,10 +98,25 @@ function setDetailView(data, button) {
                         return p.status_name;
                     }
                 },
-                {data: 'memo'},     // 備考
+                {
+                    data: function (p) {
+                        // 申請中・承認済み・却下ボタンの設定
+                        if(p.entry_status == 1) {
+                            return '<button class="btn btn-info btn-status text-white w-75" data-user_id="'+ p.id +'" data-community_id="'+ p.community_id +'" data-status="'+ p.entry_status +'">'+ p.entry_status_name +'</button>';
+                        }
+                        if(p.entry_status == 2) {
+                            return '<button class="btn btn-success btn-status text-white w-75" data-user_id="'+ p.id +'" data-community_id="'+ p.community_id +'" data-status="'+ p.entry_status +'">'+ p.entry_status_name +'</button>';
+                        }
+                        if(p.entry_status == 3) {
+                            return '<button class="btn btn-danger btn-status text-white w-75" data-user_id="'+ p.id +'" data-community_id="'+ p.community_id +'" data-status="'+ p.entry_status +'">'+ p.entry_status_name +'</button>';
+                        }
+                    }, name: 'entry_status'
+                },
             ],
             // 各列ごとの装飾
-            [],
+            [
+                { targets: [5], orderable: false, className: 'text-center', width: '120px'},
+            ],
             false
         );
         $('#community_modal').modal('show');

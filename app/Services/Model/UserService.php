@@ -35,39 +35,72 @@ class UserService extends BaseService
     }
 
     /**
-     * ポイント履歴から現在のポイント数を算出
+     * ポイント履歴から現在の無料ポイント数を算出
      */
-    public function getPointData() {
+    public function getFreePointData() {
         $query = $this->model()->query();
 
-        $query
-              ->leftJoin('user_points_histories', 'users.id', 'user_points_histories.user_id')
-              ->selectRaw('sum(user_points_histories.give_point) - sum(user_points_histories.pay_point) as total_points')
-              ->groupByRaw('user_points_histories.user_id');
+        $query->leftJoin('user_points_histories', 'users.id', 'user_points_histories.user_id')
+              ->selectRaw('sum(user_points_histories.give_point) - sum(user_points_histories.pay_point) as free_total_points')
+              ->addselect('user_points_histories.user_id')
+              ->groupByRaw('user_points_histories.user_id')
+              ->where('user_points_histories.charge_flg', '=', 1);
 
         return $query;
     }
 
     /**
-     * コミュニティ一覧ページに表示する参加ユーザデータを取得
+     * ポイント履歴から現在の有料ポイント数を算出
+     */
+    public function getPointData() {
+        $query = $this->model()->query();
+
+        $query->leftJoin('user_points_histories', 'users.id', 'user_points_histories.user_id')
+              ->selectRaw('sum(user_points_histories.give_point) - sum(user_points_histories.pay_point) as total_points')
+              ->addselect('user_points_histories.user_id')
+              ->groupByRaw('user_points_histories.user_id')
+              ->where('user_points_histories.charge_flg', '=', 2);
+
+        return $query;
+    }
+
+    /**
+     * ユーザの所持ポイントを算出したデータの取得
+     * 引数：データの検索条件
+     */
+    public function isUserPointData($conditions=null) {
+        $query = $this->model()->query();
+
+        // 無料ポイントと有料ポイントの算出クエリをそれぞれインスタンス化
+        $free_points_query = $this->getFreePointData();
+        $points_query = $this->getPointData();
+
+        // サブクエリでポイントテーブルとユーザテーブルを結合
+        $query->leftJoinSub($free_points_query, 'free_points', 'users.id', '=', 'free_points.user_id')
+              ->leftJoinSub($points_query, 'charge_points', 'users.id', '=', 'charge_points.user_id')
+              ->select('users.*', 'free_points.free_total_points', 'charge_points.total_points')
+              ->orderBy('users.id');
+
+        // 検索条件があれば実行
+        if($conditions) {
+            $query = $this->getConditions($query, $this->model()->getTable(), $conditions);
+        }
+        return $query;
+    }
+
+    /**
+     * コミュニティに属しているユーザデータの取得
+     * 引数：コミュニティID
+     * 
      */
     public function isCommunityUserData($community_id) {
         $query = $this->model()->query();
-
-        // ユーザごとに現在の所有ポイントを算出
-        $points_query = DB::table('user_points_histories up')->select('sum(up.give_point) - sum(up.pay_point) as total_points', 'up.user_id')
-                                                             ->groupByRaw('up.user_id');
-        // $points_query = DB::Raw('select p.user_id, sum(p.give_point) - sum(p.pay_point) as total_points from user_points_histories p group by p.user_id');
-
-        // サブクエリでポイントテーブルとユーザテーブルを結合
+    
         $query->leftJoin('community_histories', 'users.id', 'community_histories.user_id')
-              ->leftJoin('communities', 'community_histories.community_id', 'communities.id')
-            //   ->leftJoin($points_query.' as points', 'users.id', '=', 'points.user_id')
-            //   ->select('users.*', 'community_histories.updated_at', 'points.total_points')
-              ->select('users.*', 'community_histories.updated_at')
-              ->where('community_histories.community_id', '=', $community_id)
-              ->where('community_histories.status', '=', config('const.community_history_approval'));
-
+              ->leftJoin('communities', 'communities.id', 'community_histories.community_id')
+              ->select('users.*', 'communities.id as community_id', 'community_histories.status as entry_status')
+              ->where('community_id', '=', $community_id);
+              
         return $query;
     }
 }

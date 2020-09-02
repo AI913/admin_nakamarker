@@ -14,7 +14,7 @@ class User extends Authenticatable
      * 独自アクセサ(attribute)
      * @var array
      */
-    protected $appends = ['status_name'];
+    protected $appends = ['status_name', 'entry_status_name'];
 
 
     /**
@@ -73,6 +73,17 @@ class User extends Authenticatable
         if ($this->status == config('const.user_app_unsubscribe'))     return config('const.user_app_unsubscribe_name');
         if ($this->status == config('const.user_admin_system'))   return config('const.user_admin_system_name');
         if ($this->status == config('const.user_app_account_stop'))   return config('const.user_app_account_stop_name');
+    }
+
+    /**
+     * コミュニティの申請状況を返す
+     * (数値からconst.phpで定義した文字列へと変換)
+     * @return string
+     */
+    public function getEntryStatusNameAttribute() {
+        if ($this->entry_status == config('const.community_history_apply'))  return config('const.community_history_apply_name');
+        if ($this->entry_status == config('const.community_history_approval'))     return config('const.community_history_approval_name');
+        if ($this->entry_status == config('const.community_history_reject'))   return config('const.community_history_reject_name');
     }
 
     // communitiesテーブルと多対多のリレーション構築

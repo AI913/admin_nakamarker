@@ -88,14 +88,12 @@ class UserPointsHistoryController extends BaseAdminController
      * @param $id
      * @throws \Exception
      */
-    public function point_histories($id) {
+    public function point_histories($user_id) {
         
-        // 選択した申請状況のデータを取得
-        $data = $this->mainService->searchOne(['id' => $id]);
         // 詳細(Modal)のDataTable
         // 〇検索条件
         $conditions = [];
-        $conditions['user_id'] = $data->user_id;
+        $conditions['user_id'] = $user_id;
         // 〇ソート条件
         $sort = [];
         // 〇リレーション
@@ -113,10 +111,12 @@ class UserPointsHistoryController extends BaseAdminController
      * @throws \Exception
      */
     public function updatePoints(Request $request) {
+        echo $request;
         if (!$request->user_id) {
             return ['status' => -1];
         }
 
+        echo $request;
         // 保存データを配列に格納
         $data = [
             'type'              => $request->type,
@@ -133,10 +133,9 @@ class UserPointsHistoryController extends BaseAdminController
 
         // ポイント履歴の更新or作成
         if($this->mainService->save($data)) {
-            $data = $this->mainService->searchOne(['user_id' => $request->user_id]);
             return [
                 'status' => 1,
-                'id' => $data->id 
+                'id' => $request->user_id 
             ];
         }
         return ['status' => -1];

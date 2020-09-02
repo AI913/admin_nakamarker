@@ -6,16 +6,38 @@ $(function(){
         initList(false);
 
         // 登録場所もしくは参加コミュニティボタンをクリック
-        $(document).on('focus', '.btn-location', function() {
-            settingDetailAjax('/user/detail/', '.btn-location');
-        });
-        $(document).on('focus', '.btn-community', function() {
-            settingDetailAjax('/user/detail/', '.btn-community');
-        });
+        settingDetailAjax('/user/detail/', '.btn-location');
+        settingDetailAjax('/user/detail/', '.btn-community');
+
     }
 
+    // 選択したポイント履歴を削除する処理
+    $(document).on('click', '.btn-remove', function(){
+        
+        // 削除処理を記載予定
+        
+    });
+
+    // 申請状況カラムのボタンが押下されたとき
+    $(document).on('click', '.btn-status', function(){
+        // 申請状況の値を更新
+        updateStatus($(this));
+    });
+
+    // "閉じる"ボタン押下時にポイント入力フォームの値をリセットする
+    $(document).on('click', '.point_modal', function(){
+        $('#create_point').val('');
+        $('#select_point_type').val(null);
+        $('#select_charge_flg').val(null);
+    });
+    // リセットボタン押下時にポイント入力フォームの値をリセットする
+    $(document).on('click', '#detail_point_reset', function(){
+        $('#create_point').val('');
+        $('#select_point_type').val(null);
+        $('#select_charge_flg').val(null);
+    });
+
     // アカウント停止処理
-    let num = 0;
     if($('#btn_account_stop').text() == 'アカウント停止中'){
         // アカウント停止状態は備考以外の入力を受け付けない
         $("#name").prop("disabled", true);
@@ -56,10 +78,46 @@ $(function(){
 });
 
 /**
+ * 申請状況の編集処理
+ * @param {*} button 
+ */
+function updateStatus(button) {
+    console.log($(button).data('status'))
+    $.ajax({
+        url:    '/ajax/community-history/update_status',
+        type:   'POST',
+        dataType: 'json',
+        headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        data:   {
+            'user_id': $(button).data('user_id'),
+            'community_id': $(button).data('community_id'),
+            'status': $(button).data('status'),
+        }
+    }).done(function(response){
+        console.log(response)
+        $(button).data('status', response)
+        if (response == 1) {
+            $(button).removeClass('btn-danger');
+            $(button).addClass('btn-info');
+            $(button).html('申請中');
+        } else if (response == 2) {
+            $(button).removeClass('btn-info');
+            $(button).addClass('btn-success');
+            $(button).html('承認済み');
+        } else if (response == 3) {
+            $(button).removeClass('btn-success');
+            $(button).addClass('btn-danger');
+            $(button).html('却下');
+        }
+    })
+}
+
+/**
  * 登録場所表示
  * @param data
  */
 function setDetailView(data, button) {
+
     // モーダルに表示する会員情報
     $('#detail_name').html(data.name);
     $('#detail_status').html(data.status_name);
@@ -68,19 +126,20 @@ function setDetailView(data, button) {
     $('#detail_created_at').html(data.created_at);
     $('#detail_user_agent').html(data.user_agent);
     $('#detail_memo').html(data.memo);
+    $('#detail_point_submit').data('id', data.id); // ポイント付与フォームで利用
 
     if(button == '.btn-location') {
         // 過去に表示したテーブルのリセット
         if ($.fn.DataTable.isDataTable('#user_location_list')) {
             $('#user_location_list').DataTable().destroy();
         }
-        // DataTable設定
+        // DataTable設定("登録場所")
         settingDataTables(
             // 取得
             // tableのID
             'user_location_list',
             // 取得URLおよびパラメタ
-            `/ajax/user/detail/${data.id}/user_locations`,
+            '/ajax/user/detail/'+ data.id +'/user_locations',
             {},
             // 各列ごとの表示定義
             [
@@ -125,6 +184,11 @@ function setDetailView(data, button) {
             [],
             false
         );
+        if ($.fn.DataTable.isDataTable('#user_points_list')) {
+            $('#user_points_list').DataTable().destroy();
+        }
+        setPointTable(data.id);
+        
         $('#location_modal').modal('show');
     }
     
@@ -139,7 +203,7 @@ function setDetailView(data, button) {
             // tableのID
             'user_community_list',
             // 取得URLおよびパラメタ
-            `/ajax/user/detail/${data.id}/user_communities`,
+            '/ajax/user/detail/'+ data.id +'/user_communities',
             {},
             // 各列ごとの表示定義
             [
@@ -187,11 +251,30 @@ function setDetailView(data, button) {
                         return (`<span style='color: blue'>${p.status_name}</span>`);
                     }
                 },
+                // 参加日時
                 {data: 'created_at'},
-                {data: 'description'},     
+                {
+                    data: function (p) {
+                        // 申請中・承認済み・却下ボタンの設定(usersのidとcommunitiesのidをdata要素に渡している)
+                        if(p.entry_status == 1) {
+                            return '<button class="btn btn-info btn-status text-white w-75" data-user_id="'+ p.user_id +'" data-community_id="'+ p.id +'" data-status="'+ p.entry_status +'">'+ p.entry_status_name +'</button>';
+                        }
+                        if(p.entry_status == 2) {
+                            return '<button class="btn btn-success btn-status text-white w-75" data-user_id="'+ p.user_id +'" data-community_id="'+ p.id +'" data-status="'+ p.entry_status +'">'+ p.entry_status_name +'</button>';
+                        }
+                        if(p.entry_status == 3) {
+                            return '<button class="btn btn-danger btn-status text-white w-75" data-user_id="'+ p.user_id +'" data-community_id="'+ p.id +'" data-status="'+ p.entry_status +'">'+ p.entry_status_name +'</button>';
+                        }
+                    }, name: 'entry_status'
+                },
             ],
             // 各列ごとの装飾
-            [],
+            [
+                { targets: [1], orderable: false, className: 'text-center', width: '120px'},
+                { targets: [3], orderable: false, width: '70px'},
+                { targets: [4], orderable: false, width: '70px'},
+                { targets: [6], orderable: false, className: 'text-center', width: '120px'},
+            ],
             false
         );
         $('#community_modal').modal('show');
@@ -199,7 +282,121 @@ function setDetailView(data, button) {
 }
 
 /**
- * 画面固有チェック
+ * ユーザごとのポイント履歴テーブルを生成
+ * @param id 
+ */
+function setPointTable(id) {
+    // DataTable設定
+    settingDataTables(
+        // 取得
+        // tableのID
+        'user_points_list',
+        // 取得URLおよびパラメタ
+        '/user-points-history/detail/'+ id +'/point_histories',
+        {},
+        // 各列ごとの表示定義
+        [
+            {data: 'id'},
+            {data: 'type_name'},
+            {data: 'give_point'},
+            {data: 'pay_point'},
+            {data: 'created_at'},
+            {
+                data: function(p) {
+                    // 有料フラグが"有料"の場合は赤色で表示
+                    if(p.charge_flg === 2) {
+                        return ('<span style="color: red">'+ p.charge_name +'</span>');
+                    }
+                    // それ以外は普通に表示
+                    return p.charge_name;
+                }
+            },
+            // ポイント履歴の削除ボタン
+            {
+                data: function (p) {
+                    return getListLink('remove', p.id, '', 'list-button');
+                }
+            }
+        ],
+        // 各列ごとの装飾
+        [
+            // ボタン部分
+            { targets: [6], orderable: false, className: 'text-center', width: '120px'},
+        ],
+        false
+    );
+}
+
+/**
+ * ポイント履歴管理の画面固有チェック
+ * @returns {boolean}
+ */
+$(function(){
+
+    $(document).on("click", '#detail_point_submit', function(){
+        if (!Number($('#create_point').val())) {
+            alert('ポイントが正しくありません');
+            $('#create_point').focus();
+            return false;
+        }
+        if ($('#select_point_type').val() == null) {
+            alert('付与種別が正しくありません');
+            $('#select_point_type').focus();
+            return false;
+        }
+        if ($('#select_charge_flg').val() == null) {
+            alert('有料フラグが正しくありません');
+            $('#select_point_type').focus();
+            return false;
+        }
+        updatePoints();
+    });
+});
+
+/**
+ * ポイントの更新処理
+ * @param {*} button 
+ */
+function updatePoints() {
+    $.ajax({
+        url: '/ajax/user-points-history/update_points',
+        type: 'POST',
+        dataType: 'json',
+        headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        data:   {
+            'id': $('input[name="id"]').val(),
+            'give_point': $('#create_point').val(),
+            'type': $('#select_point_type').val(),
+            'charge_flg': $('#select_charge_flg').val(),
+            'user_id': $('#detail_point_submit').data("id"),
+        }
+    })
+        .done(function(response){
+            if(response.status == -1) {
+                alert('データの保存に失敗しました')
+            }
+            
+            // 表のデータを再取得して更新
+            if(response.status == 1) {
+                // DataTablesの再作成
+                if ($.fn.DataTable.isDataTable('#user_points_list')) {
+                    $('#user_points_list').DataTable().destroy();
+                }
+
+                $('#create_point').val('');
+                $('#select_point_type').val(null);
+                $('#select_charge_flg').val(null);
+                
+                setPointTable(response.id);
+            }
+        })
+        .fail(function(response){
+            alert('データの保存に失敗しました')
+        });
+}
+
+/**
+ * ユーザ作成の画面固有チェック
  * @returns {boolean}
  */
 function customCheck() {
@@ -304,24 +501,26 @@ function initList(search) {
                     return p.status_name;
                 }
             },
-            {data: 'memo'},
-            
+            {data: 'total_points'}, // ポイント数(有料)
+            {data: 'free_total_points'}, // ポイント数(無料)
             {
                 data: function (p) {
                     // 登録場所・参加コミュニティ・編集ボタンの設定
                     return getListLink('location', p.id, '', 'list-button') +
                            getListLink('community', p.id , '', 'list-button') +
-                           getListLink('edit', p.id, '/user/edit/'+p.id, 'list-button') + 
-                           getListLink('remove', p.id ,'/community/detail/'+p.id, 'list-button');
+                           getListLink('edit', p.id, '/user/edit/'+p.id, 'list-button');
                 }
             }
         ],
         // 各列ごとの装飾
         [
             // ボタン部分
-            { targets: [5], orderable: false, className: 'text-center', width: '150px'},
-            { targets: [6], orderable: false, className: 'text-center', width: '150px'},
-            { targets: [7], orderable: false, className: 'text-center', width: '200px'},
+            { targets: [3], orderable: false, width: '150px'},
+            { targets: [4], orderable: false, width: '150px'},
+            { targets: [5], orderable: false, className: 'text-center', width: '110px'},
+            { targets: [6], orderable: false, className: 'text-center', width: '110px'},
+            { targets: [7], orderable: false, className: 'text-center', width: '110px'},
+            { targets: [8], orderable: false, className: 'text-center', width: '200px'},
         ],
         search
     );
@@ -376,7 +575,7 @@ function characterCountCheck(count) {
  */
 function getListLink(type, id, link, clazz) {
     if (type == "location") {
-        return '<a href="javascript:void(0)" class="btn btn-success btn-location '+clazz+'" data-toggle="tooltip" title="登録場所" data-placement="top" data-id="'+id+'"><i class="fas fa-search fa-fw"></i></a>';
+        return '<a href="javascript:void(0)" class="btn btn-success btn-location '+clazz+'" data-toggle="tooltip" title="詳細" data-placement="top" data-id="'+id+'"><i class="fas fa-search fa-fw"></i></a>';
     }
     if (type == "community") {
         return '<a href="javascript:void(0)" class="btn btn-warning text-white btn-community '+clazz+'" data-toggle="tooltip" title="参加コミュニティ" data-placement="top" data-id="'+id+'"><i class="fas fa-users"></i></a>';

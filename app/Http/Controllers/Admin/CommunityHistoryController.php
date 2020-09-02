@@ -64,10 +64,19 @@ class CommunityHistoryController extends BaseAdminController
 
     /**
      * 申請状況の編集処理
-     * 引数：
+     * 
      */
     public function updateStatus(Request $request) {
-        return $this->mainService->updateStatus($request);
+        try {
+
+            \DB::beginTransaction();
+            $status = $this->mainService->updateStatus($request);
+            \DB::commit();
+            return $status;
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return "-1";
+        }
     }
 
     /**

@@ -18,23 +18,35 @@ class CommunityHistoryService extends BaseService
 
     /**
      * 申請状況の編集処理
-     * 引数：
+     * 
      */
     public function updateStatus($request) {
-        $model = $this->searchOne(['id' => $request->id]);
+        $model = $this->searchOne([
+            'community_id' => $request->community_id,
+            'user_id'      => $request->user_id
+        ]);
 
         // 申請状況の値を切り替え
-        if($request->status == config('const.community_history_apply')) {
-            $model->status = config('const.community_history_approval');
-        } elseif ($request->status == config('const.community_history_approval')) {
-            $model->status = config('const.community_history_reject');
-        } elseif ($request->status == config('const.community_history_reject')) {
-            $model->status = config('const.community_history_apply');
+        try {
+            \Log::debug('status:'.$request->status);
+            if($request->status == config('const.community_history_apply')) {
+                $model->status = config('const.community_history_approval');
+            } elseif ($request->status == config('const.community_history_approval')) {
+                $model->status = config('const.community_history_reject');
+            } elseif ($request->status == config('const.community_history_reject')) {
+                $model->status = config('const.community_history_apply');
+            }
+            $model->update_user_id  = \Auth::user()->id;
+            $model->updated_at      = date('Y-m-d H:i:s');
+            $model->save();
+
+            return $model->status;
+            
+        } catch (\Exception $e) {
+            \Log::debug($e->getMessage());
+            report($e);
+            return;
         }
-        $model->update_user_id  = \Auth::user()->id;
-        $model->updated_at      = date('Y-m-d H:i:s');
-        $model->save();
-        return $model->status;
     }
 
     /**

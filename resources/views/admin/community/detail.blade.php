@@ -24,25 +24,26 @@
                 </ul>
 
                 <ul class="nav nav-tabs" role="tablist">
-                    {{-- <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link" id="item2-tab" data-toggle="tab" href="#item2" role="tab" aria-controls="item2" aria-selected="false">コミュニティロケーション</a>
-                    </li> --}}
+                    </li>
                 </ul>
                 <div class="tab-content">
-                    {{-- <div class="tab-pane fade" id="item1" role="tabpanel" aria-labelledby="item1-tab"> --}}
-                    <div>
-                        <table class="table table-striped table-bordered datatable table-sm" id="community_user_list">
-                            <thead>
-                                <tr role="row">
-                                    <th>ID</th>
-                                    <th>ユーザ名</th>
-                                    <th>メールアドレス</th>
-                                    <th>参加日時</th>
-                                    <th>アカウント状態</th>
-                                    <th>備考</th>
-                                </tr>
-                            </thead>
-                        </table>
+                    <div class="tab-pane fade show active" id="item1" role="tabpanel" aria-labelledby="item1-tab">
+                        <div>
+                            <table class="table table-striped table-bordered datatable table-sm" id="community_user_list">
+                                <thead>
+                                    <tr role="row">
+                                        <th>ID</th>
+                                        <th>ユーザ名</th>
+                                        <th>メールアドレス</th>
+                                        <th>参加日時</th>
+                                        <th>アカウント状態</th>
+                                        <th>申請状況</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
