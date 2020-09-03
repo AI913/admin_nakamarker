@@ -32,7 +32,7 @@ Route::middleware('auth:admin')->group(function () {
     // メールアドレス重複チェック
     Route::post('/ajax/is_duplicate_email','Admin\Ajax\AdminAjaxController@isDuplicateEmail');
 
-    /******************** ユーザ管理(user) ********************/
+    /******************** ユーザ管理(users) ********************/
     Route::get('/user',             'Admin\UserController@index')->name('admin/user');
     Route::get('/user/create',      'Admin\UserController@create')->name('admin/user/create');
     Route::get('/user/edit/{id}',   'Admin\UserController@edit')->name('admin/user/edit');
@@ -40,16 +40,20 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('/user/save',       'Admin\UserController@save')->name('admin/user/save');
     Route::post('/user/remove',     'Admin\UserController@remove')->name('admin/user/remove');
 
-    // ユーザの登録場所管理(user)
+    // ユーザの登録場所管理(user_locations)
     Route::get('/ajax/user/detail/{id}/user_locations',  'Admin\UserController@user_locations')->name('admin/user/detail/user_locations');
-    // 特定ユーザのポイント履歴管理
+    // ユーザの登録場所情報を詳細に取得(user_locations)
+    Route::get('/ajax/user/detail/{id}/user_locations/{location_id}',  'Admin\UserController@user_locations_detail')->name('admin/user/detail/user_locations_detail');
+    // ユーザの登録場所イメージ更新(user_locations)
+    Route::post('/ajax/user-location/location_images',  'Admin\UserController@user_locationImage_delete')->name('admin/user-location/location_images');
+    // 特定ユーザのポイント履歴管理(user_points_histories)
     Route::get('/user-points-history/detail/{id}/point_histories', 'Admin\UserController@point_histories')->name('admin/user-points-history/detail/point_histories');
-    // 特定ユーザのポイント更新
+    // 特定ユーザのポイント更新(user_points_histories)
     Route::post('/ajax/user-points-history/update_points', 'Admin\UserController@updatePoints')->name('admin/user-points-history/update_points');
-    // ユーザの参加コミュニティ管理(user)
+    // ユーザの参加コミュニティ管理(community_histories)
     Route::get('/ajax/user/detail/{id}/user_communities',  'Admin\UserController@user_communities')->name('admin/user/detail/user_communities');
     
-    /******************** マーカー管理(marker) ********************/
+    /******************** マーカー管理(markers) ********************/
     Route::get('/marker',             'Admin\MarkerController@index')->name('admin/marker');
     Route::get('/merker/create',      'Admin\MarkerController@create')->name('admin/marker/create');
     Route::get('/marker/edit/{id}',   'Admin\MarkerController@edit')->name('admin/marker/edit');
@@ -57,7 +61,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('/marker/save',       'Admin\MarkerController@save')->name('admin/marker/save');
     Route::post('/marker/remove',     'Admin\MarkerController@remove')->name('admin/marker/remove');
     
-    /******************** コミュニティ管理(community) ********************/
+    /******************** コミュニティ管理(communities) ********************/
     Route::get('/community',             'Admin\CommunityController@index')->name('admin/community');
     Route::get('/community/create',      'Admin\CommunityController@create')->name('admin/community/create');
     Route::get('/community/edit/{id}',   'Admin\CommunityController@edit')->name('admin/community/edit');
@@ -65,17 +69,17 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('/community/save',       'Admin\CommunityController@save')->name('admin/community/save');
     Route::post('/community/remove',     'Admin\CommunityController@remove')->name('admin/community/remove');
 
-    // コミュニティの所属ユーザ管理(community)
+    // コミュニティの所属ユーザ管理(community_histories)
     Route::get('/ajax/community/detail/{id}/community_users',  'Admin\CommunityController@community_users')->name('admin/community/detail/community_users');
 
-    /******************** ユーザロケーション管理(user-location) ********************/
+    /******************** ユーザロケーション管理(user_locations) ********************/
     Route::get('/user-location',             'Admin\UserLocationController@index')->name('admin/user-location');
     Route::get('/user-location/edit/{id}',   'Admin\UserLocationController@edit')->name('admin/user-location/edit');
     Route::get('/user-location/detail/{id}', 'Admin\UserLocationController@detail')->name('admin/user-location/detail');
     Route::post('/user-location/save',       'Admin\UserLocationController@save')->name('admin/user-location/save');
     Route::post('/user-location/remove',     'Admin\UserLocationController@remove')->name('admin/user-location/remove');
 
-    /******************** コミュニティロケーション管理(community-location) ********************/
+    /******************** コミュニティロケーション管理(community_locations) ********************/
     Route::get('/community-location',             'Admin\CommunityLocationController@index')->name('admin/community-location');
     Route::get('/community-location/create',      'Admin\CommunityLocationController@create')->name('admin/community-location/create');
     Route::get('/community-location/edit/{id}',   'Admin\CommunityLocationController@edit')->name('admin/community-location/edit');
@@ -83,7 +87,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('/community-location/save',       'Admin\CommunityLocationController@save')->name('admin/community-location/save');
     Route::post('/community-location/remove',     'Admin\CommunityLocationController@remove')->name('admin/community-location/remove');
 
-    /******************** ポイント履歴管理(user-points-history) ********************/
+    /******************** ポイント履歴管理(user_points_histories) ********************/
     Route::get('/user-points-history',             'Admin\UserPointsHistoryController@index')->name('admin/user-points-history');
     // Route::get('/user-points-history/create',      'Admin\UserPointsHistoryController@create')->name('admin/user-points-history/create');
     Route::get('/user-points-history/edit/{id}',   'Admin\UserPointsHistoryController@edit')->name('admin/user-points-history/edit');
@@ -95,7 +99,7 @@ Route::middleware('auth:admin')->group(function () {
     // // 特定ユーザのポイント更新
     Route::post('/ajax/user-points-history/update_points', 'Admin\UserPointsHistoryController@updatePoints')->name('admin/user-points-history/update_points');
 
-    /******************** コミュニティ履歴管理(community-history) ********************/
+    /******************** コミュニティ履歴管理(community_histories) ********************/
     Route::get('/community-history',             'Admin\CommunityHistoryController@index')->name('admin/community-history');
     // Route::get('/community-history/create',      'Admin\CommunityHistoryController@create')->name('admin/community-history/create');
     Route::get('/community-history/edit/{id}',   'Admin\CommunityHistoryController@edit')->name('admin/community-history/edit');
@@ -115,7 +119,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('/news/save',       'Admin\NewsController@save')->name('admin/news/save');
     Route::post('/news/remove',     'Admin\NewsController@remove')->name('admin/news/remove');
     
-    /******************** 通知履歴管理(push) ********************/
+    /******************** 通知履歴管理(push_histories) ********************/
     Route::get('/push',             'Admin\PushController@index')->name('admin/push');
     Route::get('/push/create',      'Admin\PushController@create')->name('admin/push/create');
     Route::get('/push/edit/{id}',   'Admin\PushController@edit')->name('admin/push/edit');
@@ -123,7 +127,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('/push/save',       'Admin\PushController@save')->name('admin/push/save');
     Route::post('/push/remove',     'Admin\PushController@remove')->name('admin/push/remove');
 
-    /******************** 共通設定管理(config) ********************/
+    /******************** 共通設定管理(configs) ********************/
     Route::get('/config',             'Admin\ConfigController@index')->name('admin/config');
     Route::get('/config/create',      'Admin\ConfigController@create')->name('admin/config/create');
     Route::get('/config/edit/{id}',   'Admin\ConfigController@edit')->name('admin/config/edit');

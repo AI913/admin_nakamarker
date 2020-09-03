@@ -44,10 +44,6 @@
                                             <input type="radio" class="custom-control-input" id="type3" name="type" value="{{ config('const.marker_type_search') }}" data-type="{{ config('const.marker_type_search_name') }}" {{ $data->type == config('const.marker_type_search') ? 'checked' : '' }}>
                                             <label class="custom-control-label cursor-pointer" for="type3">{{ config('const.marker_type_search_name') }}</label>
                                         </div>
-                                        <div class="custom-control custom-radio cursor-pointer mr-3">
-                                            <input type="radio" class="custom-control-input" id="type4" name="type" value="{{ config('const.marker_type_community') }}" data-type="{{ config('const.marker_type_community_name') }}" {{ $data->type == config('const.marker_type_community') ? 'checked' : '' }}>
-                                            <label class="custom-control-label cursor-pointer" for="type4">{{ config('const.marker_type_community_name') }}</label>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -73,7 +69,8 @@
                             <div class="col-sm-6">
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="marker_image">イメージ画像</label>
-                                    <div class="col-md-9 user-icon-dnd-wrapper">
+                                    <span class="col-md-6 col-form-label" style="color: red">※画像の設定は必須です</span>   
+                                    <div class="col-md-9 offset-md-3 user-icon-dnd-wrapper">
                                         <div id="drop_area" class="drop_area">
                                             <div class="preview">
                                                 <img id="preview" 
@@ -84,20 +81,27 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 col-form-label">強制削除フラグ</label>
-                                    <div class="col-md-9 form-inline">
-                                        <input type="file" id="image" name="upload_image" class="form-control-file" style="display: none">
-                                        <input type="checkbox" id="delete_flg" data-toggle="toggle" data-on="{{ __('ON') }}" data-off="{{ __('OFF') }}" data-onstyle="danger" {{ $data->image_file === config('const.out_image') ? 'checked' : '' }}>
-                                        <input type="hidden" id="delete_flg_on" name="delete_flg_on">
-                                        <input type="hidden" id="image_flg" name="image_flg" value="{{ $data->image_file ? $data->image_file : '' }}">
-                                    </div>
+                                    <input type="file" id="image" name="upload_image" class="form-control-file" style="display: none">
                                 </div>
                                 <div class="form-group row">
                                     <div id="image_delete" class="offset-md-3 col-md-9">
                                         <input type="button" id="cancel" class="btn btn-danger" value="画像を消去">
                                         <input type="hidden" id="img_delete" name="img_delete" value=0>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label">ポイントフラグ</label>
+                                    <span class="col-md-9 col-form-label" style="color: red">※無償で提供する場合は"デフォルト"に✓を入れてください</span>
+                                    <div class="offset-md-3 col-md-9 form-inline">
+                                        <input type="checkbox" id="charge_flg" data-toggle="toggle" data-on="{{ __('有料ポイント') }}" data-off="{{ __('無料ポイント') }}" data-onstyle="danger" data-offstyle="primary" {{ $data->charge_flg === config('const.charge_flg_on') ? 'checked' : '' }}>
+                                        <input type="checkbox" id="charge_flg_default" {{ $data->charge_flg === config('const.charge_flg_default') ? 'checked' : '' }}>デフォルト
+                                        <input type="hidden" name="charge_flg" value="{{ $data->charge_flg ? $data->charge_flg : '' }}">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="name">価格(ポイント)<span class="text-danger">※</span></label>
+                                    <div class="col-md-4">
+                                        <input class="form-control required-text" type="text" id="price" name="price" maxlength="5" placeholder="価格" value="{{ $data->price }}" data-title="価格">
                                     </div>
                                 </div>
                             </div>

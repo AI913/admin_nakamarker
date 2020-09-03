@@ -17,6 +17,22 @@ $(function(){
             $('#status').val(0);
         }
     })
+
+    /* 画像のレスポンシブ設定 */
+    // 詳細画面
+    $(window).on('load resize', function(){
+        var replaceWidth = 768;
+        var windowWidth = parseInt(window.innerWidth);
+        if(windowWidth >= replaceWidth) {
+            $('.detail-view').attr({'width': 400, 'height': 300});
+        }
+        if(windowWidth <= replaceWidth) {
+            $('.detail-view').attr({'width': 300, 'height': 250});
+        }
+        // if(windowWidth <= replaceWidth) {
+        //     $('#image_modal').attr({'height': 300, 'width': 250});
+        // }
+    })
 });
 
 // @1 ファイルドロップ

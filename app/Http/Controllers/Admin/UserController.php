@@ -17,21 +17,26 @@ class UserController extends BaseAdminController
 {
     protected $mainService;
     protected $userPointHistoryService;
+    protected $userLocationService;
 
     /**
      * 顧客管理コントローラー
      * Class UserController
      * @package App\Http\Controllers
      */
-    public function __construct(UserService $mainService, UserPointsHistoryService $userPointHistoryService) 
+    public function __construct(
+        UserService $mainService, 
+        UserPointsHistoryService $userPointHistoryService,
+        UserLocationService $userLocationService
+    ) 
     {
         parent::__construct();
         $this->mainService  = $mainService;
         $this->mainRoot     = "admin/user";
         $this->mainTitle    = 'ユーザ管理';
 
-        // user_points_historiesテーブルの操作クラスをインスタンス化
         $this->userPointHistoryService = $userPointHistoryService;
+        $this->userLocationService = $userLocationService;
     }
     
     /**
@@ -92,10 +97,38 @@ class UserController extends BaseAdminController
      * @param $id
      * @throws \Exception
      */
-    public function user_locations($id, UserLocationService $userLocationService) {
+    public function user_locations($id) {
         
         // ユーザの登録場所とそれに紐づくマーカー情報を取得
-        return DataTables::eloquent($userLocationService->isUserLocationData($id))->make();
+        return DataTables::eloquent($this->userLocationService->isUserLocationData($id))->make();
+    }
+
+    /**
+     * 登録場所情報の詳細を取得
+     * @param $id
+     * @throws \Exception
+     */
+    public function user_locations_detail($user_id, $location_id) {
+        // ユーザの登録場所とそれに紐づくマーカーの詳細情報を取得
+        $data = $this->userLocationService->isUserLocationData($user_id, $location_id)->first();
+
+        // マーカー用の画像URLを配列に格納
+        $data['marker_image_url'] = Common::getImageUrl($data->marker_image);
+        
+        return [
+            'status' => 1,
+            'data' => $data,
+        ]; 
+    }
+
+    /**
+     * 登録場所の画像削除
+     * @param $id
+     * @throws \Exception
+     */
+    public function user_locationImage_delete(Request $request) {
+        // 登録場所に紐づく画像情報を強制削除
+        return ($this->userLocationService->deleteImage($request->location_id));
     }
 
     /**

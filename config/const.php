@@ -38,11 +38,9 @@ return [
     'marker_type_register'        => 1,
     'marker_type_function'        => 2,
     'marker_type_search'          => 3,
-    'marker_type_community'       => 4,
     'marker_type_register_name'   => '登録マーカー',
     'marker_type_function_name'   => '機能マーカー',
     'marker_type_search_name'     => '検索マーカー',
-    'marker_type_community_name'  => 'コミュニティマーカー',
 
     // 画像サイズ(一番大きいサイズ ×3, 中ぐらい ×2, 小 ×1)
     'resize_width'      => 320, // リサイズ幅
@@ -71,10 +69,12 @@ return [
     'point_admin_name'      => '管理者特権',
 
     // ポイント有料フラグ種別
-    'charge_flg_off'        => 1,
-    'charge_flg_on'         => 2,
-    'charge_flg_off_name'   => '無料',
-    'charge_flg_on_name'    => '有料',
+    'charge_flg_off'            => 1,
+    'charge_flg_on'             => 2,
+    'charge_flg_default'        => 3,
+    'charge_flg_off_name'       => '無料',
+    'charge_flg_on_name'        => '有料',
+    'charge_flg_default_name'   => 'デフォルト',
     
     // ニュース情報種別
     'official_type'        => 1,

@@ -132,10 +132,6 @@ class Common {
                 'id' => config('const.marker_type_search'), 
                 'name' => config('const.marker_type_search_name')
             ],
-            [
-                'id' => config('const.marker_type_community'), 
-                'name' => config('const.marker_type_community_name')
-            ],
         ];
     }
 

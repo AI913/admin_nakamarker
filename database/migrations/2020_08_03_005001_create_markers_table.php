@@ -19,6 +19,7 @@ class CreateMarkersTable extends Migration
             $table->string('name');                             // マーカーの名前
             $table->string('description')->nullable();          // マーカーの説明
             $table->integer('price')->nullable()->default(0);   // マーカーにかかる消費ポイント数
+            $table->tinyInteger('charge_flg')->default(1);      // マーカーの有料フラグ
             $table->tinyInteger('status')->default(1);          // マーカーの公開フラグ
             $table->string('image_file')->nullable();           // 画像ファイル名
             $table->tinyInteger('del_flg')->default(0);         // 削除フラグ

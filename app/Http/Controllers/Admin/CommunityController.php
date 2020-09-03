@@ -82,4 +82,44 @@ class CommunityController extends BaseAdminController
         // コミュニティに紐づくユーザ情報を取得
         return DataTables::eloquent($userService->isCommunityUserData($id))->make();
     }
+
+    /**
+     * 保存前処理
+     * @param Request $request
+     * @return array
+     * @throws \Exception
+     * $request->image_file : inputタイプのhidden属性
+     * $request->file('upload_image') : inputタイプのfile属性
+     */
+    public function saveBefore(Request $request) {
+        // 保存処理モード
+        $register_mode = $request->register_mode;
+        
+        // 除外項目
+        $input = $request->except($this->except());
+
+        if(is_null($request->image_flg)) {
+            // 強制削除フラグがONの場合、専用画像名をDBに保存
+            if(empty($request->file('upload_image')) && $request->delete_flg_on === 'true') {
+                $input['image_file'] = config('const.out_image');
+            }
+            
+            // 強制削除フラグがOFFでかつ画像がアップロードされていない場合、nullをDBに保存
+            if(empty($request->file('upload_image')) && $request->delete_flg_on === 'false') {
+                $input['image_file'] = null;
+            }
+        }
+
+        // 画像あり
+        if ($request->hasFile('upload_image')) {
+            // 編集の場合、登録済みの画像削除
+            if ($register_mode == "edit") {
+                Common::removeImage($request->image_file);
+            }
+            // 画像の新規保存
+            $input["image_file"] = Common::saveImage($request->file('upload_image'));
+        }
+
+        return $input;
+    }
 }

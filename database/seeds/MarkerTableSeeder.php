@@ -17,9 +17,10 @@ class MarkerTableSeeder extends Seeder
         // レコード15件分出力
         for($i=0; $i < 15; $i++){
             \App\Model\Marker::create([
-                'type' => $faker->numberBetween(1, 4), // 1~4の間で乱数
+                'type' => $faker->numberBetween(1, 3), // 1~3の間で乱数
                 'name' => 'marker'.$i,
                 'price' => $faker->numberBetween(100, 300),
+                'charge_flg' => $faker->numberBetween(1, 3), // 1~3の間で乱数
                 'status' => 1,
                 'del_flg' => 0,
                 'update_user_id' => $faker->numberBetween(1, 15),

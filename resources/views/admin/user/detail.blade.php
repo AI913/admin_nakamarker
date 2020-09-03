@@ -72,7 +72,8 @@
                                     <th>場所の名前</th>
                                     <th>登録画像</th>
                                     <th>登録日時</th>
-                                    <th>メモ</th>
+                                    <th>位置情報</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                         </table>

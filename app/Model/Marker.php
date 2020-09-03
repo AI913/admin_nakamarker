@@ -11,14 +11,15 @@ class Marker extends BaseModel
      * @var array
      */
     protected $child_appends = [
-        'type_name'
+        'type_name',
+        'charge_name'
     ];
 
     /**
      * 保存対象(attribute)
      * @var array
      */
-    protected $fillable = ['type', 'name', 'description', 'status', 'image_file'];
+    protected $fillable = ['type', 'name', 'description', 'status', 'image_file', 'price', 'charge_flg', 'update_user_id'];
 
     /**
      * コンストラクタ
@@ -38,7 +39,16 @@ class Marker extends BaseModel
         if ($this->type == config('const.marker_type_register'))  return config('const.marker_type_register_name');
         if ($this->type == config('const.marker_type_function'))     return config('const.marker_type_function_name');
         if ($this->type == config('const.marker_type_search'))   return config('const.marker_type_search_name');
-        if ($this->type == config('const.marker_type_community'))   return config('const.marker_type_community_name');
+    }
+
+    /**
+     * マーカーの有料フラグを返す
+     * @return string
+     */
+    public function getChargeNameAttribute() {
+        if ($this->charge_flg == config('const.charge_flg_off'))  return config('const.charge_flg_off_name');
+        if ($this->charge_flg == config('const.charge_flg_on'))     return config('const.charge_flg_on_name');
+        if ($this->charge_flg == config('const.charge_flg_default'))     return config('const.charge_flg_default_name');
     }
 
     // user_locationsテーブルと1対1のリレーション構築

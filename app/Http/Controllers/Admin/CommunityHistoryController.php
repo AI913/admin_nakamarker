@@ -67,9 +67,8 @@ class CommunityHistoryController extends BaseAdminController
      * 
      */
     public function updateStatus(Request $request) {
+        \DB::beginTransaction();
         try {
-
-            \DB::beginTransaction();
             $status = $this->mainService->updateStatus($request);
             \DB::commit();
             return $status;

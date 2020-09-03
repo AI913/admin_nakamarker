@@ -14,6 +14,28 @@ $(function(){
             $('#status').val(0);
         }
     })
+
+    // ポイントフラグの設定
+    $('#charge_flg').prop('disabled', true);
+    if($('input[name=charge_flg]').val() != 3) {
+        $('#charge_flg').prop('disabled', false);
+        $('#charge_flg').change(function() {
+            if ($('#charge_flg').prop('checked')) {
+                $('input[name=charge_flg]').val(2);
+            } else {
+                $('input[name=charge_flg]').val(1);
+            }
+        });
+    }
+    $('#charge_flg_default').change(function() {
+        if ($('#charge_flg_default').prop('checked')) {
+            $('input[name=charge_flg]').val(3);
+            $('#charge_flg').prop('disabled', true);
+        }
+        if (!$('#charge_flg_default').prop('checked')) {
+            $('#charge_flg').prop('disabled', false);
+        }
+    });
 });
 
 // @1 ファイルドロップ
@@ -124,29 +146,6 @@ $(function () {
 $(function(){
     // 画像のセット
     let outImage = 'http://nakamarker.localhost/images/noImage/no_image.png';
-    
-    $('#delete_flg').change(function() {
-        // 画像の強制削除フラグ確認
-        if($('#delete_flg').prop('checked') === true) {
-            outImage = 'http://nakamarker.localhost/images/noImage/out_images.png';
-            $('#delete_flg_on').val(true);
-        }
-        if($('#delete_flg').prop('checked') === false) {
-            outImage = 'http://nakamarker.localhost/images/noImage/no_image.png';
-            $('#delete_flg_on').val(false);
-        }
-        $preview = $(".preview");
-
-        // 強制削除の画像以外で画像ファイルがアップロードされていないことが条件
-        if($('#image').val() === "" && $('#image_flg').val() === "") {
-            $preview.append($('<img>').attr({
-                src: outImage,
-                width: "350px",
-                height: "250px",
-                class: "preview",
-            }));
-        }
-    })
 
     $('#cancel').on('click', function(){
         $preview = $(".preview");
@@ -172,7 +171,7 @@ $(function(){
         }));
 
         $('#drop_area').removeClass('solid'); // 枠を点線に戻す
-
+        
         // 削除フラグを設定
         $('#img_delete').val(1);
     });
@@ -250,6 +249,17 @@ function initList(search) {
             },
             {data: 'name'},
             {data: 'description'},
+            {data: 'price'},
+            {
+                data: function(p) {
+                    // 有料フラグが"有料"の場合は赤色で表示
+                    if(p.charge_flg === 2) {
+                        return ('<span style="color: red">'+ p.charge_name +'</span>');
+                    }
+                    // それ以外は普通に表示
+                    return p.charge_name;
+                }
+            },
             {data: 'description'},
             {
                 data: function(p) {
@@ -275,10 +285,14 @@ function initList(search) {
         // 各列ごとの装飾
         // 操作列(ボタン等)や画像項目はソート不可・text-centerを付与する
         [
-            { targets: [1], orderable: false, className: 'text-left', width: '150px'},
+            { targets: [1], orderable: false, className: 'text-left', width: '110px'},
             { targets: [2], orderable: false, className: 'text-center', width: '150px'},
+            { targets: [4], orderable: false, className: 'text-left', width: '200px'},
+            { targets: [5], orderable: false, className: 'text-center', width: '100px'},
             { targets: [6], orderable: false, className: 'text-center', width: '100px'},
-            { targets: [7], orderable: false, className: 'text-center', width: '150px'},
+            { targets: [7], orderable: false, className: 'text-center', width: '100px'},
+            { targets: [8], orderable: false, className: 'text-center', width: '100px'},
+            { targets: [9], orderable: false, className: 'text-center', width: '150px'},
         ],
         search
     );
