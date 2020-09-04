@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Services\Model\CommunityService;
+use App\Services\Model\CommunityLocationService;
 use App\Services\Model\UserService;
 use App\Lib\Common;
 use Yajra\DataTables\Facades\DataTables;
@@ -11,13 +12,16 @@ use Yajra\DataTables\Facades\DataTables;
 class CommunityController extends BaseAdminController
 {
     protected $mainService;
+    protected $communityLocationService;
 
-    public function __construct(CommunityService $mainService)
+    public function __construct(CommunityService $mainService, CommunityLocationService $communityLocationService)
     {
         parent::__construct();
         $this->mainService  = $mainService;
         $this->mainRoot     = "admin/community";
         $this->mainTitle    = 'コミュニティ管理';
+
+        $this->communityLocationService = $communityLocationService;
     }
     
     /**
@@ -81,6 +85,31 @@ class CommunityController extends BaseAdminController
         
         // コミュニティに紐づくユーザ情報を取得
         return DataTables::eloquent($userService->isCommunityUserData($id))->make();
+    }
+
+    /**
+     * 登録場所情報の取得
+     * @param $id
+     * @throws \Exception
+     */
+    public function community_locations($id) {
+        // コミュニティの登録場所とそれに紐づくマーカー情報を取得
+        return DataTables::eloquent($this->communityLocationService->isCommunityLocationData($id))->make();
+    }
+
+    /**
+     * 登録場所情報の詳細を取得
+     * @param $id
+     * @throws \Exception
+     */
+    public function community_locations_detail($community_id, $location_id) {
+        // コミュニティの登録場所とそれに紐づくマーカーの詳細情報を取得
+        $data = $this->communityLocationService->isCommunityLocationData($community_id, $location_id)->first();
+        
+        return [
+            'status' => 1,
+            'data' => $data,
+        ]; 
     }
 
     /**

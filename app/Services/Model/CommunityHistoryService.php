@@ -57,7 +57,7 @@ class CommunityHistoryService extends BaseService
         $query = $this->model()->query();
 
         $query->leftJoin('communities', 'community_histories.community_id', '=', 'communities.id')
-              ->select('community_histories.id', 'communities.name', 'communities.status as open_flg')
+              ->select('community_histories.*', 'communities.name as community_name', 'communities.status as open_flg')
               ->where('community_histories.id', '=', $id);
 
         return $query;

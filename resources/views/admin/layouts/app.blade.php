@@ -105,45 +105,9 @@
                                 <i class="fas fa-plus fa-fw ml-3"></i> コミュニティ新規登録
                             </a>
                         </li>
-                    </ul>
-                </li>
-                <li class="nav-item nav-dropdown">
-                    <a class="nav-link nav-dropdown-toggle"  href="#">
-                        <i class="fas fa-map-marked-alt"></i> ユーザロケーション管理
-                    </a>
-                    <ul class="nav-dropdown-items">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin/user-location') }}">
-                                <i class="fas fa-list-alt fa-fw ml-3"></i> ロケーション一覧
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item nav-dropdown">
-                    <a class="nav-link nav-dropdown-toggle"  href="#">
-                        <i class="fas fa-map-marked-alt"></i> コミュニティロケーション管理
-                    </a>
-                    <ul class="nav-dropdown-items">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin/community-location') }}">
-                                <i class="fas fa-list-alt fa-fw ml-3"></i> ロケーション一覧
-                            </a>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('admin/community-location/create') }}">
                                 <i class="fas fa-plus fa-fw ml-3"></i> ロケーション新規登録
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item nav-dropdown">
-                    <a class="nav-link nav-dropdown-toggle"  href="#">
-                        <i class="fab fa-bitcoin"></i> ポイント履歴管理
-                    </a>
-                    <ul class="nav-dropdown-items">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin/user-points-history') }}">
-                                <i class="fas fa-list-alt fa-fw ml-3"></i> ポイント遷移一覧
                             </a>
                         </li>
                     </ul>

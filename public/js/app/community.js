@@ -18,11 +18,39 @@ $(function(){
         }
     })
 
-    // 申請状況カラムのボタンが押下されたとき
+    /* 
+     *   申請状況カラムのボタンが押下されたとき
+     */
     $(document).on('click', '.btn-status', function(){
         // 申請状況の値を更新
         updateStatus($(this));
     });
+
+    /* 
+     *   登録場所の"備考"ボタンが押下されたとき
+     */
+    $(document).on('click', '.btn-location',function(){
+        let location_id = $(this).data('id');
+        let community_id = $('#community_id').data('id');
+        setLocationDetail(location_id, community_id);
+    })
+
+    /* 
+     *   モーダルの終了処理
+     */
+        // 登録情報の備考
+        $(document).on('click', '#location_modal_close', function(){
+            $('#community_location_modal').modal('hide');
+        });
+        // 登録情報の画像
+        $(document).on('click', '#location_image_close', function(){
+            let id = $(this).data('id');
+            $(`#modal${id}`).modal('hide');
+        });
+        $(document).on('click', '.close', function(){
+            let id = $(this).data('id');
+            $(`#modal${id}`).modal('hide');
+        });
 });
 
 /**
@@ -30,7 +58,6 @@ $(function(){
  * @param {*} button 
  */
 function updateStatus(button) {
-    console.log($(button).data('status'))
     $.ajax({
         url:    '/ajax/community-history/update_status',
         type:   'POST',
@@ -42,7 +69,6 @@ function updateStatus(button) {
             'status': $(button).data('status'),
         }
     }).done(function(response){
-        console.log(response)
         $(button).data('status', response)
         if (response == 1) {
             $(button).removeClass('btn-danger');
@@ -65,15 +91,20 @@ function updateStatus(button) {
  * @param data
  */
 function setDetailView(data, button) {
+    console.log(data)
     // モーダルに表示する会員情報
     $('#detail_name').html(data.name);
     $('#detail_status').html(data.status_name);
+    $('#community_id').data('id', data.id);
 
     if(button == '.btn-user') {
         if ($.fn.DataTable.isDataTable('#community_user_list')) {
             $('#community_user_list').DataTable().destroy();
         }
-
+    
+    /* 
+     *   "参加ユーザリスト"の表示
+     */
         // DataTable設定
         settingDataTables(
             // 取得
@@ -119,10 +150,101 @@ function setDetailView(data, button) {
             ],
             false
         );
+
+    /* 
+     *   "登録場所"の表示
+     */
+        if ($.fn.DataTable.isDataTable('#community_location_list')) {
+            $('#community_location_list').DataTable().destroy();
+        }
+        
+        settingDataTables(
+            // 取得
+            // tableのID
+            'community_location_list',
+            // 取得URLおよびパラメタ
+            `/ajax/community/detail/${data.id}/community_locations`,
+            {},
+            // 各列ごとの表示定義
+            [
+                {data: 'location_id'},
+                {data: 'marker_name'},
+                {data: 'location_name'},
+                {
+                    // ロケーションイメージの画像を表示(モーダル形式)
+                    data: function (p) {
+                        
+                        return `
+                            <a href="" data-toggle="modal" data-target="#modal${p.location_id}">
+                                <img src="${p.image_url}" id="location_image" data-id="${p.community_id}" height="45" width="65">
+                            </a>
+    
+                            <div class="modal fade" id="modal${p.location_id}" tabindex="-1"
+                                role="dialog" aria-labelledby="label1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="label1">ロケーションイメージ</h5>
+                                            <button type="button" class="close" data-id="${p.location_id}" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                        <img src="${p.image_url}" id="image_modal" height="350" width="450">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" id="location_image_close" data-id="${p.location_id}">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                },
+                {data: 'user_name'},
+                {data: 'created_at'},
+                {data: 'latitude'},
+                {
+                    data: function (p) {
+                        // 登録場所の備考ボタン・削除ボタンの設定(備考はデータがあるときのみ表示)
+                        if(p.memo == null) {
+                            return getListLink('remove', p.location_id, '', 'list-button');
+                        }
+                        return getListLink('location', p.location_id, '', 'list-button') +
+                            getListLink('remove', p.location_id, '', 'list-button');
+                    }
+                }
+            ],
+            // 各列ごとの装飾
+            [
+                { targets: [3], orderable: false, className: 'text-center', width: '120px'},
+                { targets: [6], orderable: false, className: 'text-center', width: '120px'},
+                { targets: [7], orderable: false, className: 'text-center', width: '150px'},
+            ],
+            false
+        );
         $('#community_modal').modal('show');
     }
 }
 
+/**
+ * "登録場所の備考情報"モーダルの表示処理
+ * @param id 
+ */
+function setLocationDetail(location_id, community_id) {
+    // 削除フォームIDをセット
+    $.ajax({url: `/ajax/community/detail/${community_id}/community_locations/${location_id}`})
+    .done(function(response){
+        if (response.status == 1) {
+            $('#detail_location_memo').html(response.data.memo);
+
+            // 備考モーダルの表示
+            $('#community_location_modal').modal('show');
+        } else {
+            alert('no data error');
+        }
+    });
+}
 
 // @1 ファイルドロップ
 $(function () {
@@ -399,6 +521,9 @@ function initList(search) {
 function getListLink(type, id, link, clazz) {
     if (type == "community") {
         return '<a href="javascript:void(0)" class="btn btn-warning text-white btn-user '+clazz+'" data-toggle="tooltip" title="参加ユーザ" data-placement="top" data-id="'+id+'"><i class="fas fa-users"></i></a>';
+    }
+    if (type == "location") {
+        return '<a href="javascript:void(0)" class="btn btn-success btn-location '+clazz+'" data-toggle="tooltip" title="備考" data-placement="top" data-id="'+id+'"><i class="fas fa-search fa-fw"></i></a>';
     }
     if (type == "edit") {
         return '<a href="'+link+'" class="btn btn-primary '+clazz+'" data-toggle="tooltip" title="編集" data-placement="top"><i class="fas fa-edit fa-fw"></i></a>';

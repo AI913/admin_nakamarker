@@ -14,14 +14,17 @@ $(function(){
      *   登録場所の画像削除
      */
         $(document).on('click', '.btn-delete',function(){
-            deleteImage($(this));
+            if(confirm('画像を削除して宜しいでしょうか？')) {
+                deleteImage($(this));
+            }
+            return;
         })
 
     /* 
-     *   登録場所の"詳細"ボタン押下処理
+     *   登録場所の"備考"ボタン押下処理
      */
         $(document).on('click', '.btn-location',function(){
-            let user_id = $('#location_image').data('id');
+            let user_id = $('#user_id').data('id');
             let location_id = $(this).data('id');
             setLocationDetail(location_id, user_id);
         })
@@ -34,15 +37,7 @@ $(function(){
             // 削除処理を記載予定
             
         });
-
-    /* 
-     *   申請状況カラムのボタンが押下されたとき
-     */
-        $(document).on('click', '.btn-status', function(){
-            // 申請状況の値を更新
-            updateStatus($(this));
-        });
-
+    
     /* 
      *   ポイント履歴
      */
@@ -58,6 +53,22 @@ $(function(){
             $('#select_point_type').val(null);
             $('#select_charge_flg').val(null);
         });
+
+    /* 
+     *   申請状況カラムのボタンが押下されたとき
+     */
+        $(document).on('click', '.btn-status', function(){
+            // 申請状況の値を更新
+            updateStatus($(this));
+        });
+
+    /* 
+     *   コミュニティ情報の"詳細"ボタン押下処理
+     */
+        $(document).on('click', '.btn-history',function(){
+            let community_history_id = $(this).data('id');
+            setHistoryDetail(community_history_id);
+        })
 
     /* 
      *   アカウント停止処理
@@ -99,6 +110,35 @@ $(function(){
                 $("#status3").prop("disabled", false);
             }
         });
+
+    /* 
+     *   モーダルの終了処理
+     */
+        // 登録情報の備考
+        $(document).on('click', '#location_modal_close', function(){
+            $('#user_location_modal').modal('hide');
+        });
+        // 登録情報の画像
+        $(document).on('click', '#location_image_close', function(){
+            let id = $(this).data('id');
+            $(`#modal${id}`).modal('hide');
+        });
+        $(document).on('click', '.close', function(){
+            let id = $(this).data('id');
+            $(`#modal${id}`).modal('hide');
+        });
+        // コミュニティ情報の詳細
+        $(document).on('click', '#community_image_close', function(){
+            let id = $(this).data('id');
+            $(`#modal${id}`).modal('hide');
+        });
+        $(document).on('click', '.close', function(){
+            let id = $(this).data('id');
+            $(`#modal${id}`).modal('hide');
+        });
+        $(document).on('click', '#history_modal_close', function(){
+            $('#community_history_modal').modal('hide');
+        });
 });
 
 /**
@@ -115,11 +155,11 @@ function deleteImage(button) {
             'location_id': $(button).data('id'),
         }
     }).done(function(response){
-        console.log(response)
         if(response == -1) {
             alert('画像の消去に失敗しました')
         }
-        $('#image_modal').attr('src', response);
+        $('#image_modal_user').attr('src', response);
+        return;
     })
 }
 
@@ -128,7 +168,6 @@ function deleteImage(button) {
  * @param {*} button 
  */
 function updateStatus(button) {
-    console.log($(button).data('status'))
     $.ajax({
         url:    '/ajax/community-history/update_status',
         type:   'POST',
@@ -140,7 +179,6 @@ function updateStatus(button) {
             'status': $(button).data('status'),
         }
     }).done(function(response){
-        console.log(response)
         $(button).data('status', response)
         if (response == 1) {
             $(button).removeClass('btn-danger');
@@ -159,11 +197,10 @@ function updateStatus(button) {
 }
 
 /**
- * 登録場所表示
+ * 詳細表示
  * @param data
  */
 function setDetailView(data, button) {
-
     /* 
      *   モーダルに表示する会員情報
      */
@@ -174,7 +211,7 @@ function setDetailView(data, button) {
         $('#detail_created_at').html(data.created_at);
         $('#detail_user_agent').html(data.user_agent);
         $('#detail_memo').html(data.memo);
-        $('#detail_point_submit').data('id', data.id); // ポイント付与フォームで利用
+        $('#user_id').data('id', data.id);              // 各タグで共有
 
     /* 
      *   "詳細"モーダルの表示処理("登録場所"タブ)
@@ -203,7 +240,7 @@ function setDetailView(data, button) {
                             
                             return `
                                 <a href="" data-toggle="modal" data-target="#modal${p.location_id}">
-                                    <img src="${p.image_url}" id="location_image" data-id="${p.user_id}" height="45" width="65">
+                                    <img src="${p.image_url}" id="location_image" height="45" width="65">
                                 </a>
         
                                 <div class="modal fade" id="modal${p.location_id}" tabindex="-1"
@@ -212,16 +249,16 @@ function setDetailView(data, button) {
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="label1">ロケーションイメージ</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <button type="button" class="close" data-id="${p.location_id}" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                            <img src="${p.image_url}" id="image_modal" height="350" width="450">
+                                            <img src="${p.image_url}" id="image_modal_user" height="350" width="450">
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-danger btn-delete" data-dismiss="modal" data-id="${p.location_id}">強制削除</button>
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-danger btn-delete" data-id="${p.location_id}">強制削除</button>
+                                                <button type="button" class="btn btn-secondary" id="location_image_close" data-id="${p.location_id}">Close</button>
                                             </div>
                                         </div>
                                     </div>
@@ -230,10 +267,13 @@ function setDetailView(data, button) {
                         }
                     },
                     {data: 'created_at'},
-                    {data: 'memo'},
+                    {data: 'latitude'},
                     {
                         data: function (p) {
-                            // 登録場所の詳細ボタン・編集ボタンの設定
+                            // 登録場所の備考ボタン・削除ボタンの設定(備考はデータがあるときのみ表示)
+                            if(p.memo == null) {
+                                return getListLink('remove', p.location_id, '', 'list-button');
+                            }
                             return getListLink('location', p.location_id, '', 'list-button') +
                                 getListLink('remove', p.location_id, '', 'list-button');
                         }
@@ -241,7 +281,7 @@ function setDetailView(data, button) {
                 ],
                 // 各列ごとの装飾
                 [
-                    { targets: [3], orderable: false, className: 'text-center', width: '100px'},
+                    { targets: [3], orderable: false, className: 'text-center', width: '130px'},
                     { targets: [5], orderable: false, className: 'text-center', width: '100px'},
                     { targets: [6], orderable: false, className: 'text-center', width: '100px'},
                 ],
@@ -256,7 +296,7 @@ function setDetailView(data, button) {
             }
             setPointTable(data.id);
             
-            $('#location_modal').modal('show');
+            $('#detail_modal').modal('show');
         }
     
     /* 
@@ -293,15 +333,15 @@ function setDetailView(data, button) {
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="label1">コミュニティイメージ</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <button type="button" class="close" data-id="${p.id}" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                            <img src="${p.image_url}" id="image_modal" height="350" width="450">
+                                            <img src="${p.image_url}" id="image_modal_community" height="350" width="450">
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-secondary" id="community_image_close" data-id="${p.id}">Close</button>
                                             </div>
                                         </div>
                                     </div>
@@ -337,6 +377,11 @@ function setDetailView(data, button) {
                             }
                         }, name: 'entry_status'
                     },
+                    {
+                        data: function (p) {
+                            return getListLink('history', p.community_history_id, '', 'list-button');
+                        },
+                    }
                 ],
                 // 各列ごとの装飾
                 [
@@ -344,6 +389,7 @@ function setDetailView(data, button) {
                     { targets: [3], orderable: false, width: '70px'},
                     { targets: [4], orderable: false, width: '70px'},
                     { targets: [6], orderable: false, className: 'text-center', width: '120px'},
+                    { targets: [7], orderable: false, className: 'text-center', width: '120px'},
                 ],
                 false
             );
@@ -352,7 +398,7 @@ function setDetailView(data, button) {
 }
 
 /**
- * "登録場所の詳細情報"モーダルの表示処理
+ * "登録場所の備考情報"モーダルの表示処理
  * @param id 
  */
 function setLocationDetail(location_id, user_id) {
@@ -360,17 +406,31 @@ function setLocationDetail(location_id, user_id) {
     $.ajax({url: `/ajax/user/detail/${user_id}/user_locations/${location_id}`})
     .done(function(response){
         if (response.status == 1) {
-            // $('#detail_name').html(data.name);
-            // $('#detail_status').html(data.status_name);
-            // $('#detail_email').html(data.email);
-            // $('#detail_login_time').html(data.login_time);
-            // $('#detail_created_at').html(data.created_at);
-            // $('#detail_user_agent').html(data.user_agent);
-            // $('#detail_memo').html(data.memo);
+            $('#detail_location_memo').html(response.data.memo);
 
-            // // 詳細モーダルの表示
-            // $('#community_modal').modal('show');
-            console.log(response)
+            // 備考モーダルの表示
+            $('#user_location_modal').modal('show');
+        } else {
+            alert('no data error');
+        }
+    });
+}
+/**
+ * "コミュニティ履歴の詳細情報"モーダルの表示処理
+ * @param id 
+ */
+function setHistoryDetail(community_history_id) {
+    // 削除フォームIDをセット
+    $.ajax({url: `/community-history/detail/${community_history_id}`})
+    .done(function(response){
+        if (response.status == 1) {
+            $('#detail_history_id').html(response.data.id);
+            $('#detail_history_name').html(response.data.community_name);
+            $('#detail_history_status').html(response.data.status_name);
+            $('#detail_history_updated_at').html(response.data.updated_at);
+            $('#detail_history_memo').html(response.data.memo);
+            // 詳細モーダルの表示
+            $('#community_history_modal').modal('show');
         } else {
             alert('no data error');
         }
@@ -460,11 +520,10 @@ function updatePoints() {
         dataType: 'json',
         headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data:   {
-            'id': $('input[name="id"]').val(),
             'give_point': $('#create_point').val(),
             'type': $('#select_point_type').val(),
             'charge_flg': $('#select_charge_flg').val(),
-            'user_id': $('#detail_point_submit').data("id"),
+            'user_id': $('#user_id').data("id"),
         }
     })
         .done(function(response){
@@ -611,6 +670,7 @@ function initList(search) {
         // 各列ごとの装飾
         [
             // ボタン部分
+            { targets: [1], orderable: false, width: '130px'},
             { targets: [3], orderable: false, width: '150px'},
             { targets: [4], orderable: false, width: '150px'},
             { targets: [5], orderable: false, className: 'text-center', width: '110px'},
@@ -673,8 +733,11 @@ function getListLink(type, id, link, clazz) {
     if (type == "detail") {
         return '<a href="javascript:void(0)" class="btn btn-success btn-detail '+clazz+'" data-toggle="tooltip" title="詳細" data-placement="top" data-id="'+id+'"><i class="fas fa-search fa-fw"></i></a>';
     }
+    if (type == "history") {
+        return '<a href="javascript:void(0)" class="btn btn-success btn-history '+clazz+'" data-toggle="tooltip" title="詳細" data-placement="top" data-id="'+id+'"><i class="fas fa-search fa-fw"></i></a>';
+    }
     if (type == "location") {
-        return '<a href="javascript:void(0)" class="btn btn-success btn-location '+clazz+'" data-toggle="tooltip" title="詳細" data-placement="top" data-id="'+id+'"><i class="fas fa-search fa-fw"></i></a>';
+        return '<a href="javascript:void(0)" class="btn btn-success btn-location '+clazz+'" data-toggle="tooltip" title="備考" data-placement="top" data-id="'+id+'"><i class="fas fa-search fa-fw"></i></a>';
     }
     if (type == "community") {
         return '<a href="javascript:void(0)" class="btn btn-warning text-white btn-community '+clazz+'" data-toggle="tooltip" title="コミュニティ情報" data-placement="top" data-id="'+id+'"><i class="fas fa-users"></i></a>';

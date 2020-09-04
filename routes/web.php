@@ -71,6 +71,10 @@ Route::middleware('auth:admin')->group(function () {
 
     // コミュニティの所属ユーザ管理(community_histories)
     Route::get('/ajax/community/detail/{id}/community_users',  'Admin\CommunityController@community_users')->name('admin/community/detail/community_users');
+    // コミュニティの登録場所管理(community_locations)
+    Route::get('/ajax/community/detail/{id}/community_locations',  'Admin\CommunityController@community_locations')->name('admin/community/detail/community_locations');
+    // コミュニティの登録場所管理(community_locations)
+    Route::get('/ajax/community/detail/{id}/community_locations/{location_id}',  'Admin\CommunityController@community_locations_detail')->name('admin/community/detail/community_locations_detail');
 
     /******************** ユーザロケーション管理(user_locations) ********************/
     Route::get('/user-location',             'Admin\UserLocationController@index')->name('admin/user-location');

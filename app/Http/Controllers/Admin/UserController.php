@@ -111,9 +111,6 @@ class UserController extends BaseAdminController
     public function user_locations_detail($user_id, $location_id) {
         // ユーザの登録場所とそれに紐づくマーカーの詳細情報を取得
         $data = $this->userLocationService->isUserLocationData($user_id, $location_id)->first();
-
-        // マーカー用の画像URLを配列に格納
-        $data['marker_image_url'] = Common::getImageUrl($data->marker_image);
         
         return [
             'status' => 1,

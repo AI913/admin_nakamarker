@@ -5,7 +5,7 @@
         表示したい項目のIDは「detail_xxxx」とdetail_を必ずつける
         また、classには「detail-view」を必ずつける
 --}}
-<div class="modal fade" id="location_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="detail_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-success modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -62,7 +62,7 @@
                         </div>
                     </div>
                     
-                    {{-- タブ2つ目(マーカー管理) --}}
+                    {{-- タブ2つ目(登録場所管理) --}}
                     <div class="tab-pane fade" id="item2" role="tabpanel" aria-labelledby="item2-tab">
                         <table class="table table-striped table-bordered datatable table-sm" id="user_location_list">
                             <thead>
@@ -70,13 +70,40 @@
                                     <th>ID</th>
                                     <th>マーカー名</th>
                                     <th>場所の名前</th>
-                                    <th>登録画像</th>
+                                    <th>ロケーション画像</th>
                                     <th>登録日時</th>
                                     <th>位置情報</th>
                                     <th>操作</th>
                                 </tr>
                             </thead>
                         </table>
+                    </div>
+                    {{-- 登録場所の備考モーダル --}}
+                    <div class="modal fade" id="user_location_modal" tabindex="-1"
+                        role="dialog" aria-labelledby="label1" aria-hidden="true">
+                        <div class="modal-dialog modal-success modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="label1">備考</h5>
+                                    <button type="button" class="close" id="location_modal_close" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            <dt class="col-2 text-right">内容</dt>
+                                        </div>
+                                        <div class="row">
+                                            <dd class="offset-2 col-8"><span id="detail_location_memo" class="detail-view"></span></dd>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" id="location_modal_close">Close</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {{-- タブ3つ目(ポイント履歴管理) --}}
@@ -123,7 +150,7 @@
                                     </select>
                                 </div>
                                 <div class="col-1">
-                                    <button type="button" class="btn btn-primary" id="detail_point_submit" data-id="">付与</button>
+                                    <button type="button" class="btn btn-primary" id="detail_point_submit">付与</button>
                                 </div>
                                 <div class="col-2">
                                     <button type="button" class="btn btn-secondary" id="detail_point_reset" data-id="">リセット</button>
@@ -178,16 +205,63 @@
                                     <th>公開設定</th>
                                     <th>申請状況の更新日時</th>
                                     <th>申請状況</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                         </table>
                     {{-- </div> --}}
                 </div>
+
+                {{-- 登録場所の詳細モーダル --}}
+                <div class="modal fade" id="community_history_modal" tabindex="-1" role="dialog" aria-labelledby="label1" aria-hidden="true">
+                    <div class="modal-dialog modal-warning modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="label1">コミュニティ履歴の詳細情報</h5>
+                                <button type="button" class="close" id="history_modal_close" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container">
+                                    <div class="row">
+                                        <dt class="col-4 text-right">ID</dt>
+                                        <dd class="col-8"><span id="detail_history_id" class="detail-view"></span></dd>
+                                    </div>
+                                    <div class="row">
+                                        <dt class="col-4 text-right">コミュニティ名</dt>
+                                        <dd class="col-8"><span id="detail_history_name" class="detail-view"></span></dd>
+                                    </div>
+                                    <div class="row">
+                                        <dt class="col-4 text-right">申請状況</dt>
+                                        <dd class="col-8"><span id="detail_history_status" class="detail-view"></span></dd>
+                                    </div>
+                                    <div class="row">
+                                        <dt class="col-4 text-right">更新日時</dt>
+                                        <dd class="col-8"><span id="detail_history_updated_at" class="detail-view"></span></dd>
+                                    </div>
+                                    <div class="row">
+                                        <dt class="col-4 text-right">備考</dt>
+                                        <dd class="col-8"><span id="detail_history_memo" class="detail-view"></span></dd>
+                                    </div>    
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" id="history_modal_close">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    </div>
             </div>
             <div class="modal-footer">
                 <input type="hidden" id="detail_user_id" value="" />
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">閉じる</button>
             </div>
+        </div>
+        <div>
+            {{-- ユーザIDの値保持に利用 --}}
+            <span id="user_id" data-id=""></span>
         </div>
         <!-- /.modal-content-->
     </div>

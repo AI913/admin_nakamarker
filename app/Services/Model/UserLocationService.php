@@ -26,8 +26,7 @@ class UserLocationService extends BaseService
         $query->leftJoin('markers', 'user_locations.marker_id', 'markers.id')
               ->select( 'user_locations.id as location_id', 'user_locations.user_id as user_id', 'user_locations.name as location_name', 
                         'user_locations.image_file', 'user_locations.created_at', 'user_locations.memo', 
-                        'user_locations.latitude', 'user_locations.longitude', 
-                        'markers.name as marker_name', 'markers.image_file as marker_image'
+                        'user_locations.latitude', 'user_locations.longitude', 'markers.name as marker_name'
                 )
               ->where('user_locations.user_id', '=', $user_id);
 
