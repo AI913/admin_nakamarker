@@ -15,12 +15,12 @@ class ConfigTableSeeder extends Seeder
         $faker = Faker\Factory::create('ja_JP');
 
         // レコード15件分出力
-        for($i=0; $i < 15; $i++){
+        for($i=0; $i < 30; $i++){
             \App\Model\Config::create([
                 'key' => 'key'.$i,
                 'value' => $faker->words($nb = 1, $asText = true),
                 'del_flg' => 0,
-                'update_user_id' => $faker->numberBetween(1, 15),
+                'update_user_id' => $faker->numberBetween(1, 5),
             ]);
         }
     }

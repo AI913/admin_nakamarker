@@ -60,6 +60,9 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/marker/detail/{id}', 'Admin\MarkerController@detail')->name('admin/marker/detail');
     Route::post('/marker/save',       'Admin\MarkerController@save')->name('admin/marker/save');
     Route::post('/marker/remove',     'Admin\MarkerController@remove')->name('admin/marker/remove');
+
+    // マーカーの所有ユーザ一覧(user_markers)
+    Route::get('/ajax/marker/detail/{id}/marker_users',     'Admin\MarkerController@marker_users')->name('admin/marker/marker_users');
     
     /******************** コミュニティ管理(communities) ********************/
     Route::get('/community',             'Admin\CommunityController@index')->name('admin/community');
@@ -71,6 +74,8 @@ Route::middleware('auth:admin')->group(function () {
 
     // コミュニティの所属ユーザ管理(community_histories)
     Route::get('/ajax/community/detail/{id}/community_users',  'Admin\CommunityController@community_users')->name('admin/community/detail/community_users');
+    // コミュニティの所属ユーザ管理(community_locations)
+    Route::get('/ajax/community/detail/{id}/community_users/{user_id}',  'Admin\CommunityController@community_users_detail')->name('admin/community/detail/community_users_detail');
     // コミュニティの登録場所管理(community_locations)
     Route::get('/ajax/community/detail/{id}/community_locations',  'Admin\CommunityController@community_locations')->name('admin/community/detail/community_locations');
     // コミュニティの登録場所管理(community_locations)

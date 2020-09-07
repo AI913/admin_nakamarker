@@ -44,9 +44,38 @@
                                         <th>参加日時</th>
                                         <th>アカウント状態</th>
                                         <th>申請状況</th>
+                                        <th>操作</th>
                                     </tr>
                                 </thead>
                             </table>
+                        </div>
+                    </div>
+
+                    {{-- ユーザリストの備考モーダル --}}
+                    <div class="modal fade" id="community_user_modal" tabindex="-1"
+                        role="dialog" aria-labelledby="label1" aria-hidden="true">
+                        <div class="modal-dialog modal-success modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="label1">備考</h5>
+                                    <button type="button" class="close" id="user_modal_close" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            <dt class="col-2 text-right">内容</dt>
+                                        </div>
+                                        <div class="row">
+                                            <dd class="offset-2 col-8"><span id="detail_user_memo" class="detail-view"></span></dd>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" id="user_modal_close">Close</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

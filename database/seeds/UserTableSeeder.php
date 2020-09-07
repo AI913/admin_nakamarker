@@ -27,7 +27,7 @@ class UserTableSeeder extends Seeder
         ]);
 
         // レコード14件分出力
-        for($i=1; $i < 15; $i++){
+        for($i=1; $i < 30; $i++){
             \App\Model\User::create([
                 'name' => 'test'.$i,
                 'email' => 'test'.$i.'@nakamarker.co.jp',

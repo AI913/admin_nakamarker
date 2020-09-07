@@ -14,8 +14,8 @@ class MarkerTableSeeder extends Seeder
         // faker使う(引数には日本語を設定している)
         $faker = Faker\Factory::create('ja_JP');
 
-        // レコード15件分出力
-        for($i=0; $i < 15; $i++){
+        // レコード30件分出力
+        for($i=0; $i < 30; $i++){
             \App\Model\Marker::create([
                 'type' => $faker->numberBetween(1, 3), // 1~3の間で乱数
                 'name' => 'marker'.$i,
@@ -23,7 +23,7 @@ class MarkerTableSeeder extends Seeder
                 'charge_flg' => $faker->numberBetween(1, 3), // 1~3の間で乱数
                 'status' => 1,
                 'del_flg' => 0,
-                'update_user_id' => $faker->numberBetween(1, 15),
+                'update_user_id' => $faker->numberBetween(1, 5),
             ]);
         }
     }

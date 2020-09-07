@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Services\Model\MarkerService;
+use App\Services\Model\UserService;
 use App\Lib\Common;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -63,6 +64,40 @@ class MarkerController extends BaseAdminController
             'type_list' => Common::getMarkerTypeList(),
             'status_list' => Common::getOpenStatusList(),
         ]);
+    }
+
+    /**
+     * モーダルに必要なデータを取得
+     * @param $marker_id
+     * @return array
+     */
+    public function detail($id) {
+        
+        // 詳細(Modal)のDataTable
+        // 〇検索条件
+        $conditions = [];
+        $conditions['id'] = $id;
+        // 〇ソート条件
+        $sort = [];
+        // 〇リレーション
+        $relations = [];
+        $data = $this->mainService->searchOne($conditions, $sort, $relations);
+
+        return [
+            'status' => 1,
+            'data' => $data,
+        ]; 
+    }
+
+    /**
+     * マーカーの所有ユーザ情報取得
+     * @param $id
+     * @throws \Exception
+     */
+    public function marker_users($id, UserService $userService) {
+        
+        // ユーザに紐づいているコミュニティを取得
+        return DataTables::eloquent($userService->isMarkerUserData($id))->make();
     }
 
     /**

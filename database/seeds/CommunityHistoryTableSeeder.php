@@ -14,14 +14,15 @@ class CommunityHistoryTableSeeder extends Seeder
         // faker使う(引数には日本語を設定している)
         $faker = Faker\Factory::create('ja_JP');
 
-        // レコード15件分出力
-        for($i=0; $i < 15; $i++){
+        // レコード30件分出力
+        for($i=0; $i < 30; $i++){
             \App\Model\CommunityHistory::create([
-                'community_id' => $faker->numberBetween(1, 15),
-                'user_id' => $faker->numberBetween(1, 15),
+                'community_id' => $faker->numberBetween(1, 30),
+                'user_id' => $faker->numberBetween(1, 30),
                 'status' => $faker->numberBetween(1, 3),
+                'memo'   => 'テストメモ'.$i,
                 'del_flg' => 0,
-                'update_user_id' => $faker->numberBetween(1, 15),
+                'update_user_id' => $faker->numberBetween(1, 5),
             ]);
         }
     }

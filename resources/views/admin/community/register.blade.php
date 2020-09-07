@@ -56,7 +56,8 @@
                                         <div id="drop_area" class="drop_area">
                                             <div class="preview">
                                                 <img id="preview" 
-                                                     src="{{ $data->image_file ? Storage::url("images/".$data->image_file) : asset('images/noImage/no_image.png') }}" 
+                                                     {{-- src="{{ $data->image_file ? Storage::url("images/".$data->image_file) : asset('images/noImage/no_image.png') }}"  --}}
+                                                     src="{{ $data->image_file ? asset("images/".$data->image_file) : asset('images/noImage/no_image.png') }}" 
                                                      width="350" 
                                                      height="250"
                                                 >

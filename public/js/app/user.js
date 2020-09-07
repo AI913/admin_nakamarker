@@ -267,7 +267,15 @@ function setDetailView(data, button) {
                         }
                     },
                     {data: 'created_at'},
-                    {data: 'latitude'},
+                    // GoogleMapのリンクを埋め込み
+                    {
+                        data: function (p) {
+                            // ロケーション情報を埋め込んだGoogle MapのURLを変数に代入
+                            let url = `https://www.google.com/maps?q=${p.latitude},${p.longitude}`;
+                            // 登録場所の備考ボタン・削除ボタンの設定(備考はデータがあるときのみ表示)
+                            return getListLink('map', p.location_id, url, 'list-button');
+                        }
+                    },
                     {
                         data: function (p) {
                             // 登録場所の備考ボタン・削除ボタンの設定(備考はデータがあるときのみ表示)
@@ -738,6 +746,9 @@ function getListLink(type, id, link, clazz) {
     }
     if (type == "location") {
         return '<a href="javascript:void(0)" class="btn btn-success btn-location '+clazz+'" data-toggle="tooltip" title="備考" data-placement="top" data-id="'+id+'"><i class="fas fa-search fa-fw"></i></a>';
+    }
+    if (type == "map") {
+        return '<a href="'+ link +'" target="_blank" class="btn btn-primary btn-map '+clazz+'" data-toggle="tooltip" title="Google Mapで表示" data-placement="top" data-id="'+id+'"><i class="fas fa-map-marked-alt"></i></a>';
     }
     if (type == "community") {
         return '<a href="javascript:void(0)" class="btn btn-warning text-white btn-community '+clazz+'" data-toggle="tooltip" title="コミュニティ情報" data-placement="top" data-id="'+id+'"><i class="fas fa-users"></i></a>';

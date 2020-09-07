@@ -6,7 +6,7 @@ $(function(){
         initList(false);
 
         // 一覧詳細ボタンクリック
-        settingDetailAjax('/community/detail/', '.btn-user');
+        settingDetailAjax('/community/detail/', '.btn-community');
     }
 
     // 公開フラグのvalue値設定
@@ -25,6 +25,15 @@ $(function(){
         // 申請状況の値を更新
         updateStatus($(this));
     });
+
+    /* 
+     *   ユーザリストの"備考"ボタンが押下されたとき
+     */
+    $(document).on('click', '.btn-user',function(){
+        let user_id = $(this).data('id');
+        let community_id = $('#community_id').data('id');
+        setUserDetail(user_id, community_id);
+    })
 
     /* 
      *   登録場所の"備考"ボタンが押下されたとき
@@ -50,6 +59,10 @@ $(function(){
         $(document).on('click', '.close', function(){
             let id = $(this).data('id');
             $(`#modal${id}`).modal('hide');
+        });
+        // ユーザ情報の備考
+        $(document).on('click', '#user_modal_close', function(){
+            $('#community_user_modal').modal('hide');
         });
 });
 
@@ -91,13 +104,13 @@ function updateStatus(button) {
  * @param data
  */
 function setDetailView(data, button) {
-    console.log(data)
+
     // モーダルに表示する会員情報
     $('#detail_name').html(data.name);
     $('#detail_status').html(data.status_name);
     $('#community_id').data('id', data.id);
 
-    if(button == '.btn-user') {
+    if(button == '.btn-community') {
         if ($.fn.DataTable.isDataTable('#community_user_list')) {
             $('#community_user_list').DataTable().destroy();
         }
@@ -143,10 +156,23 @@ function setDetailView(data, button) {
                         }
                     }, name: 'entry_status'
                 },
+                {
+                    data: function (p) {
+                        // '参加ユーザリスト'の備考ボタン・削除ボタンの設定(備考はlocation_historiesのmemoカラムにデータがあるときのみ表示)
+                        if(p.entry_memo == null) {
+                            // ユーザIDをパラメータとして渡す
+                            return getListLink('remove', p.id, '', 'list-button');
+                        }
+                        return getListLink('user', p.id, '', 'list-button') +
+                            getListLink('remove', p.id, '', 'list-button');
+                    }
+                },
             ],
             // 各列ごとの装飾
             [
+                { targets: [4], orderable: false, className: 'text-center', width: '120px'},
                 { targets: [5], orderable: false, className: 'text-center', width: '120px'},
+                { targets: [6], orderable: false, className: 'text-center', width: '120px'},
             ],
             false
         );
@@ -203,10 +229,18 @@ function setDetailView(data, button) {
                 },
                 {data: 'user_name'},
                 {data: 'created_at'},
-                {data: 'latitude'},
+                // GoogleMapのリンクを埋め込み
                 {
                     data: function (p) {
+                        // ロケーション情報を埋め込んだGoogle MapのURLを変数に代入
+                        let url = `https://www.google.com/maps?q=${p.latitude},${p.longitude}`;
                         // 登録場所の備考ボタン・削除ボタンの設定(備考はデータがあるときのみ表示)
+                        return getListLink('map', p.location_id, url, 'list-button');
+                    }
+                },
+                {
+                    data: function (p) {
+                        // '登録場所'の備考ボタン・削除ボタンの設定(備考はデータがあるときのみ表示)
                         if(p.memo == null) {
                             return getListLink('remove', p.location_id, '', 'list-button');
                         }
@@ -227,6 +261,24 @@ function setDetailView(data, button) {
     }
 }
 
+/**
+ * "参加ユーザリストの備考情報"モーダルの表示処理
+ * @param id 
+ */
+function setUserDetail(user_id, community_id) {
+    // 削除フォームIDをセット
+    $.ajax({url: `/ajax/community/detail/${community_id}/community_users/${user_id}`})
+    .done(function(response){
+        if (response.status == 1) {
+            $('#detail_user_memo').html(response.data.entry_memo);
+
+            // 備考モーダルの表示
+            $('#community_user_modal').modal('show');
+        } else {
+            alert('no data error');
+        }
+    });
+}
 /**
  * "登録場所の備考情報"モーダルの表示処理
  * @param id 
@@ -520,10 +572,16 @@ function initList(search) {
  */
 function getListLink(type, id, link, clazz) {
     if (type == "community") {
-        return '<a href="javascript:void(0)" class="btn btn-warning text-white btn-user '+clazz+'" data-toggle="tooltip" title="参加ユーザ" data-placement="top" data-id="'+id+'"><i class="fas fa-users"></i></a>';
+        return '<a href="javascript:void(0)" class="btn btn-warning text-white btn-community '+clazz+'" data-toggle="tooltip" title="参加ユーザ" data-placement="top" data-id="'+id+'"><i class="fas fa-users"></i></a>';
+    }
+    if (type == "user") {
+        return '<a href="javascript:void(0)" class="btn btn-success btn-user '+clazz+'" data-toggle="tooltip" title="備考" data-placement="top" data-id="'+id+'"><i class="fas fa-search fa-fw"></i></a>';
     }
     if (type == "location") {
         return '<a href="javascript:void(0)" class="btn btn-success btn-location '+clazz+'" data-toggle="tooltip" title="備考" data-placement="top" data-id="'+id+'"><i class="fas fa-search fa-fw"></i></a>';
+    }
+    if (type == "map") {
+        return '<a href="'+ link +'" target="_blank" class="btn btn-primary btn-map '+clazz+'" data-toggle="tooltip" title="Google Mapで表示" data-placement="top" data-id="'+id+'"><i class="fas fa-map-marked-alt"></i></a>';
     }
     if (type == "edit") {
         return '<a href="'+link+'" class="btn btn-primary '+clazz+'" data-toggle="tooltip" title="編集" data-placement="top"><i class="fas fa-edit fa-fw"></i></a>';

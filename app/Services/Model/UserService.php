@@ -89,17 +89,39 @@ class UserService extends BaseService
     }
 
     /**
+     * マーカー詳細モーダルに表示するユーザデータを取得
+     * 引数:マーカーID
+     */
+    public function isMarkerUserData($marker_id) {
+        $query = $this->model()->query();
+
+        $query->leftJoin('user_markers', 'users.id', '=', 'user_markers.user_id')
+              ->leftJoin('markers', 'user_markers.marker_id', '=', 'markers.id')
+              ->select('user_markers.id as user_markers_id', 'user_markers.updated_at as user_markers_updated_at', 
+                       'users.id as user_id', 'users.name as user_name', 'users.email as user_email', 'users.status'
+                       )
+              ->where('markers.id', '=', $marker_id);
+
+        return $query;
+    }
+
+    /**
      * コミュニティに属しているユーザデータの取得
-     * 引数：コミュニティID
+     * 引数1：コミュニティID, 引数2: ユーザID(一覧を表示する場合は要省略)
      * 
      */
-    public function isCommunityUserData($community_id) {
+    public function isCommunityUserData($community_id, $user_id=null) {
         $query = $this->model()->query();
     
         $query->leftJoin('community_histories', 'users.id', 'community_histories.user_id')
               ->leftJoin('communities', 'communities.id', 'community_histories.community_id')
-              ->select('users.*', 'communities.id as community_id', 'community_histories.status as entry_status')
+              ->select('users.*', 'communities.id as community_id', 'community_histories.status as entry_status', 'community_histories.memo as entry_memo')
               ->where('community_id', '=', $community_id);
+
+        // ユーザ情報の詳細を取得する際に設定
+        if(!is_null($user_id)) {
+            $query->where('users.id', '=', $user_id);
+        }
               
         return $query;
     }

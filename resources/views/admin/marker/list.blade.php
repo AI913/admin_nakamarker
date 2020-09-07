@@ -84,7 +84,7 @@
     {{-- @include('admin.layouts.components.remove_form', ['url' => url('admin/user/remove')]) --}}
 
     {{-- 詳細Modal読み込み --}}
-    {{-- @include('admin.user.detail') --}}
+    @include('admin.marker.detail')
 
 @endsection
 

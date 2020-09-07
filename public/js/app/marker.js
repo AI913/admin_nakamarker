@@ -4,6 +4,9 @@ $(function(){
 
         // DataTables初期化
         initList(false);
+
+        // 一覧詳細ボタンクリック
+        settingDetailAjax('/marker/detail/');
     }
 
     // 公開フラグのvalue値設定
@@ -36,7 +39,75 @@ $(function(){
             $('#charge_flg').prop('disabled', false);
         }
     });
+
+    
 });
+
+/**
+ * 会員情報表示
+ * @param data
+ */
+function setDetailView(data, button) {
+    
+    // モーダルに表示する会員情報
+    $('#detail_name').html(data.name);
+    $('#detail_status').html(data.status_name);
+    $('#detail_price').html(data.price);
+    $('#detail_image_file').attr('src', data.image_url);
+    $('#detail_price').html(data.price);
+    $('#detail_charge_flg').html(data.charge_name);
+    $('#detail_description').html(data.description);
+    $('#marker_id').data('id', data.id);
+
+    if(button == '.btn-detail') {
+        if ($.fn.DataTable.isDataTable('#marker_user_list')) {
+            $('#marker_user_list').DataTable().destroy();
+        }
+    
+    /* 
+     *   "所有ユーザリスト"の表示
+     */
+        // DataTable設定
+        settingDataTables(
+            // 取得
+            // tableのID
+            'marker_user_list',
+            // 取得URLおよびパラメタ
+            '/ajax/marker/detail/'+ data.id +'/marker_users',
+            {},
+            // 各列ごとの表示定義
+            [
+                {data: 'user_id'},
+                {data: 'user_name'},
+                {data: 'user_email'},
+                {data: 'user_markers_updated_at'},  // 購入日時
+                {
+                    data: function(p) {
+                        // アカウントステータスが"アカウント停止"の場合は赤色で表示
+                        if(p.status === 4) {
+                            return ('<span style="color: red">'+ p.status_name +'</span>');
+                        }
+                        // それ以外は普通に表示
+                        return p.status_name;
+                    }
+                },
+                {
+                    data: function (p) {
+                        // 削除時はuser_markersテーブルのデータを削除する
+                        return getListLink('remove', p.user_markers_id, '', 'list-button');
+                    }
+                },
+            ],
+            // 各列ごとの装飾
+            [
+                { targets: [4], orderable: false, className: 'text-center', width: '120px'},
+                { targets: [5], orderable: false, className: 'text-center', width: '120px'},
+            ],
+            false
+        );
+        $('#marker_modal').modal('show');
+    }
+}
 
 // @1 ファイルドロップ
 $(function () {

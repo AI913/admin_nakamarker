@@ -111,12 +111,11 @@ class UserPointsHistoryController extends BaseAdminController
      * @throws \Exception
      */
     public function updatePoints(Request $request) {
-        echo $request;
+
         if (!$request->user_id) {
             return ['status' => -1];
         }
 
-        echo $request;
         // 保存データを配列に格納
         $data = [
             'type'              => $request->type,

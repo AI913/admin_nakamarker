@@ -14,15 +14,16 @@ class UserPointsHistoryTableSeeder extends Seeder
         // faker使う(引数には日本語を設定している)
         $faker = Faker\Factory::create('ja_JP');
 
-        // レコード15件分出力
-        for($i=0; $i < 15; $i++){
+        // レコード30件分出力
+        for($i=0; $i < 30; $i++){
             \App\Model\UserPointsHistory::create([
                 'give_point'     => $faker->numberBetween(400, 1000),
                 'pay_point'      => $faker->numberBetween(100, 500),
                 'type'           => $faker->numberBetween(1, 4),
-                'user_id'        => $faker->numberBetween(1, 15),
+                'user_id'        => $faker->numberBetween(1, 30),
+                'memo'           => 'テストメモ'.$i,
                 'del_flg'        => 0,
-                'update_user_id' => $faker->numberBetween(1, 15),
+                'update_user_id' => $faker->numberBetween(1, 5),
             ]);
         }
     }

@@ -14,7 +14,7 @@ class CommunityController extends BaseAdminController
     protected $mainService;
     protected $communityLocationService;
 
-    public function __construct(CommunityService $mainService, CommunityLocationService $communityLocationService)
+    public function __construct(CommunityService $mainService, CommunityLocationService $communityLocationService, UserService $userService)
     {
         parent::__construct();
         $this->mainService  = $mainService;
@@ -22,6 +22,7 @@ class CommunityController extends BaseAdminController
         $this->mainTitle    = 'コミュニティ管理';
 
         $this->communityLocationService = $communityLocationService;
+        $this->userService = $userService;
     }
     
     /**
@@ -81,10 +82,25 @@ class CommunityController extends BaseAdminController
      * @param $id
      * @throws \Exception
      */
-    public function community_users($id, UserService $userService) {
+    public function community_users($id) {
         
         // コミュニティに紐づくユーザ情報を取得
-        return DataTables::eloquent($userService->isCommunityUserData($id))->make();
+        return DataTables::eloquent($this->userService->isCommunityUserData($id))->make();
+    }
+
+    /**
+     * ユーザ情報の詳細を取得
+     * @param $id
+     * @throws \Exception
+     */
+    public function community_users_detail($community_id, $user_id) {
+        // コミュニティの登録場所とそれに紐づくマーカーの詳細情報を取得
+        $data = $this->userService->isCommunityUserData($community_id, $user_id)->first();
+        
+        return [
+            'status' => 1,
+            'data' => $data,
+        ]; 
     }
 
     /**
