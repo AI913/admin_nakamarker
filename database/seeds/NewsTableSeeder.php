@@ -17,7 +17,6 @@ class NewsTableSeeder extends Seeder
         // レコード30件分出力
         for($i=0; $i < 30; $i++){
             \App\Model\News::create([
-                'type' => $faker->numberBetween(1, 2), // 1~2の間で乱数
                 'title' => 'News'.$i,
                 'body' => $faker->sentences($nb = 3, $asText = true),
                 'status' => 1,

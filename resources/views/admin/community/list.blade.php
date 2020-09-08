@@ -46,9 +46,10 @@
                         <thead>
                             <tr role="row">
                                 <th>ID</th>
-                                <th>作成日時</th>
                                 <th>コミュニティイメージ</th>
                                 <th>コミュニティ名</th>
+                                <th>種別</th>
+                                <th>作成日時</th>
                                 <th>コミュニティ概要</th>
                                 <th>参加ユーザ数</th>
                                 <th>公開ステータス</th>

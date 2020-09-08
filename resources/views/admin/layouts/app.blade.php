@@ -106,7 +106,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin/community-location/create') }}">
+                            <a class="nav-link" href="{{ route('admin/community/location/create') }}">
                                 <i class="fas fa-plus fa-fw ml-3"></i> ロケーション新規登録
                             </a>
                         </li>

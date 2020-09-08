@@ -72,7 +72,7 @@ $(function(){
  */
 function updateStatus(button) {
     $.ajax({
-        url:    '/ajax/community-history/update_status',
+        url:    '/ajax/community/history/update',
         type:   'POST',
         dataType: 'json',
         headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -124,7 +124,7 @@ function setDetailView(data, button) {
             // tableのID
             'community_user_list',
             // 取得URLおよびパラメタ
-            '/ajax/community/detail/'+ data.id +'/community_users',
+            '/ajax/community/detail/'+ data.id +'/user',
             {},
             // 各列ごとの表示定義
             [
@@ -189,7 +189,7 @@ function setDetailView(data, button) {
             // tableのID
             'community_location_list',
             // 取得URLおよびパラメタ
-            `/ajax/community/detail/${data.id}/community_locations`,
+            `/ajax/community/detail/${data.id}/location`,
             {},
             // 各列ごとの表示定義
             [
@@ -267,7 +267,7 @@ function setDetailView(data, button) {
  */
 function setUserDetail(user_id, community_id) {
     // 削除フォームIDをセット
-    $.ajax({url: `/ajax/community/detail/${community_id}/community_users/${user_id}`})
+    $.ajax({url: `/ajax/community/detail/${community_id}/user/${user_id}`})
     .done(function(response){
         if (response.status == 1) {
             $('#detail_user_memo').html(response.data.entry_memo);
@@ -285,7 +285,7 @@ function setUserDetail(user_id, community_id) {
  */
 function setLocationDetail(location_id, community_id) {
     // 削除フォームIDをセット
-    $.ajax({url: `/ajax/community/detail/${community_id}/community_locations/${location_id}`})
+    $.ajax({url: `/ajax/community/detail/${community_id}/location/${location_id}`})
     .done(function(response){
         if (response.status == 1) {
             $('#detail_location_memo').html(response.data.memo);
@@ -496,7 +496,6 @@ function initList(search) {
         [
 
             {data: 'id'},
-            {data: 'created_at'},
             {
                 // コミュニティイメージの画像を表示(モーダル形式)
                 data: function (p) {
@@ -529,8 +528,10 @@ function initList(search) {
                 }
             },
             {data: 'name'},
+            {data: 'type_name'},
+            {data: 'created_at'},
             {data: 'description'},
-            {data: 'member'},
+            {data: 'total_counts'},
             {
                 data: function(p) {
                     // "非公開"の場合は赤色で表示
@@ -554,10 +555,13 @@ function initList(search) {
         // 各列ごとの装飾
         // 操作列(ボタン等)や画像項目はソート不可・text-centerを付与する
         [
-            { targets: [2], orderable: false, className: 'text-center', width: '150px'},
-            { targets: [5], orderable: false, className: 'text-center', width: '100px'},
-            { targets: [6], orderable: false, className: 'text-center', width: '100px'},
-            { targets: [7], orderable: false, className: 'text-center', width: '150px'},
+            { targets: [1], orderable: false, className: 'text-center', width: '150px'},
+            { targets: [2], orderable: false},
+            { targets: [3], orderable: false, width: '120px'},
+            { targets: [5], orderable: false},
+            { targets: [6], orderable: true, className: 'text-center', width: '100px'},
+            { targets: [7], orderable: false, className: 'text-center', width: '100px'},
+            { targets: [8], orderable: false, className: 'text-center', width: '150px'},
            ],
            search
     );

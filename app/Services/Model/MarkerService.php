@@ -20,7 +20,7 @@ class MarkerService extends BaseService
      * マーカーのDL数を取得
      * 
      */
-    public function downloadCount() {
+    private function getDownloadCountQuery() {
         $query = $this->model()->query();
 
         $query->leftJoin('user_markers', 'markers.id', '=', 'user_markers.marker_id')
@@ -36,18 +36,20 @@ class MarkerService extends BaseService
      * 引数：データの検索条件
      */
     public function getMainListQuery($conditions=null) {
-        $query = $this->model()->query();
+        // $query = $this->model()->query();
 
-        $download = $this->downloadCount();
+        $download = $this->getDownloadCountQuery();
 
-        $query->leftJoinSub($download, 'd', 'markers.id', '=', 'd.marker_id')
-              ->select('markers.*', 'd.total_counts')
-              ->orderBy('markers.id');
         
         // 検索条件があれば実行
         if($conditions) {
-            $query = $this->getConditions($query, $this->model()->getTable(), $conditions);
+            $query = $this->searchQuery($conditions, [], []);
+            // $query = $this->getConditions($query, $this->model()->getTable(), $conditions);
         }
+        $query->leftJoinSub($download, 'd', 'markers.id', '=', 'd.marker_id')
+            //   ->select('markers.*', 'd.total_counts')
+              ->addSelect('d.total_counts')
+              ->orderBy('markers.id');
 
         return $query;
     }

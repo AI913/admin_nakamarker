@@ -155,13 +155,15 @@ $(function(){
  * @param {*} button 
  */
 function deleteImage(button) {
+    let location_id = $(button).data('id');
+    let user_id = $('#user_id').data('id');
     $.ajax({
-        url:    '/ajax/user-location/location_images',
+        url:    `/ajax/user/detail/${user_id}/location/${location_id}/image`,
         type:   'POST',
         dataType: 'json',
         headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data:   {
-            'location_id': $(button).data('id'),
+            'location_id': location_id,
         }
     }).done(function(response){
         if(response == -1) {
@@ -178,7 +180,7 @@ function deleteImage(button) {
  */
 function updateStatus(button) {
     $.ajax({
-        url:    '/ajax/community-history/update_status',
+        url:    '/ajax/community/history/update',
         type:   'POST',
         dataType: 'json',
         headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -236,7 +238,7 @@ function setDetailView(data, button) {
                 // tableのID
                 'user_location_list',
                 // 取得URLおよびパラメタ
-                '/ajax/user/detail/'+ data.id +'/user_locations',
+                '/ajax/user/detail/'+ data.id +'/location',
                 {},
                 // 各列ごとの表示定義
                 [
@@ -341,7 +343,7 @@ function setDetailView(data, button) {
                 // tableのID
                 'user_community_list',
                 // 取得URLおよびパラメタ
-                '/ajax/user/detail/'+ data.id +'/user_communities',
+                '/ajax/user/detail/'+ data.id +'/community',
                 {},
                 // 各列ごとの表示定義
                 [
@@ -378,7 +380,6 @@ function setDetailView(data, button) {
                         }
                     },
                     {data: 'name'},
-                    {data: 'member'},
                     {
                         data: function(p) {
                             // "非公開"の場合は赤色で表示
@@ -415,9 +416,8 @@ function setDetailView(data, button) {
                 [
                     { targets: [1], orderable: false, className: 'text-center', width: '120px'},
                     { targets: [3], orderable: false, width: '70px'},
-                    { targets: [4], orderable: false, width: '70px'},
+                    { targets: [5], orderable: false, className: 'text-center', width: '120px'},
                     { targets: [6], orderable: false, className: 'text-center', width: '120px'},
-                    { targets: [7], orderable: false, className: 'text-center', width: '120px'},
                 ],
                 false
             );
@@ -431,7 +431,7 @@ function setDetailView(data, button) {
  */
 function setLocationDetail(location_id, user_id) {
     // 削除フォームIDをセット
-    $.ajax({url: `/ajax/user/detail/${user_id}/user_locations/${location_id}`})
+    $.ajax({url: `/ajax/user/detail/${user_id}/location/${location_id}`})
     .done(function(response){
         if (response.status == 1) {
             $('#detail_location_memo').html(response.data.memo);
@@ -448,8 +448,8 @@ function setLocationDetail(location_id, user_id) {
  * @param id 
  */
 function setHistoryDetail(community_history_id) {
-    // 削除フォームIDをセット
-    $.ajax({url: `/community-history/detail/${community_history_id}`})
+    
+    $.ajax({url: `/ajax/community/history/${community_history_id}`})
     .done(function(response){
         if (response.status == 1) {
             $('#detail_history_id').html(response.data.id);
@@ -476,7 +476,7 @@ function setMarkerTable(id) {
         // tableのID
         'user_markers_list',
         // 取得URLおよびパラメタ
-        '/ajax/user-marker/detail/'+ id +'/user_markers',
+        '/ajax/user/detail/'+ id +'/marker',
         {},
         // 各列ごとの表示定義
         [
@@ -555,7 +555,7 @@ function setPointTable(id) {
         // tableのID
         'user_points_list',
         // 取得URLおよびパラメタ
-        '/user-points-history/detail/'+ id +'/point_histories',
+        '/ajax/user/detail/'+ id +'/point',
         {},
         // 各列ごとの表示定義
         [
@@ -621,8 +621,9 @@ $(function(){
  * @param {*} button 
  */
 function updatePoints() {
+    let user_id = $('#user_id').data('id');
     $.ajax({
-        url: '/ajax/user-points-history/update_points',
+        url: `/ajax/user/detail/${user_id}/point/update`,
         type: 'POST',
         dataType: 'json',
         headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -630,7 +631,7 @@ function updatePoints() {
             'give_point': $('#create_point').val(),
             'type': $('#select_point_type').val(),
             'charge_flg': $('#select_charge_flg').val(),
-            'user_id': $('#user_id').data("id"),
+            'user_id': user_id,
         }
     })
         .done(function(response){

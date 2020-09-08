@@ -56,7 +56,7 @@
                         <thead>
                             <tr role="row">
                                 <th>ID</th>
-                                <th>マーカータイプ</th>
+                                <th>種別</th>
                                 <th>マーカーイメージ</th>
                                 <th>マーカー名</th>
                                 <th>マーカー概要</th>

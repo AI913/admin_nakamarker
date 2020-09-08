@@ -15,7 +15,6 @@ class CreateNewsTable extends Migration
     {
         Schema::create('news', function (Blueprint $table) {
             $table->increments('id');                                   // ID
-            $table->tinyInteger('type');                                // ニュース種別
             $table->string('title');                                    // ニュースタイトル
             $table->text('body');                                       // ニュース本文
             $table->string('image_file')->nullable();                   // 画像ファイル名

@@ -10,7 +10,7 @@ class Community extends BaseModel
      * 独自アクセサ(attribute)
      * @var array
      */
-    protected $child_appends = ['entry_status_name'];
+    protected $child_appends = ['entry_status_name', 'type_name'];
     
     /**
      * 保存対象(attribute)
@@ -39,6 +39,17 @@ class Community extends BaseModel
         if ($this->entry_status == config('const.community_history_reject'))   return config('const.community_history_reject_name');
     }
 
+    /**
+     * コミュニティの種別を返す
+     * (数値からconst.phpで定義した文字列へと変換)
+     * @return string
+     */
+    public function getTypeNameAttribute() {
+        if ($this->type == config('const.community_official'))  return config('const.community_official_name');
+        if ($this->type == config('const.community_official_free'))     return config('const.community_official_free_name');
+        if ($this->type == config('const.community_personal'))   return config('const.community_personal_name');
+        if ($this->type == config('const.community_personal_open'))   return config('const.community_personal_open_name');
+    }
 
     // usersテーブルと多対多のリレーション構築
     public function community()

@@ -89,7 +89,7 @@ class UserService extends BaseService
     }
 
     /**
-     * マーカー詳細モーダルに表示するユーザデータを取得
+     * マーカーの詳細モーダルに表示するユーザデータを取得
      * 引数:マーカーID
      */
     public function getMarkerUserQuery($marker_id) {

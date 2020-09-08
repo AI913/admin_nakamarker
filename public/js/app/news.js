@@ -289,7 +289,6 @@ function initList(search) {
             },
             {data: 'condition_start_time'},
             {data: 'condition_end_time'},
-            {data: 'type_name'},
             {data: 'user.name'},
             // 各操作列
             {
@@ -307,7 +306,7 @@ function initList(search) {
             { targets: [2], orderable: false, className: 'text-center', width: '80px'},
             { targets: [3], orderable: false, className: 'text-center', width: '100px'},
             { targets: [6], orderable: false, className: 'text-center', width: '110px'},
-            { targets: [8], orderable: false, className: 'text-center', width: '150px'}
+            { targets: [7], orderable: false, className: 'text-center', width: '150px'}
            ],
            search
     );

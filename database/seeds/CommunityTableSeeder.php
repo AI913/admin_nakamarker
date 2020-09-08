@@ -17,6 +17,7 @@ class CommunityTableSeeder extends Seeder
         // レコード30件分出力
         for($i=0; $i < 30; $i++){
             \App\Model\Community::create([
+                'type' => $faker->numberBetween(1, 4),
                 'name' => 'community'.$i,
                 'status' => 1,
                 'del_flg' => 0,
@@ -24,6 +25,7 @@ class CommunityTableSeeder extends Seeder
             ]);
         }
         \App\Model\Community::create([
+            'type' => 3,
             'name' => 'aaa',
             'status' => 1,
             'del_flg' => 0,

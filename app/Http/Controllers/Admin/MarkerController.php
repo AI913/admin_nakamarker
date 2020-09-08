@@ -45,11 +45,6 @@ class MarkerController extends BaseAdminController
         if ($request->name) { $conditions['markers.name@like'] = $request->name; }
         // statusのリクエストがあり、かつリクエストが数値の場合に検索条件の値をセットする
         if ($request->has('status') && is_numeric($request->status)) { $conditions['markers.status'] = $request->status; }
-        
-        // 〇ソート条件
-        $sort = [];
-        // 〇リレーション
-        $relations = [];
 
         return DataTables::eloquent($this->mainService->getMainListQuery($conditions))->make();
     }
@@ -97,7 +92,7 @@ class MarkerController extends BaseAdminController
      */
     public function marker_users($id, UserService $userService) {
         
-        // ユーザに紐づいているコミュニティを取得
+        // ユーザに紐づいているマーカーを取得
         return DataTables::eloquent($userService->getMarkerUserQuery($id))->make();
     }
 

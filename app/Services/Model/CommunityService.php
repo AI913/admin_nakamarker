@@ -35,14 +35,38 @@ class CommunityService extends BaseService
     }
 
     /**
-     * コミュニティの参加ユーザ数保存処理
-     * 引数:コミュニティの参加人数
+     * コミュニティの参加人数を取得
+     * 
      */
-    public function member_save($count_member) {
+    public function joinCount() {
         $query = $this->model()->query();
 
-        $query->member = $count_member;
+        $query->leftJoin('community_histories', 'communities.id', '=', 'community_histories.community_id')
+              ->selectRaw('count(community_histories.user_id) as total_counts')
+              ->addSelect('community_histories.community_id')
+              ->groupByRaw('community_histories.community_id');
 
-        return $query->save();
+        return $query;
+    }
+
+    /**
+     * コミュニティ一覧画面に表示するデータリスト
+     * 引数：データの検索条件
+     */
+    public function getMainListQuery($conditions=null) {
+        $query = $this->model()->query();
+
+        $joinCount = $this->joinCount();
+
+        $query->leftJoinSub($joinCount, 'j', 'communities.id', '=', 'j.community_id')
+              ->select('communities.*', 'j.total_counts')
+              ->orderBy('communities.id');
+        
+        // 検索条件があれば実行
+        if($conditions) {
+            $query = $this->getConditions($query, $this->model()->getTable(), $conditions);
+        }
+
+        return $query;
     }
 }

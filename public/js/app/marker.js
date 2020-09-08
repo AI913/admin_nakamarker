@@ -73,7 +73,7 @@ function setDetailView(data, button) {
             // tableのID
             'marker_user_list',
             // 取得URLおよびパラメタ
-            '/ajax/user-marker/detail/'+ data.id +'/marker_users',
+            '/ajax/marker/detail/'+ data.id +'/user',
             {},
             // 各列ごとの表示定義
             [

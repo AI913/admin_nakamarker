@@ -1,7 +1,5 @@
 <?php
 return [
-    // アプリケーションバージョン番号　
-    'app_version' => "1.0.17" ,
     /*-------------------------------------その他-----------------------------------*/
 
     /* 都道府県 */
@@ -33,6 +31,16 @@ return [
 
     'point_type_give'  => 1,   // ポイント種別(加算))
     'point_type_pay'   => 2,   // ポイント種別(減少)
+
+    // コミュニティ種別
+    'community_official'                => 1,  // 公式(有料)
+    'community_official_free'           => 2,  // 公式(無料)
+    'community_personal'                => 3,  // 個人(クローズド)
+    'community_personal_open'           => 4,  // 個人(オープン)
+    'community_official_name'           => '公式(有料)',
+    'community_official_free_name'      => '公式(無料)',
+    'community_personal_name'           => '個人(クローズド)',
+    'community_personal_open_name'      => '個人(オープン)',
 
     // マーカー種別
     'marker_type_register'        => 1,

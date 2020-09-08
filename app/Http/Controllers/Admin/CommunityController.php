@@ -39,11 +39,7 @@ class CommunityController extends BaseAdminController
         // statusのリクエストがあり、かつリクエストが数値の場合に検索条件の値をセットする
         if ($request->has('status') && is_numeric($request->status)) { $conditions['communities.status'] = $request->status; }
         
-        // 〇ソート条件
-        $sort = [];
-        // 〇リレーション
-        $relations = [];
-        return DataTables::eloquent($this->mainService->searchQuery($conditions, $sort, $relations))->make();
+        return DataTables::eloquent($this->mainService->getMainListQuery($conditions))->make();
     }
 
     public function index()
