@@ -30,7 +30,10 @@
                         <a class="nav-link" id="item2-tab" data-toggle="tab" href="#item2" role="tab" aria-controls="item2" aria-selected="false">登録場所</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="item3-tab" data-toggle="tab" href="#item3" role="tab" aria-controls="item3" aria-selected="false">ポイント履歴</a>
+                        <a class="nav-link" id="item3-tab" data-toggle="tab" href="#item3" role="tab" aria-controls="item3" aria-selected="false">マーカー</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="item4-tab" data-toggle="tab" href="#item4" role="tab" aria-controls="item4" aria-selected="false">ポイント履歴</a>
                     </li>
                 </ul>
                 <div class="tab-content">
@@ -67,7 +70,7 @@
                         <table class="table table-striped table-bordered datatable table-sm" id="user_location_list">
                             <thead>
                                 <tr role="row">
-                                    <th>ID</th>
+                                    <th>ロケーションID</th>
                                     <th>マーカー名</th>
                                     <th>場所の名前</th>
                                     <th>ロケーション画像</th>
@@ -106,12 +109,29 @@
                         </div>
                     </div>
 
-                    {{-- タブ3つ目(ポイント履歴管理) --}}
+                    {{-- タブ3つ目(マーカー管理) --}}
                     <div class="tab-pane fade" id="item3" role="tabpanel" aria-labelledby="item3-tab">
+                        <table class="table table-striped table-bordered datatable table-sm" id="user_markers_list">
+                            <thead>
+                                <tr role="row">
+                                    <th>履歴ID</th>
+                                    <th>マーカー画像</th>
+                                    <th>マーカー名</th>
+                                    <th>価格(ポイント)</th>
+                                    <th>有料フラグ</th>
+                                    <th>購入日時</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                    {{-- タブ4つ目(ポイント履歴管理) --}}
+                    <div class="tab-pane fade" id="item4" role="tabpanel" aria-labelledby="item4-tab">
                         <table class="table table-striped table-bordered datatable table-sm" id="user_points_list">
                             <thead>
                                 <tr role="row">
-                                    <th>ID</th>
+                                    <th>履歴ID</th>
                                     <th>付与種別</th>
                                     <th>付与ポイント</th>
                                     <th>消費ポイント</th>
@@ -158,6 +178,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
             <div class="modal-footer">
@@ -225,7 +246,7 @@
                             <div class="modal-body">
                                 <div class="container">
                                     <div class="row">
-                                        <dt class="col-4 text-right">ID</dt>
+                                        <dt class="col-4 text-right">履歴ID</dt>
                                         <dd class="col-8"><span id="detail_history_id" class="detail-view"></span></dd>
                                     </div>
                                     <div class="row">

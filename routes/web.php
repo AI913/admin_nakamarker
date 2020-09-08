@@ -46,6 +46,8 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/ajax/user/detail/{id}/user_locations/{location_id}',  'Admin\UserController@user_locations_detail')->name('admin/user/detail/user_locations_detail');
     // ユーザの登録場所イメージ更新(user_locations)
     Route::post('/ajax/user-location/location_images',  'Admin\UserController@user_locationImage_delete')->name('admin/user-location/location_images');
+    // ユーザの所有マーカー一覧(user_markers)
+    Route::get('/ajax/user-marker/detail/{id}/user_markers',     'Admin\UserController@user_markers')->name('admin/user-marker/user_markers');
     // 特定ユーザのポイント履歴管理(user_points_histories)
     Route::get('/user-points-history/detail/{id}/point_histories', 'Admin\UserController@point_histories')->name('admin/user-points-history/detail/point_histories');
     // 特定ユーザのポイント更新(user_points_histories)
@@ -62,7 +64,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('/marker/remove',     'Admin\MarkerController@remove')->name('admin/marker/remove');
 
     // マーカーの所有ユーザ一覧(user_markers)
-    Route::get('/ajax/marker/detail/{id}/marker_users',     'Admin\MarkerController@marker_users')->name('admin/marker/marker_users');
+    Route::get('/ajax/user-marker/detail/{id}/marker_users',     'Admin\MarkerController@marker_users')->name('admin/user-marker/marker_users');
     
     /******************** コミュニティ管理(communities) ********************/
     Route::get('/community',             'Admin\CommunityController@index')->name('admin/community');

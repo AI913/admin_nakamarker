@@ -113,18 +113,6 @@
                     </ul>
                 </li>
                 <li class="nav-item nav-dropdown">
-                    <a class="nav-link nav-dropdown-toggle"  href="#">
-                        <i class="fas fa-history"></i> コミュニティ履歴管理
-                    </a>
-                    <ul class="nav-dropdown-items">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin/community-history') }}">
-                                <i class="fas fa-list-alt fa-fw ml-3"></i> コミュニティ履歴一覧
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item nav-dropdown">
                     <a class="nav-link nav-dropdown-toggle" href="#">
                         <i class="fas fa-info fa-fw"></i> お知らせ管理
                     </a>

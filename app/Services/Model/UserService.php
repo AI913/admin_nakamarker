@@ -37,7 +37,7 @@ class UserService extends BaseService
     /**
      * ポイント履歴から現在の無料ポイント数を算出
      */
-    public function getFreePointData() {
+    public function getFreePointQuery() {
         $query = $this->model()->query();
 
         $query->leftJoin('user_points_histories', 'users.id', 'user_points_histories.user_id')
@@ -52,7 +52,7 @@ class UserService extends BaseService
     /**
      * ポイント履歴から現在の有料ポイント数を算出
      */
-    public function getPointData() {
+    public function getPointQuery() {
         $query = $this->model()->query();
 
         $query->leftJoin('user_points_histories', 'users.id', 'user_points_histories.user_id')
@@ -68,12 +68,12 @@ class UserService extends BaseService
      * ユーザの所持ポイントを算出したデータの取得
      * 引数：データの検索条件
      */
-    public function isUserPointData($conditions=null) {
+    public function getUserPointQuery($conditions=null) {
         $query = $this->model()->query();
 
         // 無料ポイントと有料ポイントの算出クエリをそれぞれインスタンス化
-        $free_points_query = $this->getFreePointData();
-        $points_query = $this->getPointData();
+        $free_points_query = $this->getFreePointQuery();
+        $points_query = $this->getPointQuery();
 
         // サブクエリでポイントテーブルとユーザテーブルを結合
         $query->leftJoinSub($free_points_query, 'free_points', 'users.id', '=', 'free_points.user_id')
@@ -92,7 +92,7 @@ class UserService extends BaseService
      * マーカー詳細モーダルに表示するユーザデータを取得
      * 引数:マーカーID
      */
-    public function isMarkerUserData($marker_id) {
+    public function getMarkerUserQuery($marker_id) {
         $query = $this->model()->query();
 
         $query->leftJoin('user_markers', 'users.id', '=', 'user_markers.user_id')
@@ -110,7 +110,7 @@ class UserService extends BaseService
      * 引数1：コミュニティID, 引数2: ユーザID(一覧を表示する場合は要省略)
      * 
      */
-    public function isCommunityUserData($community_id, $user_id=null) {
+    public function getCommunityUserQuery($community_id, $user_id=null) {
         $query = $this->model()->query();
     
         $query->leftJoin('community_histories', 'users.id', 'community_histories.user_id')

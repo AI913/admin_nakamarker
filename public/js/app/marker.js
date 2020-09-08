@@ -73,7 +73,7 @@ function setDetailView(data, button) {
             // tableのID
             'marker_user_list',
             // 取得URLおよびパラメタ
-            '/ajax/marker/detail/'+ data.id +'/marker_users',
+            '/ajax/user-marker/detail/'+ data.id +'/marker_users',
             {},
             // 各列ごとの表示定義
             [
@@ -331,7 +331,16 @@ function initList(search) {
                     return p.charge_name;
                 }
             },
-            {data: 'description'},
+            {
+                data: function(p) {
+                    // 有料フラグが"デフォルト"の場合は'-'で表示
+                    if(p.charge_flg === 3) {
+                        return (`<span>―</span>`);
+                    }
+                    // それ以外は数値で表示
+                    return p.total_counts;
+                },
+            },
             {
                 data: function(p) {
                     // "非公開"の場合は赤色で表示

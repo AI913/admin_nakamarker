@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\View;
 use App\Services\Model\UserService;
 use App\Services\Model\UserLocationService;
 use App\Services\Model\UserPointsHistoryService;
+use App\Services\Model\MarkerService;
 use App\Services\Model\CommunityService;
 use App\Services\Model\CommunityHistoryService;
 use App\Services\Model\ConfigService;
@@ -18,6 +19,7 @@ class UserController extends BaseAdminController
     protected $mainService;
     protected $userPointHistoryService;
     protected $userLocationService;
+    protected $markerService;
 
     /**
      * 顧客管理コントローラー
@@ -27,7 +29,8 @@ class UserController extends BaseAdminController
     public function __construct(
         UserService $mainService, 
         UserPointsHistoryService $userPointHistoryService,
-        UserLocationService $userLocationService
+        UserLocationService $userLocationService,
+        MarkerService $markerService
     ) 
     {
         parent::__construct();
@@ -37,6 +40,7 @@ class UserController extends BaseAdminController
 
         $this->userPointHistoryService = $userPointHistoryService;
         $this->userLocationService = $userLocationService;
+        $this->markerService = $markerService;
     }
     
     /**
@@ -53,7 +57,7 @@ class UserController extends BaseAdminController
         if ($request->email) { $conditions['users.email@like'] = $request->email; }
         if ($request->status) { $conditions['users.status'] = $request->status; }
         
-        return DataTables::eloquent($this->mainService->isUserPointData($conditions))->make();
+        return DataTables::eloquent($this->mainService->getUserPointQuery($conditions))->make();
     }
 
     /**
@@ -100,7 +104,7 @@ class UserController extends BaseAdminController
     public function user_locations($id) {
         
         // ユーザの登録場所とそれに紐づくマーカー情報を取得
-        return DataTables::eloquent($this->userLocationService->isUserLocationData($id))->make();
+        return DataTables::eloquent($this->userLocationService->getUserLocationQuery($id))->make();
     }
 
     /**
@@ -110,7 +114,7 @@ class UserController extends BaseAdminController
      */
     public function user_locations_detail($user_id, $location_id) {
         // ユーザの登録場所とそれに紐づくマーカーの詳細情報を取得
-        $data = $this->userLocationService->isUserLocationData($user_id, $location_id)->first();
+        $data = $this->userLocationService->getUserLocationQuery($user_id, $location_id)->first();
         
         return [
             'status' => 1,
@@ -129,6 +133,16 @@ class UserController extends BaseAdminController
     }
 
     /**
+     * 所有するマーカー情報を取得
+     * @param $id
+     * @throws \Exception
+     */
+    public function user_markers($user_id) {
+        // ユーザの所有マーカー情報を取得
+        return DataTables::eloquent($this->markerService->getUserMarkerQuery($user_id))->make();
+    }
+
+    /**
      * ユーザコミュニティ情報取得
      * @param $id
      * @throws \Exception
@@ -136,7 +150,7 @@ class UserController extends BaseAdminController
     public function user_communities($id, CommunityService $communityService) {
         
         // ユーザに紐づいているコミュニティを取得
-        return DataTables::eloquent($communityService->isUserCommunityData($id))->make();
+        return DataTables::eloquent($communityService->getUserCommunityQuery($id))->make();
     }
 
     /**

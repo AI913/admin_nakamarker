@@ -85,7 +85,7 @@ class CommunityController extends BaseAdminController
     public function community_users($id) {
         
         // コミュニティに紐づくユーザ情報を取得
-        return DataTables::eloquent($this->userService->isCommunityUserData($id))->make();
+        return DataTables::eloquent($this->userService->getCommunityUserQuery($id))->make();
     }
 
     /**
@@ -95,7 +95,7 @@ class CommunityController extends BaseAdminController
      */
     public function community_users_detail($community_id, $user_id) {
         // コミュニティの登録場所とそれに紐づくマーカーの詳細情報を取得
-        $data = $this->userService->isCommunityUserData($community_id, $user_id)->first();
+        $data = $this->userService->getCommunityUserQuery($community_id, $user_id)->first();
         
         return [
             'status' => 1,
@@ -110,7 +110,7 @@ class CommunityController extends BaseAdminController
      */
     public function community_locations($id) {
         // コミュニティの登録場所とそれに紐づくマーカー情報を取得
-        return DataTables::eloquent($this->communityLocationService->isCommunityLocationData($id))->make();
+        return DataTables::eloquent($this->communityLocationService->getCommunityLocationQuery($id))->make();
     }
 
     /**
@@ -120,7 +120,7 @@ class CommunityController extends BaseAdminController
      */
     public function community_locations_detail($community_id, $location_id) {
         // コミュニティの登録場所とそれに紐づくマーカーの詳細情報を取得
-        $data = $this->communityLocationService->isCommunityLocationData($community_id, $location_id)->first();
+        $data = $this->communityLocationService->getCommunityLocationQuery($community_id, $location_id)->first();
         
         return [
             'status' => 1,

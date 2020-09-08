@@ -17,7 +17,6 @@ class CreateCommunitiesTable extends Migration
             $table->increments('id');                           // ID
             $table->string('name');                             // コミュニティの名前
             $table->string('description')->nullable();          // コミュニティの説明
-            $table->integer('member')->nullable()->default(0);  // 登録ユーザ数
             $table->tinyInteger('status')->default(1);          // マーカーの公開フラグ
             $table->string('image_file')->nullable();           // 画像ファイル名
             $table->tinyInteger('del_flg')->default(0);         // 削除フラグ

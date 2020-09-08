@@ -50,7 +50,8 @@ class MarkerController extends BaseAdminController
         $sort = [];
         // 〇リレーション
         $relations = [];
-        return DataTables::eloquent($this->mainService->searchQuery($conditions, $sort, $relations))->make();
+
+        return DataTables::eloquent($this->mainService->getMainListQuery($conditions))->make();
     }
 
     /**
@@ -97,7 +98,7 @@ class MarkerController extends BaseAdminController
     public function marker_users($id, UserService $userService) {
         
         // ユーザに紐づいているコミュニティを取得
-        return DataTables::eloquent($userService->isMarkerUserData($id))->make();
+        return DataTables::eloquent($userService->getMarkerUserQuery($id))->make();
     }
 
     /**

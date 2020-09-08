@@ -121,20 +121,29 @@ $(function(){
         // 登録情報の画像
         $(document).on('click', '#location_image_close', function(){
             let id = $(this).data('id');
-            $(`#modal${id}`).modal('hide');
+            $(`#location_modal${id}`).modal('hide');
         });
         $(document).on('click', '.close', function(){
             let id = $(this).data('id');
-            $(`#modal${id}`).modal('hide');
+            $(`#location_modal${id}`).modal('hide');
+        });
+        // マーカー情報の画像
+        $(document).on('click', '#marker_image_close', function(){
+            let id = $(this).data('id');
+            $(`#marker_modal${id}`).modal('hide');
+        });
+        $(document).on('click', '.close', function(){
+            let id = $(this).data('id');
+            $(`#marker_modal${id}`).modal('hide');
         });
         // コミュニティ情報の詳細
         $(document).on('click', '#community_image_close', function(){
             let id = $(this).data('id');
-            $(`#modal${id}`).modal('hide');
+            $(`#community_modal${id}`).modal('hide');
         });
         $(document).on('click', '.close', function(){
             let id = $(this).data('id');
-            $(`#modal${id}`).modal('hide');
+            $(`#community_modal${id}`).modal('hide');
         });
         $(document).on('click', '#history_modal_close', function(){
             $('#community_history_modal').modal('hide');
@@ -239,11 +248,11 @@ function setDetailView(data, button) {
                         data: function (p) {
                             
                             return `
-                                <a href="" data-toggle="modal" data-target="#modal${p.location_id}">
+                                <a href="" data-toggle="modal" data-target="#location_modal${p.location_id}">
                                     <img src="${p.image_url}" id="location_image" height="45" width="65">
                                 </a>
         
-                                <div class="modal fade" id="modal${p.location_id}" tabindex="-1"
+                                <div class="modal fade" id="location_modal${p.location_id}" tabindex="-1"
                                     role="dialog" aria-labelledby="label1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
@@ -289,12 +298,23 @@ function setDetailView(data, button) {
                 ],
                 // 各列ごとの装飾
                 [
-                    { targets: [3], orderable: false, className: 'text-center', width: '130px'},
+                    { targets: [0], width: '100px'},
+                    { targets: [1], width: '150px'},
+                    { targets: [2], width: '150px'},
+                    { targets: [3], orderable: false, className: 'text-center', width: '100px'},
                     { targets: [5], orderable: false, className: 'text-center', width: '100px'},
                     { targets: [6], orderable: false, className: 'text-center', width: '100px'},
                 ],
                 false
             );
+
+        /* 
+        *   "詳細"モーダルの表示処理("マーカー"タブ)
+        */
+            if ($.fn.DataTable.isDataTable('#user_markers_list')) {
+                $('#user_markers_list').DataTable().destroy();
+            }
+            setMarkerTable(data.id);
 
         /* 
         *   "詳細"モーダルの表示処理("ポイント履歴"タブ)
@@ -331,11 +351,11 @@ function setDetailView(data, button) {
                         data: function (p) {
                             
                             return `
-                                <a href="" data-toggle="modal" data-target="#modal${p.id}">
+                                <a href="" data-toggle="modal" data-target="#community_modal${p.id}">
                                     <img src="${p.image_url}" height="45" width="65">
                                 </a>
         
-                                <div class="modal fade" id="modal${p.id}" tabindex="-1"
+                                <div class="modal fade" id="community_modal${p.id}" tabindex="-1"
                                     role="dialog" aria-labelledby="label1" aria-hidden="true">
                                     <div class="modal-dialog modal-warning modal-dialog-centered" role="document">
                                         <div class="modal-content">
@@ -445,6 +465,85 @@ function setHistoryDetail(community_history_id) {
     });
 }
 
+/**
+ * ユーザごとの所有マーカーテーブルを生成
+ * @param id 
+ */
+function setMarkerTable(id) {
+    // DataTable設定
+    settingDataTables(
+        // 取得
+        // tableのID
+        'user_markers_list',
+        // 取得URLおよびパラメタ
+        '/ajax/user-marker/detail/'+ id +'/user_markers',
+        {},
+        // 各列ごとの表示定義
+        [
+            {data: 'user_markers_id'},
+            {
+                // コミュニティイメージの画像を表示(モーダル形式)
+                data: function (p) {
+                    
+                    return `
+                        <a href="" data-toggle="modal" data-target="#marker_modal${p.id}">
+                            <img src="${p.image_url}" height="45" width="65">
+                        </a>
+
+                        <div class="modal fade" id="marker_modal${p.id}" tabindex="-1"
+                            role="dialog" aria-labelledby="label1" aria-hidden="true">
+                            <div class="modal-dialog modal-success modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="label1">マーカーイメージ</h5>
+                                        <button type="button" class="close" data-id="${p.id}" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                    <img src="${p.image_url}" id="image_modal_marker" height="350" width="450">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" id="marker_image_close" data-id="${p.id}">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            },
+            {data: 'name'},
+            {data: 'price'},
+            {
+                data: function(p) {
+                    // 有料フラグが"有料"の場合は赤色で表示
+                    if(p.charge_flg === 2) {
+                        return ('<span style="color: red">'+ p.charge_name +'</span>');
+                    }
+                    // それ以外は普通に表示
+                    return p.charge_name;
+                }
+            },
+            {data: 'user_markers_updated_at'},
+            
+            // ポイント履歴の削除ボタン
+            {
+                data: function (p) {
+                    return getListLink('remove', p.id, '', 'list-button');
+                }
+            }
+        ],
+        // 各列ごとの装飾
+        [
+            // ボタン部分
+            { targets: [1], orderable: false, className: 'text-center', width: '100px'},
+            { targets: [3], orderable: false, className: 'text-center', width: '100px'},
+            { targets: [4], orderable: false, className: 'text-center', width: '100px'},
+            { targets: [6], orderable: false, className: 'text-center', width: '120px'},
+        ],
+        false
+    );
+}
 /**
  * ユーザごとのポイント履歴テーブルを生成
  * @param id 

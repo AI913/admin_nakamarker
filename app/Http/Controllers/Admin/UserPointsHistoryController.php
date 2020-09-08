@@ -139,27 +139,4 @@ class UserPointsHistoryController extends BaseAdminController
         }
         return ['status' => -1];
     }
-
-    // /**
-    //  * ポイント更新に必要なデータを取得
-    //  * @param $user_id
-    //  * @return array
-    //  */
-    // public function edit($id) {
-
-    //     // 詳細(Modal)のDataTable
-    //     // 〇検索条件
-    //     $conditions = [];
-    //     $conditions['id'] = $id;
-    //     // 〇ソート条件
-    //     $sort = [];
-    //     // 〇リレーション
-    //     $relations = [];
-    //     $data = $this->mainService->searchOne($conditions, $sort, $relations);
-        
-    //     return [
-    //         'status' => 1,
-    //         'data' => $data,
-    //     ]; 
-    // }
 }

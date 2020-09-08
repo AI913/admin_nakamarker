@@ -21,7 +21,7 @@ class CommunityService extends BaseService
      * ユーザ一覧ページに表示するコミュニティデータを取得
      * 引数:ユーザID
      */
-    public function isUserCommunityData($user_id) {
+    public function getUserCommunityQuery($user_id) {
         $query = $this->model()->query();
     
         $query->leftJoin('community_histories', 'communities.id', 'community_histories.community_id')

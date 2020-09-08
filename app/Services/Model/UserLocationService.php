@@ -20,7 +20,7 @@ class UserLocationService extends BaseService
      * ユーザ一覧ページに表示する登録場所データを取得
      * 引数1: ユーザID, 引数2: ロケーションID(一覧を表示する場合は要省略)
      */
-    public function isUserLocationData($user_id, $location_id=null) {
+    public function getUserLocationQuery($user_id, $location_id=null) {
         $query = $this->model()->query();
         
         $query->leftJoin('markers', 'user_locations.marker_id', 'markers.id')

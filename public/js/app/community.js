@@ -54,11 +54,11 @@ $(function(){
         // 登録情報の画像
         $(document).on('click', '#location_image_close', function(){
             let id = $(this).data('id');
-            $(`#modal${id}`).modal('hide');
+            $(`#location_modal${id}`).modal('hide');
         });
         $(document).on('click', '.close', function(){
             let id = $(this).data('id');
-            $(`#modal${id}`).modal('hide');
+            $(`#location_modal${id}`).modal('hide');
         });
         // ユーザ情報の備考
         $(document).on('click', '#user_modal_close', function(){
@@ -201,11 +201,11 @@ function setDetailView(data, button) {
                     data: function (p) {
                         
                         return `
-                            <a href="" data-toggle="modal" data-target="#modal${p.location_id}">
-                                <img src="${p.image_url}" id="location_image" data-id="${p.community_id}" height="45" width="65">
+                            <a href="" data-toggle="modal" data-target="#location_modal${p.location_id}">
+                                <img src="${p.image_url}" id="location_image" data-id="${p.location_id}" height="45" width="65">
                             </a>
     
-                            <div class="modal fade" id="modal${p.location_id}" tabindex="-1"
+                            <div class="modal fade" id="location_modal${p.location_id}" tabindex="-1"
                                 role="dialog" aria-labelledby="label1" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">

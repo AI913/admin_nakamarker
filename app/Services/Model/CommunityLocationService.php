@@ -20,7 +20,7 @@ class CommunityLocationService extends BaseService
      * コミュニティ一覧ページに表示する登録場所データを取得
      * 引数1: コミュニティID, 引数2: ロケーションID(一覧を表示する場合は要省略)
      */
-    public function isCommunityLocationData($community_id, $location_id=null) {
+    public function getCommunityLocationQuery($community_id, $location_id=null) {
         $query = $this->model()->query();
         
         $query->leftJoin('markers', 'community_locations.marker_id', 'markers.id')
