@@ -33,24 +33,11 @@ $(function(){
         let user_id = $(this).data('id');
         let community_id = $('#community_id').data('id');
         setUserDetail(user_id, community_id);
-    })
-
-    /* 
-     *   登録場所の"備考"ボタンが押下されたとき
-     */
-    $(document).on('click', '.btn-location',function(){
-        let location_id = $(this).data('id');
-        let community_id = $('#community_id').data('id');
-        setLocationDetail(location_id, community_id);
-    })
+    });
 
     /* 
      *   モーダルの終了処理
      */
-        // 登録情報の備考
-        $(document).on('click', '#location_modal_close', function(){
-            $('#community_location_modal').modal('hide');
-        });
         // 登録情報の画像
         $(document).on('click', '#location_image_close', function(){
             let id = $(this).data('id');
@@ -176,87 +163,6 @@ function setDetailView(data, button) {
             ],
             false
         );
-
-    /* 
-     *   "登録場所"の表示
-     */
-        if ($.fn.DataTable.isDataTable('#community_location_list')) {
-            $('#community_location_list').DataTable().destroy();
-        }
-        
-        settingDataTables(
-            // 取得
-            // tableのID
-            'community_location_list',
-            // 取得URLおよびパラメタ
-            `/ajax/community/detail/${data.id}/location`,
-            {},
-            // 各列ごとの表示定義
-            [
-                {data: 'location_id'},
-                {data: 'marker_name'},
-                {data: 'location_name'},
-                {
-                    // ロケーションイメージの画像を表示(モーダル形式)
-                    data: function (p) {
-                        
-                        return `
-                            <a href="" data-toggle="modal" data-target="#location_modal${p.location_id}">
-                                <img src="${p.image_url}" id="location_image" data-id="${p.location_id}" height="45" width="65">
-                            </a>
-    
-                            <div class="modal fade" id="location_modal${p.location_id}" tabindex="-1"
-                                role="dialog" aria-labelledby="label1" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="label1">ロケーションイメージ</h5>
-                                            <button type="button" class="close" data-id="${p.location_id}" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                        <img src="${p.image_url}" id="image_modal" height="350" width="450">
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" id="location_image_close" data-id="${p.location_id}">Close</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    }
-                },
-                {data: 'user_name'},
-                {data: 'created_at'},
-                // GoogleMapのリンクを埋め込み
-                {
-                    data: function (p) {
-                        // ロケーション情報を埋め込んだGoogle MapのURLを変数に代入
-                        let url = `https://www.google.com/maps?q=${p.latitude},${p.longitude}`;
-                        // 登録場所の備考ボタン・削除ボタンの設定(備考はデータがあるときのみ表示)
-                        return getListLink('map', p.location_id, url, 'list-button');
-                    }
-                },
-                {
-                    data: function (p) {
-                        // '登録場所'の備考ボタン・削除ボタンの設定(備考はデータがあるときのみ表示)
-                        if(p.memo == null) {
-                            return getListLink('remove', p.location_id, '', 'list-button');
-                        }
-                        return getListLink('location', p.location_id, '', 'list-button') +
-                            getListLink('remove', p.location_id, '', 'list-button');
-                    }
-                }
-            ],
-            // 各列ごとの装飾
-            [
-                { targets: [3], orderable: false, className: 'text-center', width: '120px'},
-                { targets: [6], orderable: false, className: 'text-center', width: '120px'},
-                { targets: [7], orderable: false, className: 'text-center', width: '150px'},
-            ],
-            false
-        );
         $('#community_modal').modal('show');
     }
 }
@@ -274,24 +180,6 @@ function setUserDetail(user_id, community_id) {
 
             // 備考モーダルの表示
             $('#community_user_modal').modal('show');
-        } else {
-            alert('no data error');
-        }
-    });
-}
-/**
- * "登録場所の備考情報"モーダルの表示処理
- * @param id 
- */
-function setLocationDetail(location_id, community_id) {
-    // 削除フォームIDをセット
-    $.ajax({url: `/ajax/community/detail/${community_id}/location/${location_id}`})
-    .done(function(response){
-        if (response.status == 1) {
-            $('#detail_location_memo').html(response.data.memo);
-
-            // 備考モーダルの表示
-            $('#community_location_modal').modal('show');
         } else {
             alert('no data error');
         }
@@ -530,7 +418,6 @@ function initList(search) {
             {data: 'name'},
             {data: 'type_name'},
             {data: 'created_at'},
-            {data: 'description'},
             {data: 'total_counts'},
             {
                 data: function(p) {
@@ -540,6 +427,12 @@ function initList(search) {
                     }
                     // "公開"の場合は青色で表示
                     return (`<span style='color: blue'>${p.status_name}</span>`);
+                }
+            },
+            {
+                data: function (p) {
+                    // "登録場所"ボタンの設定
+                    return getListLink('location_list', p.id ,`/community/detail/${p.id}/location`, 'list-button');
                 }
             },
             // 各操作列
@@ -558,8 +451,8 @@ function initList(search) {
             { targets: [1], orderable: false, className: 'text-center', width: '150px'},
             { targets: [2], orderable: false},
             { targets: [3], orderable: false, width: '120px'},
-            { targets: [5], orderable: false},
-            { targets: [6], orderable: true, className: 'text-center', width: '100px'},
+            { targets: [5], orderable: true, className: 'text-center', width: '100px'},
+            { targets: [6], orderable: false, className: 'text-center', width: '100px'},
             { targets: [7], orderable: false, className: 'text-center', width: '100px'},
             { targets: [8], orderable: false, className: 'text-center', width: '150px'},
            ],
@@ -584,11 +477,17 @@ function getListLink(type, id, link, clazz) {
     if (type == "location") {
         return '<a href="javascript:void(0)" class="btn btn-success btn-location '+clazz+'" data-toggle="tooltip" title="備考" data-placement="top" data-id="'+id+'"><i class="fas fa-search fa-fw"></i></a>';
     }
+    if (type == "location_list") {
+        return '<a href="'+ link +'" class="btn btn-primary btn-location_list '+clazz+'" data-toggle="tooltip" title="登録場所" data-placement="top" data-id="'+id+'">登録場所</a>';
+    }
     if (type == "map") {
         return '<a href="'+ link +'" target="_blank" class="btn btn-primary btn-map '+clazz+'" data-toggle="tooltip" title="Google Mapで表示" data-placement="top" data-id="'+id+'"><i class="fas fa-map-marked-alt"></i></a>';
     }
     if (type == "edit") {
         return '<a href="'+link+'" class="btn btn-primary '+clazz+'" data-toggle="tooltip" title="編集" data-placement="top"><i class="fas fa-edit fa-fw"></i></a>';
+    }
+    if (type == "edit_location") {
+        return '<a href="javascript:void(0)" class="btn btn-primary '+clazz+'" data-toggle="tooltip" title="編集" data-placement="top"><i class="fas fa-edit fa-fw"></i></a>';
     }
     if (type == "remove") {
         return '<a href="javascript:void(0)" class="btn btn-danger btn-remove '+clazz+'" data-toggle="tooltip" title="削除" data-placement="top" data-id="'+id+'"><i class="fas fa-trash-alt fa-fw"></i></a>';

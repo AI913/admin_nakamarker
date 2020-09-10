@@ -11,7 +11,10 @@
 @section('app_bread')
     {{-- パンくず --}}
     <li class="breadcrumb-item">
-        <a href="{{ route('admin/community-location') }}">(コミュニティ)ロケーション一覧</a>
+        <a href="{{ route('admin/community') }}">コミュニティ一覧</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="{{ route('admin/community/detail/location/index', ['id' => $community_id]) }}">(コミュニティ)ロケーション一覧</a>
     </li>
     <li class="breadcrumb-item">{{ $register_mode == "create" ? 'ロケーション新規登録' : 'ロケーション編集' }}</li>
 @endsection
@@ -25,35 +28,29 @@
                     {{ $register_mode == "create" ? 'ロケーション新規登録　' : 'ロケーション編集　' }}<span class="text-danger">※は必須入力</span>
                 </div>
                 <div class="card-body">
-                    <form class="form-horizontal" action="{{ route('admin/community-location/save') }}" method="post" id="main_form" enctype='multipart/form-data'>
+                    <form class="form-horizontal" action="{{ route('admin/community/detail/location/save', ['id' => $community_id]) }}" method="post" id="main_form" enctype='multipart/form-data'>
                         {{ csrf_field() }}
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="name">ロケーション名<span class="text-danger">※</span></label>
                                     <div class="col-md-9">
-                                        <input class="form-control required-text" type="text" id="name" name="name" maxlength="50" placeholder="ロケーション名" value="{{ $data->name }}" data-title="名前">
+                                        <input class="form-control required-text" type="text" id="name" name="name" maxlength="50" placeholder="ロケーション名" value="{{ $data->name ? $data->name : '' }}" data-title="名前">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 col-form-label" for="name">緯度/経度<span class="text-danger">※</span></label>
-                                    <div class="col-md-4">
-                                        <input class="form-control required-text" type="text" id="latitude" name="latitude" maxlength="50" placeholder="緯度" value="{{ $data->latitude }}" data-title="緯度">
+                                    <label class="col-md-3 col-form-label" for="map">緯度・経度<span class="text-danger">※</span></label>
+                                    <div class="col-md-5">
+                                        <input class="form-control required-text" type="text" id="map" name="map" maxlength="50" placeholder="緯度・経度" value="{{ $data->map ? $data->map : '' }}" data-title="緯度・経度">
                                     </div>
-                                    <div class="col-md-4">
-                                        <input class="form-control required-text" type="text" id="longitude" name="longitude" maxlength="50" placeholder="経度" value="{{ $data->longitude }}" data-title="経度">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 col-form-label" for="description">ロケーション概要</label>
-                                    <div class="col-md-9">
-                                        <textarea class="form-control" name="description" id="description" maxlength="500" rows="10" placeholder="備考">{{ $data->memo }}</textarea>
+                                    <div class="col-md-2">
+                                        <a href="{{ config('const.bing_url') }}" type="button" class="btn btn-primary" target="_blank" data-toggle="tooltip" title="Mapを参照" width="100"><i class="fas fa-map-marked-alt"></i></a>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="name">マーカー<span class="text-danger">※</span></label>
                                     <div class="col-md-9">
-                                        <input class="form-control required-text" list="marker" id="marker_name" name="marker_name" type="text" maxlength="50" placeholder="マーカーを選択" value="{{ $data->marker_name }}" data-title="マーカー" autocomplete="off">
+                                        <input class="form-control required-text" list="marker" id="marker_name" name="marker_name" type="text" maxlength="50" placeholder="マーカーを選択" value="{{ $data->marker_name ? $data->marker_name : '' }}" data-title="マーカー" autocomplete="off">
                                         <datalist id="marker">
                                             @foreach ($marker_list as $value)
                                                 <option value="{{ $value->name }}"></option>
@@ -62,14 +59,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 col-form-label" for="name">コミュニティ<span class="text-danger">※</span></label>
+                                    <label class="col-md-3 col-form-label" for="memo">備考</label>
                                     <div class="col-md-9">
-                                        <input class="form-control required-text" list="community" id="community_name" name="community_name" type="text" maxlength="50" placeholder="コミュニティを選択" value="{{ $data->community_name }}" data-title="コミュニティ" autocomplete="off">
-                                        <datalist id="community">
-                                            @foreach ($community_list as $value)
-                                                <option value="{{ $value->name }}"></option>
-                                            @endforeach
-                                        </datalist>
+                                        <textarea class="form-control" name="memo" id="memo" maxlength="500" rows="5" placeholder="備考"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -109,9 +101,10 @@
                             <div class="col-md-12">
                                 <input type="hidden" name="id" id="id" value="{{ $data->id }}" />
                                 <input type="hidden" id="user_id" name="user_id" value="{{ $data->user_id ? $data->user_id : \Auth::user()->id }}" />
+                                <input type="hidden" id="community_id" name="community_id" value="{{ $community_id }}" />
                                 <input type="hidden" id="register_mode" name="register_mode" value="{{ $register_mode }}" />
                                 @include('admin.layouts.components.button.register', ['register_mode' => $register_mode])
-                                @include('admin.layouts.components.button.cancel', ['url' => "/community-location"])
+                                <a href="/community/detail/{{ $community_id }}/location"><button type="button" class="btn btn-outline-secondary width-100" id="btn_cancel">キャンセル</button></a>
                             </div>
                         </div>
                     </form>

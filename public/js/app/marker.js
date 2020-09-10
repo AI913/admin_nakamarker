@@ -52,7 +52,7 @@ function setDetailView(data, button) {
     // モーダルに表示する会員情報
     $('#detail_name').html(data.name);
     $('#detail_status').html(data.status_name);
-    $('#detail_price').html(data.price);
+    $('#detail_price').html(number_format(data.price));
     $('#detail_image_file').attr('src', data.image_url);
     $('#detail_price').html(data.price);
     $('#detail_charge_flg').html(data.charge_name);
@@ -320,7 +320,15 @@ function initList(search) {
             },
             {data: 'name'},
             {data: 'description'},
-            {data: 'price'},
+            {
+                data: function (p) {
+                    // ポイントにナンバーフォーマットを適用
+                    if(p.price) {
+                        return number_format(p.price);
+                    }
+                    return p.price;
+                }
+            },
             {
                 data: function(p) {
                     // 有料フラグが"有料"の場合は赤色で表示

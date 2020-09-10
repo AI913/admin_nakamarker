@@ -242,3 +242,12 @@
   margin-left: 20px; 
   margin-right: 5px;
 }
+
+/* コミュニティのモーダル */
+.btn-location_create_link {
+  margin-bottom: 10px;
+}
+
+.register_mode {
+  padding-right: 10px;
+}

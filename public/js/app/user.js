@@ -561,8 +561,24 @@ function setPointTable(id) {
         [
             {data: 'id'},
             {data: 'type_name'},
-            {data: 'give_point'},
-            {data: 'pay_point'},
+            {
+                data: function (p) {
+                    // ポイントにナンバーフォーマットを適用
+                    if(p.give_point) {
+                        return number_format(p.give_point);
+                    }
+                    return p.give_point;
+                }
+            }, // ポイント数(付与)
+            {
+                data: function (p) {
+                    // ポイントにナンバーフォーマットを適用
+                    if(p.pay_point) {
+                        return number_format(p.pay_point);
+                    }
+                    return p.pay_point;
+                }
+            }, // ポイント数(消費)
             {data: 'created_at'},
             {
                 data: function(p) {
@@ -733,7 +749,7 @@ function customCheck() {
  * DataTables一覧初期化
  */
 function initList(search) {
-    
+
     // DataTable設定
     settingDataTables(
         // 取得
@@ -764,8 +780,25 @@ function initList(search) {
                     return p.status_name;
                 }
             },
-            {data: 'total_points'}, // ポイント数(有料)
-            {data: 'free_total_points'}, // ポイント数(無料)
+            {
+                data: function (p) {
+                    // ポイントにナンバーフォーマットを適用
+                    if(p.total_points) {
+                        return number_format(p.total_points);
+                    }
+                    return p.total_points;
+                }
+            }, // ポイント数(有料)
+            {
+                data: function (p) {
+                    if(p.free_total_points) {
+                        return number_format(p.free_total_points);
+                    }
+                    return p.free_total_points;
+                }
+                    
+            
+            }, // ポイント数(無料)
             {
                 data: function (p) {
                     // 登録場所・参加コミュニティ・編集ボタンの設定

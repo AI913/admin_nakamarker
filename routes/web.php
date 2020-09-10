@@ -44,7 +44,7 @@ Route::middleware('auth:admin')->group(function () {
     // ユーザの登録場所イメージ更新(user_locations)
     Route::post('/ajax/user/detail/{id}/location/{location_id}/image',  'Admin\UserController@user_locationImage_delete')->name('admin/user/details/location/image');
     // ユーザの登録場所削除処理(user_locations)
-    Route::post('/ajax/user/detail/{id}/location/{location_id}/remove',     'Admin\UserLocationController@remove')->name('admin/user/details/location/remove');
+    // Route::post('/ajax/user/detail/{id}/location/{location_id}/remove',     'Admin\UserLocationController@remove')->name('admin/user/details/location/remove');
     
     /******************** ユーザその他(ajax) ********************/
     // ユーザの所有マーカー一覧(user_markers)
@@ -83,15 +83,17 @@ Route::middleware('auth:admin')->group(function () {
     // コミュニティの登録場所管理(community_locations)
     Route::get('/ajax/community/detail/{id}/location',  'Admin\CommunityController@community_locations')->name('admin/community/detail/location');
     // コミュニティの登録場所管理(community_locations)
-    Route::get('/ajax/community/detail/{id}/location/{location_id}',  'Admin\CommunityController@community_locations_detail')->name('admin/community/detail/location/detail');
+    // Route::get('/ajax/community/detail/{id}/location/{location_id}',  'Admin\CommunityController@community_locations_detail')->name('admin/community/detail/location/detail');
 
     /******************** コミュニティロケーション管理(community_locations) ********************/
-    Route::get('/community/location',             'Admin\CommunityLocationController@index')->name('admin/community/location');
-    Route::get('/community/location/create',      'Admin\CommunityLocationController@create')->name('admin/community/location/create');
-    Route::get('/community/location/edit/{id}',   'Admin\CommunityLocationController@edit')->name('admin/community/location/edit');
-    Route::get('/community/location/detail/{id}', 'Admin\CommunityLocationController@detail')->name('admin/community/location/detail');
-    Route::post('/community/location/save',       'Admin\CommunityLocationController@save')->name('admin/community/location/save');
-    Route::post('/community/location/remove',     'Admin\CommunityLocationController@remove')->name('admin/community/location/remove');
+    Route::get('/community/detail/{id}/location',                         'Admin\CommunityLocationController@index')->name('admin/community/detail/location/index');
+    Route::get('/community/detail/{id}/location/create',                  'Admin\CommunityLocationController@create')->name('admin/community/detail/location/create');
+    Route::get('/community/detail/{id}/location/edit/{location_id}',      'Admin\CommunityLocationController@edit')->name('admin/community/detail/location/edit');
+    Route::post('/community/detail/{id}/location/save',                   'Admin\CommunityLocationController@save')->name('admin/community/detail/location/save');
+    Route::post('/community/detail/{id}/location/remove',                 'Admin\CommunityLocationController@remove')->name('admin/community/detail/location/remove');
+
+    // 備考データの取得(community_locations)
+    Route::get('/ajax/community/detail/{id}/location/detail/{location_id}',    'Admin\CommunityLocationController@getMemo')->name('admin/community/detail/location/detail');
 
     /******************** コミュニティ履歴管理(community_histories) ********************/
     // コミュニティ詳細管理(community_histories)

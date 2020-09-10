@@ -15,6 +15,9 @@ class CommunityLocationController extends BaseAdminController
     protected $mainService;
     protected $markerService;
     protected $communityService;
+    protected $community;
+    protected $communityLocation;
+    protected $location_id;
 
     /**
      * コミュニティロケーション管理コントローラー
@@ -25,12 +28,29 @@ class CommunityLocationController extends BaseAdminController
     {
         parent::__construct();
         $this->mainService  = $mainService;
-        $this->mainRoot     = "admin/community-location";
+        $this->mainRoot     = "admin/community/community-location";
         $this->mainTitle    = 'コミュニティロケーション管理';
 
         // MarkerServiceとCommunityServiceをインスタンス化
         $this->markerService = $markerService;
         $this->communityService = $communityService;
+
+        // コミュニティのID等を取得
+        $this->middleware(function($request, $next) {
+            // GET送信の場合
+            $this->community = $this->communityService->searchOne(['id' => $request->id]);
+            $this->location_id = $request->location_id;
+
+            if (!$this->community) {
+                // POST送信の場合
+                $this->community = $this->communityService->searchOne(['id' => $request->community_id]);
+                if(!$this->community) {
+                    abort(404);
+                }
+            }
+
+            return $next($request);
+        });
     }
 
     /**
@@ -38,7 +58,7 @@ class CommunityLocationController extends BaseAdminController
      * @return array
      */
     public function except() {
-        return ["_token", "register_mode", "upload_image", "img_delete", "delete_flg_on", "marker_name", "marker_id", 'image_flg'];
+        return ["_token", "register_mode", "upload_image", "img_delete", "delete_flg_on", "marker_name", 'image_flg', 'map'];
     }
 
     /**
@@ -47,18 +67,41 @@ class CommunityLocationController extends BaseAdminController
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function main_list(Request $request) {
+    public function main_list(Request $request, $id) {
         // 〇検索条件
         $conditions = [];
         if ($request->id) { $conditions['community_locations.id'] = $request->id; }
         if ($request->name) { $conditions['community_locations.name@like'] = $request->name; }
         if ($request->community_id) { $conditions['community_locations.community_id'] = $request->community_id; }
-        // 〇ソート条件
-        $sort = [];
-        // 〇リレーション
-        $relations = ['user' => [], 'marker' => [], 'community' => []];
 
-        return DataTables::eloquent($this->mainService->searchQuery($conditions, $sort, $relations))->make();
+        return DataTables::eloquent($this->mainService->getCommunityLocationQuery($id, $conditions))->make();
+    }
+
+    /**
+     * コミュニティロケーション一覧
+     * 
+     */
+    public function index() {
+        return parent::index()->with(
+            [
+                'community_id' => $this->community->id,
+            ]
+        );
+    }
+
+    /**
+     * コミュニティロケーションの'備考'データ取得
+     * @param request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
+    public function getMemo($id, $location_id) {
+        $data = $this->mainService->getLocationMemoQuery($location_id)->first();
+
+        return [
+            'status' => 1,
+            'data' => $data,
+        ]; 
     }
 
     /**
@@ -67,14 +110,17 @@ class CommunityLocationController extends BaseAdminController
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create() {
-        // 全マーカーデータと全コミュニティデータ取得
-        $marker_list = $this->markerService->all();
-        $community_list = $this->communityService->all();
+        // ログインユーザの全マーカーデータを取得
+        $marker_list = $this->markerService->getLocationMarkerQuery(\Auth::user()->id)->get();
 
+        // コミュニティ情報
+        $community_id = $this->community->id;
+        // dd($data);
         // マーカーリスト&コミュニティリスト追加
         return parent::create()->with([
-            'marker_list' => $marker_list,
-            'community_list' => $community_list,
+            'register_mode' => 'create',
+            'marker_list'   => $marker_list,
+            'community_id'  => $community_id,
         ]);
     }
 
@@ -84,26 +130,29 @@ class CommunityLocationController extends BaseAdminController
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function edit($id) {
-        // 全マーカーデータと全コミュニティデータ取得
-        $marker_list = $this->markerService->all();
-        $community_list = $this->communityService->all();
-
         // 編集対象のロケーションデータを取得
-        $data = $this->mainService->find($id);
+        $data = $this->mainService->find($this->location_id);
 
-        // ロケーションデータに紐づいたマーカーとコミュニティを取得
+        // 編集対象のユーザに紐づく全マーカーを取得
+        $marker_list = $this->markerService->getLocationMarkerQuery($data->user_id)->get();
+
+        // コミュニティIDの代入
+        $community_id = $this->community->id;
+
+        // ロケーションデータに紐づいたマーカーを取得
         $marker = $this->markerService->searchOne(['id' => $data->marker_id]);
-        $community = $this->communityService->searchOne(['id' => $data->community_id]);
+
+        // 緯度・経度を連結
+        $data['map'] = $data->latitude.', '.$data->longitude;
 
         // マーカー名とコミュニティ名を$dataに追加
         $data['marker_name'] = $marker->name;
-        $data['community_name'] = $community->name;
 
         return view($this->mainRoot.'/register', [
             'register_mode' => 'edit',
-            'marker_list' => $marker_list,
-            'community_list' => $community_list,
-            'data' => $data
+            'marker_list'   => $marker_list,
+            'data'          => $data,
+            'community_id'  => $community_id,
         ]);
     }
 
@@ -118,17 +167,21 @@ class CommunityLocationController extends BaseAdminController
     public function saveBefore(Request $request) {
         // 保存処理モード
         $register_mode = $request->register_mode;
-
         // 選択したマーカーとコミュニティのデータをそれぞれ取得
         $marker = $this->markerService->searchOne(['name' => $request->marker_name]);
-        $community = $this->communityService->searchOne(['name' => $request->community_name]);
-
+        
         // 除外項目
         $input = $request->except($this->except());
-
+        
+        // 緯度・経度を分割
+        $map = explode(',', $request->map);
+        
         // マーカーとコミュニティのIDを配列に追加
         $input['marker_id'] = $marker->id;
-        $input['community_id'] = $community->id;
+        $input['community_id'] = $this->community->id;
+        // 緯度・経度を配列に追加
+        $input['latitude'] = $map[0];
+        $input['longitude'] = $map[1];
 
         if(is_null($request->image_flg)) {
             // 強制削除フラグがONの場合、専用画像名をDBに保存
@@ -152,5 +205,31 @@ class CommunityLocationController extends BaseAdminController
             $input["image_file"] = Common::saveImage($request->file('upload_image'));
         }
         return $input;
+    }
+
+    /**
+     * 保存
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|void
+     * @throws \Exception
+     */
+    public function save(Request $request) {
+        
+        try {
+            \DB::beginTransaction();
+            // 保存前処理で保存データ作成
+            $input = $this->saveBefore($request);
+            
+            // 保存処理
+            $model = $this->mainService->save($input, true, false);
+            // 保存後処理
+            $this->saveAfter($request, $model);
+            \DB::commit();
+            // 対象データの一覧にリダイレクト
+            return redirect(route('admin/community/detail/location/index', ['id' => $this->community->id]))->with('info_message', $request->register_mode == 'create' ? $this->mainTitle.'情報を登録しました' : $this->mainTitle.'情報を編集しました');
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return redirect(route('admin/community/detail/location/index', ['id' => $this->community->id]))->with('error_message', 'データ登録時にエラーが発生しました。[詳細]<br>'.$e->getMessage());
+        }
     }
 }

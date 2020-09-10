@@ -16,6 +16,21 @@ String.prototype.bytes = function () {
 };
 
 /**
+ * 整数値を3桁ずつカンマ区切りで出力する
+ *
+ * @param int num 整数値
+ * @return string カンマ区切りされた文字列
+ */
+function number_format(num) {
+    return num.toString().replace(
+      /(\d+?)(?=(?:\d{3})+$)/g,
+      function (x) {
+        return x + ',';
+      }
+    );
+  }
+
+/**
  * 全角考慮substr
  * @param text
  * @param len

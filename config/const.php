@@ -106,4 +106,6 @@ return [
     'push_after_name'       => '送信後',
     'push_error_name'       => '送信エラー',
 
+    // BingMapのURL
+    'bing_url'              => 'https://www.bing.com/maps',
 ];

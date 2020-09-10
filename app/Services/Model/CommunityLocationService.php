@@ -17,10 +17,10 @@ class CommunityLocationService extends BaseService
     }
 
     /**
-     * コミュニティ一覧ページに表示する登録場所データを取得
-     * 引数1: コミュニティID, 引数2: ロケーションID(一覧を表示する場合は要省略)
+     * コミュニティロケーション一覧ページに表示するデータを取得
+     * 引数1: コミュニティID, 引数2: 検索条件
      */
-    public function getCommunityLocationQuery($community_id, $location_id=null) {
+    public function getCommunityLocationQuery($community_id, $conditions=null) {
         $query = $this->model()->query();
         
         $query->leftJoin('markers', 'community_locations.marker_id', 'markers.id')
@@ -32,10 +32,23 @@ class CommunityLocationService extends BaseService
                 )
               ->where('community_locations.community_id', '=', $community_id);
 
-        // ロケーション情報の詳細を取得する際に設定
-        if(!is_null($location_id)) {
-            $query->where('community_locations.id', '=', $location_id);
+        // 検索条件があれば実行
+        if($conditions) {
+            $query = $this->getConditions($query, $this->model()->getTable(), $conditions);
         }
+        return $query;
+    }
+
+    /**
+     * コミュニティロケーションデータの"備考"を取得
+     * 引数1: ロケーションID
+     */
+    public function getLocationMemoQuery($location_id) {
+        $query = $this->model()->query();
+
+        $query->select('memo')
+              ->where('id', '=', $location_id);
+
         return $query;
     }
 }
