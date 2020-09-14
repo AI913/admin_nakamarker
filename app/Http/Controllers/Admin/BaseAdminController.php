@@ -8,6 +8,7 @@ use App\Services\Model\ConfigService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * 管理画面用Baseコントローラー
@@ -55,6 +56,24 @@ class BaseAdminController extends Controller
     }
 
     /**
+     * バリデーションルール　※オーバーライドして使用する
+     * @param Request $request
+     * @return array
+     */
+    public function validation_rules(Request $request) {
+        return [];
+    }
+
+    /**
+     * バリデーションメッセージ　※オーバーライドして使用する
+     * @param Request $request
+     * @return array
+     */
+    public function validation_message(Request $request) {
+        return [];
+    }
+
+    /**
      * 一覧画面
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -96,6 +115,56 @@ class BaseAdminController extends Controller
     }
 
     /**
+     * 新規登録かどうか
+     * @param Request $request
+     * @return bool
+     */
+    public function isCreate(Request $request) {
+        return isset($request->register_mode) && $request->register_mode == "create";
+    }
+    /**
+     * 編集かどうか
+     * @param Request $request
+     * @return bool
+     */
+    public function isEdit(Request $request) {
+        return isset($request->register_mode) && $request->register_mode == "edit";
+    }
+
+    /**
+     * 保存前に、加工したリクエストを追加
+     * @param Request $request
+     * @return Request
+     */
+    public function addRequest(Request $request) {
+        return $request;
+    }
+
+    /**
+     * バリデーション
+     * @param Request $request
+     * @return \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
+     */
+    public function validation(Request $request) {
+        // リクエスト変数を追加
+        $request = $this->addRequest($request);
+
+        // バリデーションルール
+        return Validator::make($request->all(), $this->validation_rules($request), $this->validation_message($request));
+    }
+
+    /**
+     * バリデーションエラー時のリダイレクト処理
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|void
+     */
+    public function validationFailRedirect(Request $request, $validator) {
+        return redirect($this->isCreate($request) ? route($this->mainRoot."/create") :  route($this->mainRoot."/edit"))
+            ->withErrors($validator)
+            ->withInput();
+    }
+
+    /**
      * 保存前処理
      * @param Request $request
      * @return array
@@ -127,6 +196,13 @@ class BaseAdminController extends Controller
      * @throws \Exception
      */
     public function save(Request $request) {
+        // バリデーション
+        $validator = $this->validation($request);
+        // バリデーションエラー時はリダイレクト
+        if ($validator->fails()) {
+            return $this->validationFailRedirect($request, $validator);
+        }
+        
         try {
             \DB::beginTransaction();
             // 保存前処理で保存データ作成

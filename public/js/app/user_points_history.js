@@ -116,17 +116,21 @@ function setPointTable(id) {
  */
 $(function(){
 
+    // ポイント付与のバリデーションチェック
     $(document).on("click", '#detail_point_submit', function(){
+        // 数値チェック
         if (!Number($('#create_point').val())) {
             alert('ポイントが正しくありません');
             $('#create_point').focus();
             return false;
         }
+        // nullチェック
         if ($('#select_point_type').val() == null) {
             alert('付与種別が正しくありません');
             $('#select_point_type').focus();
             return false;
         }
+        // nullチェック
         if ($('#select_charge_flg').val() == null) {
             alert('有料フラグが正しくありません');
             $('#select_point_type').focus();
@@ -135,53 +139,6 @@ $(function(){
         updatePoints();
     });
 });
-
-/**
- * ポイントの更新処理
- * @param {*} button 
- */
-// function updatePoints() {
-//     $.ajax({
-//         url: '/ajax/user-points-history/update_points',
-//         type: 'POST',
-//         dataType: 'json',
-//         headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-//         data:   {
-//             'id': $('input[name="id"]').val(),
-//             'give_point': $('#create_point').val(),
-//             'type': $('#select_point_type').val(),
-//             'charge_flg': $('#select_charge_flg').val(),
-//             'user_id': $('#detail_point_submit').attr("data-id"),
-//         }
-//     })
-//         .done(function(response){
-//             if(response.status == -1) {
-//                 alert('データの保存に失敗しました')
-//             }
-//             $('input[name="id"]').val('');
-//             $('.edit_point_label').text('ポイントの付与（新規）');
-//             $('#detail_point_submit').text('付与');
-//             // 表のデータを再取得して更新
-//             if(response.status == 1) {
-//                 $.ajax({url: '/user-points-history/detail/' + response.id})
-//                     .done(function(response){
-//                         if (response.status == 1) {
-//                             // DataTablesの再作成
-//                             if ($.fn.DataTable.isDataTable('#user_points_list')) {
-//                                 $('#user_points_list').DataTable().destroy();
-//                             }
-                            
-//                             setPointTable(response.data.id);
-//                         } else {
-//                             alert('no data error');
-//                         }
-//                     });
-//             }
-//         })
-//         .fail(function(response){
-//             alert('データの保存に失敗しました')
-//         });
-// }
 
 /**
  * DataTables一覧初期化

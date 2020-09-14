@@ -173,15 +173,9 @@ class CommunityLocationController extends BaseAdminController
         // 除外項目
         $input = $request->except($this->except());
         
-        // 緯度・経度を分割
-        $map = explode(',', $request->map);
-        
         // マーカーとコミュニティのIDを配列に追加
         $input['marker_id'] = $marker->id;
         $input['community_id'] = $this->community->id;
-        // 緯度・経度を配列に追加
-        $input['latitude'] = $map[0];
-        $input['longitude'] = $map[1];
 
         if(is_null($request->image_flg)) {
             // 強制削除フラグがONの場合、専用画像名をDBに保存
@@ -214,6 +208,23 @@ class CommunityLocationController extends BaseAdminController
      * @throws \Exception
      */
     public function save(Request $request) {
+
+        // 緯度・経度を分割
+        $map = explode(',', $request->map);
+
+        // 緯度・経度を数値化して配列に追加
+        $request['latitude'] = intval($map[0]);
+        $request['longitude'] = intval($map[1]);
+
+        // 加工したリクエストを追加
+        $request = $this->addRequest($request);
+
+        // バリデーション
+        $validator = $this->validation($request);
+        // バリデーションエラー時はリダイレクト
+        if ($validator->fails()) {
+            return $this->validationFailRedirect($request, $validator);
+        }
         
         try {
             \DB::beginTransaction();
@@ -231,5 +242,48 @@ class CommunityLocationController extends BaseAdminController
             \DB::rollBack();
             return redirect(route('admin/community/detail/location/index', ['id' => $this->community->id]))->with('error_message', 'データ登録時にエラーが発生しました。[詳細]<br>'.$e->getMessage());
         }
+    }
+
+    /**
+     * バリデーション設定
+     * @param Request $request
+     * @return array
+     */
+    public function validation_rules(Request $request)
+    {
+        // バリデーションチェック
+        return [
+            // 緯度：-90~90の間を正規表現でチェック、経度：-180~180の間を正規表現でチェック
+            'latitude'          => ['numeric','regex:/^[-+]?([1-8]?d(.d+)?|90(.0+)?)$/'],
+            'longitude'         => ['numeric','regex:/^[-+]?(180(.0+)?|((1[0-7]d)|([1-9]?d))(.d+)?)$/'],
+            'upload_image'      => ['image', 'max:1024'],
+        ];
+    }
+
+    /**
+     * バリデーションメッセージ
+     * @param Request $request
+     * @return array
+     */
+    public function validation_message(Request $request) {
+        return [
+            'latitude.regex'     => '緯度は-90~90の半角数字で入力してください',
+            'longitude.regex'     => '経度は-180~180の半角数字で入力してください',
+
+            'upload_image.image'  => '画像は"jpeg, png, bmp, gif, or svg"形式のみでアップロードしてください',
+            'upload_image.max'    => '画像は1,024kb以下しか登録できません',
+        ];
+    }
+
+    /**
+     * バリデーションエラー時のリダイレクト処理
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|void
+     */
+    public function validationFailRedirect(Request $request, $validator) {
+        return redirect($this->isCreate($request) ? 'community/detail/'.$this->community->id.'/location/create'
+                                                  : 'community/detail/'.$this->community->id.'/location/edit/'.$this->location_id)
+            ->withErrors($validator)
+            ->withInput();
     }
 }

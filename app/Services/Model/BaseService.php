@@ -205,6 +205,7 @@ abstract class BaseService{
             return $model;
         } catch (\Exception $e) {
             if ($transaction) \DB::rollBack();
+            
             \Log::error('database save error:'.$e->getMessage());
             throw new \Exception($e);
         }

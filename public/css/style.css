@@ -251,3 +251,8 @@
 .register_mode {
   padding-right: 10px;
 }
+
+/* エラーメッセージ */
+.errors {
+  color: red;
+}

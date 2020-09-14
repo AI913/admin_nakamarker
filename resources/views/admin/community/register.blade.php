@@ -30,27 +30,60 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group row">
+                                    <label class="col-md-3 col-form-label">コミュニティタイプ<span class="text-danger">※</span></label>
+                                    <div class="col-md-9 form-inline" id="type_checked">
+                                        <div class="custom-control custom-radio cursor-pointer mr-3">
+                                            <input type="radio" class="custom-control-input" id="type1" name="type" value="{{ config('const.community_official') }}" data-type="{{ config('const.community_official_name') }}" 
+                                            {{ !$data->type || $data->type == config('const.community_official') || old('type') == config('const.community_official') ? 'checked' : '' }}>
+
+                                            <label class="custom-control-label cursor-pointer" for="type1">{{ config('const.community_official_name') }}</label>
+                                        </div>
+                                        <div class="custom-control custom-radio cursor-pointer mr-3">
+                                            <input type="radio" class="custom-control-input" id="type2" name="type" value="{{ config('const.community_official_free') }}" data-type="{{ config('const.community_official_free_name') }}" 
+                                            {{ $data->type == config('const.community_official_free') || old('type') == config('const.community_official_free') ? 'checked' : '' }}>
+
+                                            <label class="custom-control-label cursor-pointer" for="type2">{{ config('const.community_official_free_name') }}</label>
+                                        </div>
+                                        <div class="custom-control custom-radio cursor-pointer mr-3">
+                                            <input type="radio" class="custom-control-input" id="type3" name="type" value="{{ config('const.community_personal') }}" data-type="{{ config('const.community_personal_name') }}" 
+                                            {{ $data->type == config('const.community_personal') || old('type') == config('const.community_personal') ? 'checked' : '' }}>
+
+                                            <label class="custom-control-label cursor-pointer" for="type3">{{ config('const.community_personal_name') }}</label>
+                                        </div>
+                                        <div class="custom-control custom-radio cursor-pointer mr-3">
+                                            <input type="radio" class="custom-control-input" id="type4" name="type" value="{{ config('const.community_personal_open') }}" data-type="{{ config('const.community_personal_open_name') }}" 
+                                            {{ $data->type == config('const.community_personal_open') || old('type') == config('const.community_personal_open') ? 'checked' : '' }}>
+
+                                            <label class="custom-control-label cursor-pointer" for="type4">{{ config('const.community_personal_open_name') }}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="name">コミュニティ名<span class="text-danger">※</span></label>
                                     <div class="col-md-9">
-                                        <input class="form-control required-text" type="text" id="name" name="name" maxlength="50" placeholder="名前" value="{{ $data->name }}" data-title="名前">
+                                        {{-- エラーメッセージあれば表示 --}}
+                                        @include('admin.layouts.components.error_message', ['title' => 'name'])
+                                        <input class="form-control required-text" type="text" id="name" name="name" maxlength="50" placeholder="名前" value="{{ $data->name ? $data->name : old('name') }}" data-title="名前">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="description">コミュニティ概要</label>
                                     <div class="col-md-9">
-                                        <textarea class="form-control" name="description" id="description" maxlength="500" rows="10" placeholder="備考">{{ $data->memo }}</textarea>
+                                        <textarea class="form-control" name="description" id="description" maxlength="500" rows="10" placeholder="備考">{{ $data->memo ? $data->memo : old('memo') }}</textarea>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label">公開ステータス<span class="text-danger">※</span></label>
                                     <div class="col-md-9 form-inline" id="status_checked">
-                                        <input type="checkbox" id="open_flg" data-toggle="toggle" data-on="{{ config('const.open_name') }}" data-off="{{ config('const.private_name') }}" {{ $data->status ? 'checked' : '' }}>
-                                        <input type="hidden" id="status" name="status" value="{{ $data->status ? $data->status : 0}}">
+                                        <input type="checkbox" id="open_flg" data-toggle="toggle" data-on="{{ config('const.open_name') }}" data-off="{{ config('const.private_name') }}" {{ $data->status === config('const.open') || old('status') == config('const.open') ? 'checked' : '' }}>
+                                        <input type="hidden" id="status" name="status" value="{{ $data->status ? $data->status : (old('status') ? old('status') : 0) }}">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group row">
+                                    {{-- エラーメッセージあれば表示 --}}
+                                    @include('admin.layouts.components.error_message', ['title' => 'upload_image'])
                                     <label class="col-md-3 col-form-label" for="marker_image">イメージ画像</label>
                                     <div class="col-md-9 user-icon-dnd-wrapper">
                                         <div id="drop_area" class="drop_area">

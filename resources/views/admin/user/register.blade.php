@@ -41,13 +41,17 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="name">名前<span class="text-danger">※</span></label>
                                     <div class="col-md-9">
-                                        <input class="form-control required-text" type="text" id="name" name="name" maxlength="50" placeholder="名前" value="{{ $data->name }}" data-title="名前" {{ $data->id === \Auth::user()->id ? 'disabled' : ''}}>
+                                        {{-- エラーメッセージあれば表示 --}}
+                                        @include('admin.layouts.components.error_message', ['title' => 'name'])
+                                        <input class="form-control required-text" type="text" id="name" name="name" maxlength="50" placeholder="名前" value="{{ $data->name ? $data->name : old('name') }}" data-title="名前" {{ $data->id === \Auth::user()->id ? 'disabled' : ''}}>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="email">メールアドレス<span class="text-danger">※</span></label>
                                     <div class="col-md-9">
-                                        <input class="form-control required-text duplicate-email" type="email" id="email" name="email" maxlength="50" placeholder="メールアドレス" value="{{ $data->email }}" data-id="{{ $data->id }}" data-title="メールアドレス" {{ $data->id === \Auth::user()->id ? 'disabled' : ''}}>
+                                        {{-- エラーメッセージあれば表示 --}}
+                                        @include('admin.layouts.components.error_message', ['title' => 'email'])
+                                        <input class="form-control required-text duplicate-email" type="email" id="email" name="email" maxlength="50" placeholder="メールアドレス" value="{{ $data->email ? $data->email : old('email') }}" data-id="{{ $data->id }}" data-title="メールアドレス" {{ $data->id === \Auth::user()->id ? 'disabled' : ''}}>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -55,10 +59,14 @@
                                     <div class="col-md-9">
                                         @if($data->id)
                                         {{-- 編集時 --}}
+                                        {{-- エラーメッセージあれば表示 --}}
+                                        @include('admin.layouts.components.error_message', ['title' => 'password'])
                                         <input class="form-control char-count-text" type="password" id="password" name="password" maxlength="20" placeholder="パスワード" value="" data-count-error-msg="パスワードは６文字以上入力してください" {{ $data->id === \Auth::user()->id ? 'disabled' : ''}}>
                                         <span class="text-primary">変更する場合のみ入力</span>
                                         @else
                                         {{-- 新規登録時 --}}
+                                        {{-- エラーメッセージあれば表示 --}}
+                                        @include('admin.layouts.components.error_message', ['title' => 'password'])
                                         <input class="form-control required-text char-count-text" type="password" id="password" name="password" maxlength="20" placeholder="パスワード" value="" data-title="パスワード" data-count-error-msg="パスワードは６文字以上入力してください">
                                         @endif
                                     </div>
@@ -67,6 +75,8 @@
                                     <label class="col-md-3 col-form-label">ステータス<span class="text-danger">※</span></label>
                                     <div class="col-md-9 form-inline" id="status_checked">
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
+                                            {{-- エラーメッセージあれば表示 --}}
+                                            @include('admin.layouts.components.error_message', ['title' => 'status'])
                                             <input type="radio" class="custom-control-input" id="status1" name="status" value="{{ config('const.user_app_member') }}" data-status="{{ config('const.user_app_member_name') }}" {{ !$data->status || $data->status == config('const.user_app_member') ? 'checked' : '' }} {{ $data->id === \Auth::user()->id ? 'disabled' : ''}}>
                                             <label class="custom-control-label cursor-pointer" for="status1">{{ config('const.user_app_member_name') }}</label>
                                         </div>
@@ -85,7 +95,9 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="name">備考</label>
                                     <div class="col-md-9">
-                                        <textarea class="form-control" name="memo" id="memo" maxlength="500" rows="10" placeholder="備考" {{ $data->id === \Auth::user()->id ? 'disabled' : ''}}>{{ $data->memo }}</textarea>
+                                        {{-- エラーメッセージあれば表示 --}}
+                                        @include('admin.layouts.components.error_message', ['title' => 'memo'])
+                                        <textarea class="form-control" name="memo" id="memo" maxlength="500" rows="10" placeholder="備考" {{ $data->id === \Auth::user()->id ? 'disabled' : ''}}>{{ $data->memo ? $data->memo : old('memo') }}</textarea>
                                     </div>
                                 </div>
                             </div>

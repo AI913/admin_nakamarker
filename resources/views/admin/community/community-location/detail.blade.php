@@ -1,9 +1,6 @@
 
 {{--
     コミュニティのロケーションモーダル
-        modalのIDは「detail_modal」で固定
-        表示したい項目のIDは「detail_xxxx」とdetail_を必ずつける
-        また、classには「detail-view」を必ずつける
 --}}
 
     {{-- 登録場所の備考モーダル --}}

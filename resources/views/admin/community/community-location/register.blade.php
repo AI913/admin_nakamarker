@@ -35,13 +35,16 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="name">ロケーション名<span class="text-danger">※</span></label>
                                     <div class="col-md-9">
-                                        <input class="form-control required-text" type="text" id="name" name="name" maxlength="50" placeholder="ロケーション名" value="{{ $data->name ? $data->name : '' }}" data-title="名前">
+                                        <input class="form-control required-text" type="text" id="name" name="name" maxlength="50" placeholder="ロケーション名" value="{{ $data->name ? $data->name : old('name') }}" data-title="名前">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="map">緯度・経度<span class="text-danger">※</span></label>
                                     <div class="col-md-5">
-                                        <input class="form-control required-text" type="text" id="map" name="map" maxlength="50" placeholder="緯度・経度" value="{{ $data->map ? $data->map : '' }}" data-title="緯度・経度">
+                                        {{-- エラーメッセージあれば表示 --}}
+                                        @include('admin.layouts.components.error_message', ['title' => 'latitude'])
+                                        @include('admin.layouts.components.error_message', ['title' => 'longitude'])
+                                        <input class="form-control required-text" type="text" id="map" name="map" maxlength="50" placeholder="緯度・経度" value="{{ $data->map ? $data->map : old('map') }}" data-title="緯度・経度">
                                     </div>
                                     <div class="col-md-2">
                                         <a href="{{ config('const.bing_url') }}" type="button" class="btn btn-primary" target="_blank" data-toggle="tooltip" title="Mapを参照" width="100"><i class="fas fa-map-marked-alt"></i></a>
@@ -50,7 +53,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="name">マーカー<span class="text-danger">※</span></label>
                                     <div class="col-md-9">
-                                        <input class="form-control required-text" list="marker" id="marker_name" name="marker_name" type="text" maxlength="50" placeholder="マーカーを選択" value="{{ $data->marker_name ? $data->marker_name : '' }}" data-title="マーカー" autocomplete="off">
+                                        <input class="form-control required-text" list="marker" id="marker_name" name="marker_name" type="text" maxlength="50" placeholder="マーカーを選択" value="{{ $data->marker_name ? $data->marker_name : old('marker_name') }}" data-title="マーカー" autocomplete="off">
                                         <datalist id="marker">
                                             @foreach ($marker_list as $value)
                                                 <option value="{{ $value->name }}"></option>
@@ -61,12 +64,14 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="memo">備考</label>
                                     <div class="col-md-9">
-                                        <textarea class="form-control" name="memo" id="memo" maxlength="500" rows="5" placeholder="備考"></textarea>
+                                        <textarea class="form-control" name="memo" id="memo" maxlength="500" rows="5" placeholder="備考">{{ $data->memo ? $data->memo : old('memo') }}</textarea>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group row">
+                                    {{-- エラーメッセージあれば表示 --}}
+                                    @include('admin.layouts.components.error_message', ['title' => 'upload_image'])
                                     <label class="col-md-3 col-form-label" for="marker_image">イメージ画像</label>
                                     <div class="col-md-9 user-icon-dnd-wrapper">
                                         <div id="drop_area" class="drop_area">

@@ -1,9 +1,6 @@
 
 {{--
     参加ユーザのモーダル
-        modalのIDは「detail_modal」で固定
-        表示したい項目のIDは「detail_xxxx」とdetail_を必ずつける
-        また、classには「detail-view」を必ずつける
 --}}
 
 <div class="modal fade" id="community_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

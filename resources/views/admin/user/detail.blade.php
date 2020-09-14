@@ -211,7 +211,7 @@
 
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link" id="item1-tab" data-toggle="tab" href="#item1" role="tab" aria-controls="item1" aria-selected="false">参加コミュニティ一覧</a>
+                        <a class="nav-link active" id="item1-tab" data-toggle="tab" href="#item1" role="tab" aria-controls="item1" aria-selected="false">参加コミュニティ一覧</a>
                     </li>
                 </ul>
                 <div class="tab-content">

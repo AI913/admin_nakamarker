@@ -14,6 +14,7 @@ use App\Services\Model\CommunityService;
 use App\Services\Model\CommunityHistoryService;
 use App\Services\Model\ConfigService;
 
+use Illuminate\Validation\Rule;
 class UserController extends BaseAdminController
 {
     protected $mainService;
@@ -66,7 +67,6 @@ class UserController extends BaseAdminController
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index() {
-        // dd($this->mainService->isUserPointData()->get());
         // ステータスリスト追加
         return parent::index()->with(
             ['status_list' => Common::getUserStatusList()]
@@ -218,13 +218,15 @@ class UserController extends BaseAdminController
     public function saveBefore(Request $request) {
         // 保存処理モード
         $register_mode = $request->register_mode;
-        // 除外項目
-        $input = $request->except($this->except());
-        // パスワードあり
+
         if ($request->password) {
             // パスワードのハッシュ化
-            $input['password'] = Common::getEncryptionPassword($request->password);
+            $request['password'] = Common::getEncryptionPassword($request->password);
         }
+
+        // 除外項目
+        $input = $request->except($this->except());
+
         // 編集時にパスワードがない場合
         if (!$request->password && $register_mode == 'edit') {
             // 配列の要素からpasswordを消去する
@@ -243,5 +245,44 @@ class UserController extends BaseAdminController
     public function remove(Request $request) {
         $this->mainService->removeUserEmail($this->mainService->remove($request->id));
         return redirect($this->mainRoot)->with('info_message', $this->mainTitle.'情報を削除しました');
+    }
+
+    /**
+     * バリデーション設定
+     * @param Request $request
+     * @return array
+     */
+    public function validation_rules(Request $request)
+    {
+        if ($this->isCreate($request)) {
+            // 作成時のバリデーションチェック
+            return [
+                'name'     => [Rule::unique('users')->ignore($request['id'], 'id')->where('del_flg', '=', 0)],
+                'email'    => ['email', 'max:100', Rule::unique('users')->ignore($request['id'], 'id')->where('del_flg', '=', 0)],
+                'password' => ['min:6'],
+            ];
+        } else {
+            // 編集時のバリデーションチェック
+            return [
+                'email' => ['email', 'max:100', Rule::unique('users')->ignore($request['id'], 'id')->where('del_flg', '=', 0)],
+            ];
+        }
+    }
+
+    /**
+     * バリデーションメッセージ
+     * @param Request $request
+     * @return array
+     */
+    public function validation_message(Request $request) {
+        return [
+            'name.unique'    => 'このユーザ名はすでに使用されています',
+
+            'email.email'    => 'メールアドレスの形式で入力してください',
+            'email.max'      => 'メールアドレスは100文字以下で登録してください',
+            'email.unique'   => 'このメールアドレスはすでに使用されています',
+
+            'password.min'      => 'パスワードは6文字以上で登録してください',
+        ];
     }
 }

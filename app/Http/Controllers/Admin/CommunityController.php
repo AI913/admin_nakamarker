@@ -9,6 +9,8 @@ use App\Services\Model\UserService;
 use App\Lib\Common;
 use Yajra\DataTables\Facades\DataTables;
 
+use Illuminate\Validation\Rule;
+
 class CommunityController extends BaseAdminController
 {
     protected $mainService;
@@ -162,5 +164,34 @@ class CommunityController extends BaseAdminController
         }
 
         return $input;
+    }
+
+    /**
+     * バリデーション設定
+     * @param Request $request
+     * @return array
+     */
+    public function validation_rules(Request $request)
+    { 
+        // バリデーションチェック
+        return [
+            'name'     => [Rule::unique('communities')->ignore($request['id'], 'id')->where('del_flg', '=', 0)],
+            
+            'upload_image'  => ['image', 'max:1024'],
+        ];
+    }
+
+    /**
+     * バリデーションメッセージ
+     * @param Request $request
+     * @return array
+     */
+    public function validation_message(Request $request) {
+        return [
+            'name.unique'    => 'このコミュニティ名はすでに使用されています',
+
+            'upload_image.image' => '画像は"jpeg, png, bmp, gif, or svg"形式のみでアップロードしてください',
+            'upload_image.max' => '画像は1,024kb以下しか登録できません',
+        ];
     }
 }

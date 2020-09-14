@@ -135,4 +135,33 @@ class MarkerController extends BaseAdminController
 
         return $input;
     }
+
+    /**
+     * バリデーション設定
+     * @param Request $request
+     * @return array
+     */
+    public function validation_rules(Request $request)
+    {
+        // バリデーションチェック
+        return [
+            'price'         => ['integer'],
+            'upload_image'  => ['required', 'image', 'max:1024'],
+        ];
+    }
+
+    /**
+     * バリデーションメッセージ
+     * @param Request $request
+     * @return array
+     */
+    public function validation_message(Request $request) {
+        return [
+            'price.integer'   => '価格は半角数字で入力してください',
+
+            'upload_image.required' => '画像の設定は必須項目です',
+            'upload_image.image' => '画像は"jpeg, png, bmp, gif, or svg"形式のみでアップロードしてください',
+            'upload_image.max' => '画像は1,024kb以下しか登録できません',
+        ];
+    }
 }

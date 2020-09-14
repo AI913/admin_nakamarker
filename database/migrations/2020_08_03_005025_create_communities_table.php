@@ -15,7 +15,7 @@ class CreateCommunitiesTable extends Migration
     {
         Schema::create('communities', function (Blueprint $table) {
             $table->increments('id');                           // ID
-            $table->tinyInteger('type');                        // 種別
+            $table->tinyInteger('type')->default(1);            // 種別
             $table->string('name');                             // コミュニティの名前
             $table->string('description')->nullable();          // コミュニティの説明
             $table->tinyInteger('status')->default(1);          // マーカーの公開フラグ
