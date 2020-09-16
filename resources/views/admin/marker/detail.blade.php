@@ -57,17 +57,16 @@
                         </div>
                     </div>
                     
-                    {{-- タブ2つ目(登録場所管理) --}}
+                    {{-- タブ2つ目(所有ユーザ管理) --}}
                     <div class="tab-pane fade" id="item2" role="tabpanel" aria-labelledby="item2-tab">
                         <table class="table table-striped table-bordered datatable table-sm" id="marker_user_list">
                             <thead>
                                 <tr role="row">
-                                    <th>ユーザID</th>
+                                    <th>履歴ID</th>
                                     <th>ユーザ名</th>
                                     <th>メールアドレス</th>
                                     <th>購入日時</th>
                                     <th>ステータス</th>
-                                    <th>操作</th>
                                 </tr>
                             </thead>
                         </table>

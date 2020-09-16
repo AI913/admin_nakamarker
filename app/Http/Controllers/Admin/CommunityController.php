@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Services\Model\CommunityService;
 use App\Services\Model\CommunityLocationService;
+use App\Services\Model\CommunityHistoryService;
 use App\Services\Model\UserService;
 use App\Lib\Common;
 use Yajra\DataTables\Facades\DataTables;
@@ -15,8 +16,14 @@ class CommunityController extends BaseAdminController
 {
     protected $mainService;
     protected $communityLocationService;
+    protected $communityHistoryService;
 
-    public function __construct(CommunityService $mainService, CommunityLocationService $communityLocationService, UserService $userService)
+    public function __construct(
+        CommunityService $mainService, 
+        CommunityLocationService $communityLocationService, 
+        CommunityHistoryService $communityHistoryService,
+        UserService $userService
+    )
     {
         parent::__construct();
         $this->mainService  = $mainService;
@@ -24,6 +31,8 @@ class CommunityController extends BaseAdminController
         $this->mainTitle    = 'コミュニティ管理';
 
         $this->communityLocationService = $communityLocationService;
+        $this->communityHistoryService = $communityHistoryService;
+
         $this->userService = $userService;
     }
     
@@ -164,6 +173,19 @@ class CommunityController extends BaseAdminController
         }
 
         return $input;
+    }
+
+    /**
+     * 削除
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function remove(Request $request) {
+        $this->mainService->remove($request->id);
+        $this->communityHistoryService->cascade($request->id);
+        $this->communityLocationService->cascade($request->id);
+
+        return redirect(route($this->mainRoot))->with('info_message', $this->mainTitle.'情報を削除しました');
     }
 
     /**

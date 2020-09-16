@@ -76,12 +76,12 @@
     @include('admin.layouts.components.message', ['title' => 'メッセージ'])
 
     {{-- 削除確認Modal読み込み --}}
-    {{-- @include('admin.layouts.components.confirm', [
+    @include('admin.layouts.components.confirm', [
         'id' => 'confirm_modal', 'title' => '削除確認', 'message' => '対象データを削除します。よろしいですか？', 'btn_id' => 'btn_remove'
-    ]) --}}
+    ])
 
     {{-- 削除Form読み込み --}}
-    {{-- @include('admin.layouts.components.remove_form', ['url' => url('admin/user/remove')]) --}}
+    @include('admin.layouts.components.remove_form', ['url' => url('marker/remove')])
 
     {{-- 詳細Modal読み込み --}}
     @include('admin.marker.detail')

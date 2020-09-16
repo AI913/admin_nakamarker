@@ -219,6 +219,18 @@ $(function() {
         $('#confirm_modal').modal('show');
     });
 
+    // モーダル内の一覧データ削除
+    $(document).on('click', '.btn-remove-modal', function(){
+        // formのhiddenにIDセット
+        $('#remove_id').val($(this).attr("data-id"));
+        // 確認メッセージ
+        if(confirm(`データID ${$(this).attr("data-id")} を削除しますか？`)) {
+            $('#remove_form').attr('action', $(this).attr("data-url"))
+            $('#remove_form').submit();
+        }
+        return;
+    });
+
     // 一覧詳細ボタンクリック
 
     // 削除確認モーダルOKクリック

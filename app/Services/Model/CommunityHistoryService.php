@@ -76,4 +76,29 @@ class CommunityHistoryService extends BaseService
               
         return $query;
     }
+
+    /**
+     * コミュニティ削除時の履歴削除処理
+     * 
+     */
+    public function cascade($community_id) {
+        \DB::beginTransaction();
+        try {
+            $model = $this->model()::query();
+            $model = $model->where('community_id', '=', $community_id)->get();
+            
+            foreach($model as $value){
+                $value->del_flg = 1;
+                $value->save();
+            }
+
+            \DB::commit();
+            return;
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            \Log::error('database remove error:'.$e->getMessage());
+            throw new \Exception($e);
+        }
+        
+    }
 }

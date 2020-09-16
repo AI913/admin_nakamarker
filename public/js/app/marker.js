@@ -10,6 +10,11 @@ $(function(){
     }
 
     // 公開フラグのvalue値設定
+    if($('#open_flg').prop('checked')) {
+        $('#status').val(1);
+    } else {
+        $('#status').val(0);
+    }
     $('#open_flg').change(function() {
         if($('#open_flg').prop('checked')) {
             $('#status').val(1);
@@ -18,7 +23,11 @@ $(function(){
         }
     })
 
-    // ポイントフラグの設定
+    
+    /**
+     * ポイントフラグの設定(charge_flg)
+     * 　※charge_flg機能の解禁
+     */
     $('#charge_flg').prop('disabled', true);
     if($('input[name=charge_flg]').val() != 3) {
         $('#charge_flg').prop('disabled', false);
@@ -29,6 +38,14 @@ $(function(){
                 $('input[name=charge_flg]').val(1);
             }
         });
+    }
+    /**
+     * ポイントフラグの設定(charge_flg_default)
+     * 　※リダイレクト時でも値の維持とcharge_flg機能の停止を維持
+     */
+    if ($('#charge_flg_default').prop('checked')) {
+        $('input[name=charge_flg]').val(3);
+        $('#charge_flg').prop('disabled', true);
     }
     $('#charge_flg_default').change(function() {
         if ($('#charge_flg_default').prop('checked')) {
@@ -77,7 +94,7 @@ function setDetailView(data, button) {
             {},
             // 各列ごとの表示定義
             [
-                {data: 'user_id'},
+                {data: 'user_markers_id'},
                 {data: 'user_name'},
                 {data: 'user_email'},
                 {data: 'user_markers_updated_at'},  // 購入日時
@@ -91,17 +108,10 @@ function setDetailView(data, button) {
                         return p.status_name;
                     }
                 },
-                {
-                    data: function (p) {
-                        // 削除時はuser_markersテーブルのデータを削除する
-                        return getListLink('remove', p.user_markers_id, '', 'list-button');
-                    }
-                },
             ],
             // 各列ごとの装飾
             [
                 { targets: [4], orderable: false, className: 'text-center', width: '120px'},
-                { targets: [5], orderable: false, className: 'text-center', width: '120px'},
             ],
             false
         );
@@ -366,7 +376,7 @@ function initList(search) {
                     // 編集
                     return getListLink('detail', p.id ,'/marker/detail/'+p.id, 'list-button') + 
                            getListLink('edit', 0, '/marker/edit/'+p.id, 'list-button') + 
-                           getListLink('remove', p.id ,'/marker/detail/'+p.id, 'list-button');
+                           getListLink('remove', p.id ,'/marker/remove', 'list-button');
                 }
             }
         ],

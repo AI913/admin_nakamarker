@@ -31,6 +31,7 @@ class NewsController extends BaseAdminController
     public function main_list(Request $request) {
         // 〇検索条件
         $conditions = [];
+        $conditions['del_flg'] = 0;
         if ($request->id) { $conditions['news.id'] = $request->id; }
         if ($request->title) { $conditions['news.title'] = $request->title; }
         if ($request->type) { $conditions['news.type'] = $request->type; }
@@ -87,15 +88,22 @@ class NewsController extends BaseAdminController
      * @return array
      */
     public function validation_rules(Request $request)
-    {
+    {   
+        if($request->status == config('const.open')) {
+            // バリデーションチェック
+            return [
+                'upload_image'  => ['image', 'max:1024'],
+                'body'          => ['required'],
+
+                // 公開日の設定日時をチェック
+                'condition_start_time'       => ['after:"now"'],
+                'condition_end_time'         => ['after:"condition_start_time"'],       
+            ];
+        }
         // バリデーションチェック
         return [
             'upload_image'  => ['image', 'max:1024'],
             'body'          => ['required'],
-
-            // 公開日の設定日時をチェック
-            'condition_start_time'       => ['after:"now"'],
-            'condition_end_time'         => ['after:"condition_start_time"'],       
         ];
     }
 

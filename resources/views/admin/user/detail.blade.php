@@ -205,8 +205,8 @@
 
                 <ul class="list-inline font-weight-bold">
                     <li class="list-inline-item">ユーザ名</li>
-                    <li class="list-inline-item"><span id="detail_name" class="detail-view"></span> さん</li>
-                    <li class="list-inline-item">（<span id="detail_status" class="detail-view"></span>）</li>
+                    <li class="list-inline-item"><span id="detail_name_community" class="detail-view"></span> さん</li>
+                    <li class="list-inline-item">（<span id="detail_status_community" class="detail-view"></span>）</li>
                 </ul>
 
                 <ul class="nav nav-tabs" role="tablist">
@@ -286,4 +286,6 @@
         <!-- /.modal-content-->
     </div>
     <!-- /.modal-dialog-->
+    {{-- 削除Form読み込み --}}
+    @include('admin.layouts.components.remove_form', ['url' => null])
 </div>

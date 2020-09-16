@@ -115,7 +115,7 @@ function setDetailView(data, button) {
             {},
             // 各列ごとの表示定義
             [
-                {data: 'id'},
+                {data: 'history_id'},
                 {data: 'name'},
                 {data: 'email'},
                 {data: 'updated_at'},  // 参加日時はcommunity_historiesテーブルのstatusカラムが"承認済み"の場合のupdated_atカラムを参照
@@ -145,13 +145,11 @@ function setDetailView(data, button) {
                 },
                 {
                     data: function (p) {
-                        // '参加ユーザリスト'の備考ボタン・削除ボタンの設定(備考はlocation_historiesのmemoカラムにデータがあるときのみ表示)
+                        // '参加ユーザリスト'の備考ボタンの設定(備考はlocation_historiesのmemoカラムにデータがあるときのみ表示)
                         if(p.entry_memo == null) {
-                            // ユーザIDをパラメータとして渡す
-                            return getListLink('remove', p.id, '', 'list-button');
+                            return ;
                         }
-                        return getListLink('user', p.id, '', 'list-button') +
-                            getListLink('remove', p.id, '', 'list-button');
+                        return getListLink('user', p.history_id, '', 'list-button');
                     }
                 },
             ],
@@ -441,7 +439,7 @@ function initList(search) {
                     // 参加メンバー・編集ボタンの設定
                     return getListLink('community', p.id ,'/community/detail/'+p.id, 'list-button') +
                            getListLink('edit', p.id, '/community/edit/'+p.id, 'list-button') + 
-                           getListLink('remove', p.id ,'/community/detail/'+p.id, 'list-button');
+                           getListLink('remove', p.id ,'community/remove', 'list-button');
                 }
             }
         ],

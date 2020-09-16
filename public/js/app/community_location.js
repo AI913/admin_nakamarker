@@ -295,7 +295,7 @@ function initList(search) {
                     // 詳細・編集・削除
                     return getListLink('location', p.location_id, '', 'list-button') +
                            getListLink('edit', p.location_id, `${url}/edit/${p.location_id}`, 'list-button') +
-                           getListLink('remove', p.location_id, '', 'list-button');
+                           getListLink('remove_modal', p.community_id, `${url}/remove`, 'list-button');
                 }
 
             }
@@ -332,5 +332,8 @@ function getListLink(type, id, link, clazz) {
     }
     if (type == "remove") {
         return '<a href="javascript:void(0)" class="btn btn-danger btn-remove '+clazz+'" data-toggle="tooltip" title="削除" data-placement="top" data-id="'+id+'"><i class="fas fa-trash-alt fa-fw"></i></a>';
+    }
+    if (type == "remove_modal") {
+        return '<a href="javascript:void(0)" class="btn btn-danger btn-remove-modal '+clazz+'" data-toggle="tooltip" title="削除" data-placement="top" data-id="'+id+'" data-url="'+ link +'"><i class="fas fa-trash-alt fa-fw"></i></a>';
     }
 }

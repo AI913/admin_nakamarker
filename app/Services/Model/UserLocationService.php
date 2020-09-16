@@ -28,7 +28,8 @@ class UserLocationService extends BaseService
                         'user_locations.image_file', 'user_locations.created_at', 'user_locations.memo', 
                         'user_locations.latitude', 'user_locations.longitude', 'markers.name as marker_name'
                 )
-              ->where('user_locations.user_id', '=', $user_id);
+              ->where('user_locations.user_id', '=', $user_id)
+              ->where('user_locations.del_flg', '=', 0);
 
         // ロケーション情報の詳細を取得する際に設定
         if(!is_null($location_id)) {

@@ -44,7 +44,8 @@ class UserService extends BaseService
               ->selectRaw('sum(user_points_histories.give_point) - sum(user_points_histories.pay_point) as free_total_points')
               ->addselect('user_points_histories.user_id')
               ->groupByRaw('user_points_histories.user_id')
-              ->where('user_points_histories.charge_flg', '=', 1);
+              ->where('user_points_histories.charge_flg', '=', 1)
+              ->where('user_points_histories.del_flg', '=', 0);
 
         return $query;
     }
@@ -59,7 +60,8 @@ class UserService extends BaseService
               ->selectRaw('sum(user_points_histories.give_point) - sum(user_points_histories.pay_point) as total_points')
               ->addselect('user_points_histories.user_id')
               ->groupByRaw('user_points_histories.user_id')
-              ->where('user_points_histories.charge_flg', '=', 2);
+              ->where('user_points_histories.charge_flg', '=', 2)
+              ->where('user_points_histories.del_flg', '=', 0);
 
         return $query;
     }
@@ -115,8 +117,10 @@ class UserService extends BaseService
     
         $query->leftJoin('community_histories', 'users.id', 'community_histories.user_id')
               ->leftJoin('communities', 'communities.id', 'community_histories.community_id')
-              ->select('users.*', 'communities.id as community_id', 'community_histories.status as entry_status', 'community_histories.memo as entry_memo')
-              ->where('community_id', '=', $community_id);
+              ->select('users.*', 'communities.id as community_id', 'community_histories.status as entry_status', 
+                       'community_histories.memo as entry_memo', 'community_histories.id as history_id')
+              ->where('community_id', '=', $community_id)
+              ->where('users.del_flg', '=', 0);
 
         // ユーザ情報の詳細を取得する際に設定
         if(!is_null($user_id)) {
@@ -124,5 +128,16 @@ class UserService extends BaseService
         }
               
         return $query;
+    }
+
+    /**
+     * ユーザー論理削除時のメールアドレスnull更新
+     * @param $model
+     */
+    public function removeUserEmail($model) {
+        $model->del_flg = 1;
+        $model->memo = $model->memo.":old-email[".$model->email."]";
+        $model->email = null;
+        $model->save();
     }
 }

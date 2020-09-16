@@ -29,7 +29,8 @@ class CommunityService extends BaseService
               ->select('communities.*', 'users.id as user_id', 'community_histories.status as entry_status', 
                         'community_histories.memo', 'community_histories.id as community_history_id'
                 )
-              ->where('community_histories.user_id', '=', $user_id);
+              ->where('community_histories.user_id', '=', $user_id)
+              ->where('community_histories.del_flg', '=', 0);
               
         return $query;
     }
@@ -60,7 +61,8 @@ class CommunityService extends BaseService
 
         $query->leftJoinSub($joinCount, 'j', 'communities.id', '=', 'j.community_id')
               ->select('communities.*', 'j.total_counts')
-              ->orderBy('communities.id');
+              ->orderBy('communities.id')
+              ->where('communities.del_flg', '=', 0);
         
         // 検索条件があれば実行
         if($conditions) {

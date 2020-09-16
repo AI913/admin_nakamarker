@@ -69,7 +69,7 @@
                                     <label class="col-md-3 col-form-label">公開ステータス<span class="text-danger">※</span></label>
                                     <div class="col-md-9 form-inline" id="status_checked">
                                         <input type="checkbox" id="open_flg" data-toggle="toggle" data-on="{{ config('const.open_name') }}" data-off="{{ config('const.private_name') }}" {{ $data->status === config('const.open') || old('status') == config('const.open') ? 'checked' : '' }}>
-                                        <input type="hidden" id="status" name="status" value="{{ $data->status ? $data->status : (old('status') ? old('status') : 0) }}">
+                                        <input type="hidden" id="status" name="status" value="{{ $data->status ? $data->status : 0 }}">
                                     </div>
                                 </div>
                             </div>
@@ -107,7 +107,6 @@
                                         
                                         <input type="checkbox" id="charge_flg_default" name="charge_flg_default" {{ $data->charge_flg === config('const.charge_flg_default') || old('charge_flg_default') == 'on' ? 'checked' : '' }}>デフォルト
                                         <input type="hidden" name="charge_flg" value="{{ $data->charge_flg ? $data->charge_flg : (old('charge_flg') ? old('charge_flg') : 1) }}">
-                                        {{ var_dump(old('charge_flg')) }}
                                     </div>
                                 </div>
                                 <div class="form-group row">

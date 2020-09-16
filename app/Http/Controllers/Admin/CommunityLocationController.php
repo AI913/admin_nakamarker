@@ -245,6 +245,17 @@ class CommunityLocationController extends BaseAdminController
     }
 
     /**
+     * 削除
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function remove(Request $request) {
+        $this->mainService->remove($request->id);
+
+        return redirect(route('admin/community/detail/location/index', ['id' => $request->id]))->with('info_message', $this->mainTitle.'情報を削除しました');
+    }
+
+    /**
      * バリデーション設定
      * @param Request $request
      * @return array

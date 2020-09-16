@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Services\Model\MarkerService;
 use App\Services\Model\UserService;
+use App\Services\Model\UserMarkerService;
 use App\Lib\Common;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -15,12 +16,14 @@ class MarkerController extends BaseAdminController
      * Class MarkerController
      * @package App\Http\Controllers
      */
-    public function __construct(MarkerService $mainService) 
+    public function __construct(MarkerService $mainService, UserMarkerService $userMarkerService) 
     {
         parent::__construct();
         $this->mainService  = $mainService;
         $this->mainRoot     = "admin/marker";
         $this->mainTitle    = 'マーカー管理';
+
+        $this->userMarkerService = $userMarkerService;
     }
 
     /**
@@ -40,6 +43,7 @@ class MarkerController extends BaseAdminController
     public function main_list(Request $request) {
         // 〇検索条件
         $conditions = [];
+        $conditions['del_flg'] = 0;
         if ($request->id) { $conditions['markers.id'] = $request->id; }
         if ($request->type) { $conditions['markers.type'] = $request->type; }
         if ($request->name) { $conditions['markers.name@like'] = $request->name; }
@@ -134,6 +138,18 @@ class MarkerController extends BaseAdminController
         }
 
         return $input;
+    }
+
+    /**
+     * 削除
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function remove(Request $request) {
+        $this->mainService->remove($request->id);
+        $this->userMarkerService->cascade($request->id);
+
+        return redirect(route($this->mainRoot))->with('info_message', $this->mainTitle.'情報を削除しました');
     }
 
     /**

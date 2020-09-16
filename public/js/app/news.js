@@ -10,6 +10,11 @@ $(function(){
     }
 
     // 公開フラグのvalue値設定
+    if($('#open_flg').prop('checked')) {
+        $('#status').val(1);
+    } else {
+        $('#status').val(0);
+    }
     $('#open_flg').change(function() {
         if($('#open_flg').prop('checked')) {
             $('#status').val(1);
@@ -216,7 +221,6 @@ function setDetailView(data) {
  * @returns {boolean}
  */
 function customCheck() {
-    let check = true;
 
     // 固有チェック、なければform.submitを行う
     // 問題なければsubmit

@@ -30,15 +30,6 @@ $(function(){
         })
 
     /* 
-     *   選択したポイント履歴削除
-     */
-        $(document).on('click', '.btn-remove', function(){
-            
-            // 削除処理を記載予定
-            
-        });
-    
-    /* 
      *   ポイント履歴
      */
         // "閉じる"ボタン押下時にポイント入力フォームの値をリセットする
@@ -223,6 +214,9 @@ function setDetailView(data, button) {
         $('#detail_user_agent').html(data.user_agent);
         $('#detail_memo').html(data.memo);
         $('#user_id').data('id', data.id);              // 各タグで共有
+
+        $('#detail_name_community').html(data.name);
+        $('#detail_status_community').html(data.status_name);
     
     /* 
      *   "詳細"モーダルの表示処理("登録場所"タブ)
@@ -289,12 +283,14 @@ function setDetailView(data, button) {
                     },
                     {
                         data: function (p) {
+                            let url = `user/detail/${p.user_id}/location/remove`;
+
                             // 登録場所の備考ボタン・削除ボタンの設定(備考はデータがあるときのみ表示)
                             if(p.memo == null) {
-                                return getListLink('remove', p.location_id, '', 'list-button');
+                                return getListLink('remove_modal', p.location_id, url, 'list-button');
                             }
                             return getListLink('location', p.location_id, '', 'list-button') +
-                                getListLink('remove', p.location_id, '', 'list-button');
+                                getListLink('remove_modal', p.location_id, url, 'list-button');
                         }
                     }
                 ],
@@ -526,10 +522,12 @@ function setMarkerTable(id) {
             },
             {data: 'user_markers_updated_at'},
             
-            // ポイント履歴の削除ボタン
+            // マーカー履歴の削除ボタン
             {
                 data: function (p) {
-                    return getListLink('remove', p.id, '', 'list-button');
+                    let url = `/user/detail/${p.user_id}/marker/remove`;
+
+                    return getListLink('remove_modal', p.user_markers_id, url, 'list-button');
                 }
             }
         ],
@@ -593,7 +591,9 @@ function setPointTable(id) {
             // ポイント履歴の削除ボタン
             {
                 data: function (p) {
-                    return getListLink('remove', p.id, '', 'list-button');
+                    let url = `/user/detail/${p.user_id}/point/remove`;
+
+                    return getListLink('remove_modal', p.id, url, 'list-button');
                 }
             }
         ],
@@ -889,7 +889,7 @@ function getListLink(type, id, link, clazz) {
     if (type == "edit") {
         return '<a href="'+link+'" class="btn btn-primary '+clazz+'" data-toggle="tooltip" title="編集" data-placement="top"><i class="fas fa-edit fa-fw"></i></a>';
     }
-    if (type == "remove") {
-        return '<a href="javascript:void(0)" class="btn btn-danger btn-remove '+clazz+'" data-toggle="tooltip" title="削除" data-placement="top" data-id="'+id+'"><i class="fas fa-trash-alt fa-fw"></i></a>';
+    if (type == "remove_modal") {
+        return '<a href="javascript:void(0)" class="btn btn-danger btn-remove-modal '+clazz+'" data-toggle="tooltip" title="削除" data-placement="top" data-id="'+id+'" data-url="'+ link +'"><i class="fas fa-trash-alt fa-fw"></i></a>';
     }
 }

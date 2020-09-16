@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\View;
 use App\Services\Model\UserService;
 use App\Services\Model\UserLocationService;
 use App\Services\Model\UserPointsHistoryService;
+use App\Services\Model\UserMarkerService;
 use App\Services\Model\MarkerService;
 use App\Services\Model\CommunityService;
 use App\Services\Model\CommunityHistoryService;
@@ -20,6 +21,7 @@ class UserController extends BaseAdminController
     protected $mainService;
     protected $userPointHistoryService;
     protected $userLocationService;
+    protected $userMarkerService;
     protected $markerService;
 
     /**
@@ -31,6 +33,7 @@ class UserController extends BaseAdminController
         UserService $mainService, 
         UserPointsHistoryService $userPointHistoryService,
         UserLocationService $userLocationService,
+        UserMarkerService $userMarkerService,
         MarkerService $markerService
     ) 
     {
@@ -41,6 +44,7 @@ class UserController extends BaseAdminController
 
         $this->userPointHistoryService = $userPointHistoryService;
         $this->userLocationService = $userLocationService;
+        $this->userMarkerService = $userMarkerService;
         $this->markerService = $markerService;
     }
     
@@ -53,6 +57,7 @@ class UserController extends BaseAdminController
     public function main_list(Request $request) {
         // 〇検索条件
         $conditions = [];
+        $conditions['del_flg'] = 0;
         if ($request->id) { $conditions['users.id'] = $request->id; }
         if ($request->name) { $conditions['users.name@like'] = $request->name; }
         if ($request->email) { $conditions['users.email@like'] = $request->email; }
@@ -84,6 +89,7 @@ class UserController extends BaseAdminController
         // 〇検索条件
         $conditions = [];
         $conditions['id'] = $id;
+        $conditions['del_flg'] = 0;
         // 〇ソート条件
         $sort = [];
         // 〇リレーション
@@ -154,7 +160,7 @@ class UserController extends BaseAdminController
     }
 
     /**
-     * 特定ユーザの履歴を取得
+     * 特定ユーザのポイント履歴を取得
      * @param $id
      * @throws \Exception
      */
@@ -164,6 +170,7 @@ class UserController extends BaseAdminController
         // 〇検索条件
         $conditions = [];
         $conditions['user_id'] = $id;
+        $conditions['del_flg'] = 0;
         // 〇ソート条件
         $sort = [];
         // 〇リレーション
@@ -196,11 +203,7 @@ class UserController extends BaseAdminController
             'update_user_id'    => \Auth::user()->id,
         ];
 
-        if(!empty($request->id)) {
-            $data['id'] = $request->id;
-        }
-
-        // ポイント履歴の更新or作成
+        // ポイント履歴作成
         if($this->userPointHistoryService->save($data)) {
             return [
                 'status' => 1,
@@ -244,7 +247,40 @@ class UserController extends BaseAdminController
      */
     public function remove(Request $request) {
         $this->mainService->removeUserEmail($this->mainService->remove($request->id));
-        return redirect($this->mainRoot)->with('info_message', $this->mainTitle.'情報を削除しました');
+        return redirect(route($this->mainRoot))->with('info_message', $this->mainTitle.'情報を削除しました');
+    }
+
+    /**
+     * ユーザーロケーション論理削除
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|void
+     * @throws \Exception
+     */
+    public function removeLocation(Request $request) {
+        $this->userLocationService->remove($request->id);
+        return redirect(route($this->mainRoot))->with('info_message', $this->mainTitle.'情報を削除しました');
+    }
+
+    /**
+     * ユーザーの所有マーカー論理削除
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|void
+     * @throws \Exception
+     */
+    public function removeMarker(Request $request) {
+        $this->userMarkerService->remove($request->id);
+        return redirect(route($this->mainRoot))->with('info_message', $this->mainTitle.'情報を削除しました');
+    }
+
+    /**
+     * ユーザーのポイント履歴論理削除
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|void
+     * @throws \Exception
+     */
+    public function removePoint(Request $request) {
+        $this->userPointHistoryService->remove($request->id);
+        return redirect(route($this->mainRoot))->with('info_message', $this->mainTitle.'情報を削除しました');
     }
 
     /**
