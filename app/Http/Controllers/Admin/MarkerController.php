@@ -11,6 +11,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class MarkerController extends BaseAdminController
 {
+
     /**
      * マーカー管理コントローラー
      * Class MarkerController
@@ -31,7 +32,7 @@ class MarkerController extends BaseAdminController
      * @return array
      */
     public function except() {
-        return ["_token", "register_mode", "upload_image", "img_delete", "delete_flg_on", 'image_flg'];
+        return ["_token", "register_mode", "upload_image", "img_delete", "delete_flg_on", 'image_flg', 'file_src'];
     }
 
     /**
@@ -138,6 +139,37 @@ class MarkerController extends BaseAdminController
         }
 
         return $input;
+    }
+
+    /**
+     * 保存
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|void
+     * @throws \Exception
+     */
+    public function save(Request $request) {
+        // バリデーション
+        $validator = $this->validation($request);
+        // バリデーションエラー時はリダイレクト
+        if ($validator->fails()) {
+            return $this->validationFailRedirect($request, $validator);
+        }
+
+        try {
+            \DB::beginTransaction();
+            // 保存前処理で保存データ作成
+            $input = $this->saveBefore($request);
+            // 保存処理
+            $model = $this->mainService->save($input, true, false);
+            // 保存後処理
+            $this->saveAfter($request, $model);
+            \DB::commit();
+            // 対象データの一覧にリダイレクト
+            return redirect(route($this->mainRoot))->with('info_message', $request->register_mode == 'create' ? $this->mainTitle.'情報を登録しました' : $this->mainTitle.'情報を編集しました');
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return redirect(route($this->mainRoot))->with('error_message', 'データ登録時にエラーが発生しました。[詳細]<br>'.$e->getMessage());
+        }
     }
 
     /**

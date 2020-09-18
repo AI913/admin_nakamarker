@@ -343,7 +343,7 @@ function setDetailView(data, button) {
                 {},
                 // 各列ごとの表示定義
                 [
-                    {data: 'id'},
+                    {data: 'community_history_id'},
                     {
                         // コミュニティイメージの画像を表示(モーダル形式)
                         data: function (p) {
@@ -384,7 +384,7 @@ function setDetailView(data, button) {
                             }
                             // "公開"の場合は青色で表示
                             return (`<span style='color: blue'>${p.status_name}</span>`);
-                        }
+                        }, name: 'status'
                     },
                     // 参加日時
                     {data: 'created_at'},
@@ -509,7 +509,7 @@ function setMarkerTable(id) {
                 }
             },
             {data: 'name'},
-            {data: 'price'},
+            {data: 'pay_point'},
             {
                 data: function(p) {
                     // 有料フラグが"有料"の場合は赤色で表示
@@ -518,7 +518,7 @@ function setMarkerTable(id) {
                     }
                     // それ以外は普通に表示
                     return p.charge_name;
-                }
+                }, name: 'charge'
             },
             {data: 'user_markers_updated_at'},
             
@@ -558,7 +558,7 @@ function setPointTable(id) {
         // 各列ごとの表示定義
         [
             {data: 'id'},
-            {data: 'type_name'},
+            {data: 'type_name', name: 'type'},
             {
                 data: function (p) {
                     // ポイントにナンバーフォーマットを適用
@@ -586,7 +586,7 @@ function setPointTable(id) {
                     }
                     // それ以外は普通に表示
                     return p.charge_name;
-                }
+                }, name: 'charge'
             },
             // ポイント履歴の削除ボタン
             {
@@ -778,7 +778,7 @@ function initList(search) {
                     }
                     // それ以外は普通に表示
                     return p.status_name;
-                }
+                }, name: 'status'
             },
             {
                 data: function (p) {
@@ -787,7 +787,7 @@ function initList(search) {
                         return number_format(p.total_points);
                     }
                     return p.total_points;
-                }
+                }, name: 'total_points'
             }, // ポイント数(有料)
             {
                 data: function (p) {
@@ -795,7 +795,7 @@ function initList(search) {
                         return number_format(p.free_total_points);
                     }
                     return p.free_total_points;
-                }
+                }, name: 'free_total_points'
                     
             
             }, // ポイント数(無料)
@@ -812,11 +812,12 @@ function initList(search) {
         [
             // ボタン部分
             { targets: [1], orderable: false, width: '130px'},
+            { targets: [2], orderable: false, width: '130px'},
             { targets: [3], orderable: false, width: '150px'},
-            { targets: [4], orderable: false, width: '150px'},
+            { targets: [4], orderable: true, width: '150px'},
             { targets: [5], orderable: false, className: 'text-center', width: '110px'},
-            { targets: [6], orderable: false, className: 'text-center', width: '110px'},
-            { targets: [7], orderable: false, className: 'text-center', width: '110px'},
+            { targets: [6], orderable: true, className: 'text-center', width: '110px'},
+            { targets: [7], orderable: true, className: 'text-center', width: '110px'},
             { targets: [8], orderable: false, className: 'text-center', width: '200px'},
         ],
         search

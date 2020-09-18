@@ -86,8 +86,6 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/ajax/community/detail/{id}/user/{user_id}',  'Admin\CommunityController@community_users_detail')->name('admin/community/detail/user/detail');
     // コミュニティの登録場所管理(community_locations)
     Route::get('/ajax/community/detail/{id}/location',  'Admin\CommunityController@community_locations')->name('admin/community/detail/location');
-    // コミュニティの登録場所管理(community_locations)
-    // Route::get('/ajax/community/detail/{id}/location/{location_id}',  'Admin\CommunityController@community_locations_detail')->name('admin/community/detail/location/detail');
 
     /******************** コミュニティロケーション管理(community_locations) ********************/
     Route::get('/community/detail/{id}/location',                         'Admin\CommunityLocationController@index')->name('admin/community/detail/location/index');

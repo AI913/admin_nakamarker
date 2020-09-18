@@ -136,6 +136,31 @@ class Common {
     }
 
     /**
+     * コミュニティ種別リスト
+     * @return number[][]|string[][]
+     */
+    public static function getCommunityTypeList() {
+        return [
+            [
+                'id' => config('const.community_official'), 
+                'name' => config('const.community_official_name')
+            ],
+            [
+                'id' => config('const.community_official_free'), 
+                'name' => config('const.community_official_free_name')
+            ],
+            [
+                'id' => config('const.community_personal'), 
+                'name' => config('const.community_personal_name')
+            ],
+            [
+                'id' => config('const.community_personal_open'), 
+                'name' => config('const.community_personal_open_name')
+            ],
+        ];
+    }
+
+    /**
      * 公開種別リスト
      * @return array
      */
@@ -205,23 +230,6 @@ class Common {
         ];
     }
     
-    /**
-     * あとで調査する！！
-     * @return number[][]|string[][]
-     */
-    public static function getInformationAppTypeList() {
-        return [
-            [
-                'id' => config('const.information_app_view'), 
-                'name' => config('const.information_app_view_name')
-            ],
-            [
-                'id' => config('const.information_app_not_view'), 
-                'name' => config('const.information_app_not_view_name')
-            ],
-        ];
-    }
-
     /**
      * 指定パスワードの暗号化取得
      * @param $password

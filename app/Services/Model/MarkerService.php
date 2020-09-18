@@ -41,8 +41,7 @@ class MarkerService extends BaseService
         $download = $this->getDownloadCountQuery();
 
         $query->leftJoinSub($download, 'd', 'markers.id', '=', 'd.marker_id')
-              ->select('markers.*', 'd.total_counts')
-              ->orderBy('markers.id');
+              ->select('markers.*', 'd.total_counts');
         
         // 検索条件があれば実行
         if($conditions) {
@@ -60,7 +59,8 @@ class MarkerService extends BaseService
         $query = $this->model()->query();
 
         $query->leftJoin('user_markers', 'markers.id', '=', 'user_markers.marker_id')
-              ->select('markers.*', 'user_markers.id as user_markers_id', 'user_markers.updated_at as user_markers_updated_at')
+              ->select('markers.*', 'user_markers.id as user_markers_id', 
+                       'user_markers.updated_at as user_markers_updated_at', 'user_markers.pay_point')
               ->where('user_markers.user_id', '=', $user_id)
               ->where('user_markers.del_flg', '=', 0);
 
@@ -68,16 +68,15 @@ class MarkerService extends BaseService
     }
 
     /**
-     * コミュニティロケーションの作成画面に表示するデータリスト
-     * 引数：ユーザID
+     * コミュニティロケーションの作成画面に表示するマーカーのデータリスト
+     * 
      */
     public function getLocationMarkerQuery($user_id) {
         $query = $this->model()->query();
 
         $query->leftJoin('user_markers', 'markers.id', '=', 'user_markers.marker_id')
-              ->select('markers.*', 'user_markers.id as user_markers_id')
-              ->where('user_markers.user_id', '=', $user_id);
-
+              ->select('markers.*', 'user_markers.id as user_markers_id');
+            
         return $query;
     }    
 }

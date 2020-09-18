@@ -256,3 +256,11 @@
 .errors {
   color: red;
 }
+
+/* コミュニティロケーション一覧のコミュニティ名 */
+.community_location_communityName {
+  padding-bottom: 10px;
+}
+.community_name {
+  font-size: 13px;
+}

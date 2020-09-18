@@ -117,7 +117,7 @@
                                     <th>履歴ID</th>
                                     <th>マーカー画像</th>
                                     <th>マーカー名</th>
-                                    <th>価格(ポイント)</th>
+                                    <th>購入時価格(ポイント)</th>
                                     <th>有料フラグ</th>
                                     <th>購入日時</th>
                                     <th>操作</th>
@@ -219,7 +219,7 @@
                         <table class="table table-striped table-bordered datatable table-sm" id="user_community_list">
                             <thead>
                                 <tr role="row">
-                                    <th>ID</th>
+                                    <th>履歴ID</th>
                                     <th>登録画像</th>
                                     <th>コミュニティ名</th>
                                     <th>公開設定</th>
@@ -237,7 +237,7 @@
                     <div class="modal-dialog modal-warning modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="label1">コミュニティ履歴の詳細情報</h5>
+                                <h5 class="modal-title" id="label1">備考</h5>
                                 <button type="button" class="close" id="history_modal_close" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                                 </button>
@@ -245,25 +245,11 @@
                             <div class="modal-body">
                                 <div class="container">
                                     <div class="row">
-                                        <dt class="col-4 text-right">履歴ID</dt>
-                                        <dd class="col-8"><span id="detail_history_id" class="detail-view"></span></dd>
-                                    </div>
+                                        <dt class="col-2 text-right">内容</dt>
+                                    </div>   
                                     <div class="row">
-                                        <dt class="col-4 text-right">コミュニティ名</dt>
-                                        <dd class="col-8"><span id="detail_history_name" class="detail-view"></span></dd>
-                                    </div>
-                                    <div class="row">
-                                        <dt class="col-4 text-right">申請状況</dt>
-                                        <dd class="col-8"><span id="detail_history_status" class="detail-view"></span></dd>
-                                    </div>
-                                    <div class="row">
-                                        <dt class="col-4 text-right">更新日時</dt>
-                                        <dd class="col-8"><span id="detail_history_updated_at" class="detail-view"></span></dd>
-                                    </div>
-                                    <div class="row">
-                                        <dt class="col-4 text-right">備考</dt>
-                                        <dd class="col-8"><span id="detail_history_memo" class="detail-view"></span></dd>
-                                    </div>    
+                                        <dd class="offset-2 col-8"><span id="detail_history_memo" class="detail-view"></span></dd>
+                                    </div> 
                                 </div>
                             </div>
                             <div class="modal-footer">

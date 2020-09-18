@@ -61,7 +61,6 @@ class CommunityService extends BaseService
 
         $query->leftJoinSub($joinCount, 'j', 'communities.id', '=', 'j.community_id')
               ->select('communities.*', 'j.total_counts')
-              ->orderBy('communities.id')
               ->where('communities.del_flg', '=', 0);
         
         // 検索条件があれば実行

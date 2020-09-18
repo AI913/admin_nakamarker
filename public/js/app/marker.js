@@ -22,42 +22,6 @@ $(function(){
             $('#status').val(0);
         }
     })
-
-    
-    /**
-     * ポイントフラグの設定(charge_flg)
-     * 　※charge_flg機能の解禁
-     */
-    $('#charge_flg').prop('disabled', true);
-    if($('input[name=charge_flg]').val() != 3) {
-        $('#charge_flg').prop('disabled', false);
-        $('#charge_flg').change(function() {
-            if ($('#charge_flg').prop('checked')) {
-                $('input[name=charge_flg]').val(2);
-            } else {
-                $('input[name=charge_flg]').val(1);
-            }
-        });
-    }
-    /**
-     * ポイントフラグの設定(charge_flg_default)
-     * 　※リダイレクト時でも値の維持とcharge_flg機能の停止を維持
-     */
-    if ($('#charge_flg_default').prop('checked')) {
-        $('input[name=charge_flg]').val(3);
-        $('#charge_flg').prop('disabled', true);
-    }
-    $('#charge_flg_default').change(function() {
-        if ($('#charge_flg_default').prop('checked')) {
-            $('input[name=charge_flg]').val(3);
-            $('#charge_flg').prop('disabled', true);
-        }
-        if (!$('#charge_flg_default').prop('checked')) {
-            $('#charge_flg').prop('disabled', false);
-        }
-    });
-
-    
 });
 
 /**
@@ -186,7 +150,7 @@ $(function () {
 
         reader.onload = (function (file) {  // 読み込みが完了したら
             
-            // previeクラスのdivにimgタグを以下のプロパティ付きで実装
+            // previewクラスのdivにimgタグを以下のプロパティ付きで実装
             return function(e) {
                 $('.preview').empty();
                 $('.preview').append($('<img>').attr({
@@ -196,9 +160,9 @@ $(function () {
                     class: "preview",
                     title: file.name
                 }));  // previewに画像を表示
-            };   
+                $('#file_src').val(e.target.result);
+            };
         })(file);
-
         reader.readAsDataURL(file); // ファイル読み込みを非同期でバックグラウンドで開始
 
         // 削除フラグを解除
@@ -242,7 +206,7 @@ $(function(){
                 $('#delete_flg_on').val(false);
             }
         }
-
+        
         // .prevewの領域の中にロードした画像を表示するimageタグを追加
         $preview.append($('<img>').attr({
             src: outImage,
@@ -296,7 +260,20 @@ function initList(search) {
         // 各列ごとの表示定義
         [
             {data: 'id'},
-            {data: 'type_name'},
+            // マーカー種別をタイプに応じて'アイコン' + '種別名'で表示
+            {
+                data: function (p) {
+                    if (p.type == 1) {
+                        return `<button class="btn btn-primary" disabled><i class="fas fa-fw fa-map-pin"></i></button> ${p.type_name}`;
+                    }
+                    if (p.type == 2) {
+                        return `<button class="btn btn-warning text-white" disabled><i class="fas fa-fw fa-cog"></i></button> ${p.type_name}`;
+                    }
+                    if (p.type == 3) {
+                        return `<button class="btn btn-success" disabled><i class="fas fa-fw fa-search fa-fw"></i></button> ${p.type_name}`;
+                    }
+                }, name: 'type'
+            },
             {
                 // マーカーイメージの画像を表示(モーダル形式)
                 data: function (p) {
@@ -329,7 +306,6 @@ function initList(search) {
                 }
             },
             {data: 'name'},
-            {data: 'description'},
             {
                 data: function (p) {
                     // ポイントにナンバーフォーマットを適用
@@ -337,7 +313,7 @@ function initList(search) {
                         return number_format(p.price);
                     }
                     return p.price;
-                }
+                }, name: 'price'
             },
             {
                 data: function(p) {
@@ -347,7 +323,7 @@ function initList(search) {
                     }
                     // それ以外は普通に表示
                     return p.charge_name;
-                }
+                }, name: 'charge_flg'
             },
             {
                 data: function(p) {
@@ -357,7 +333,7 @@ function initList(search) {
                     }
                     // それ以外は数値で表示
                     return p.total_counts;
-                },
+                }, name: 'total_counts'
             },
             {
                 data: function(p) {
@@ -383,14 +359,13 @@ function initList(search) {
         // 各列ごとの装飾
         // 操作列(ボタン等)や画像項目はソート不可・text-centerを付与する
         [
-            { targets: [1], orderable: false, className: 'text-left', width: '110px'},
+            { targets: [1], orderable: true, className: 'text-left', width: '150px'},
             { targets: [2], orderable: false, className: 'text-center', width: '150px'},
-            { targets: [4], orderable: false, className: 'text-left', width: '200px'},
-            { targets: [5], orderable: false, className: 'text-center', width: '100px'},
-            { targets: [6], orderable: false, className: 'text-center', width: '100px'},
-            { targets: [7], orderable: false, className: 'text-center', width: '100px'},
-            { targets: [8], orderable: false, className: 'text-center', width: '100px'},
-            { targets: [9], orderable: false, className: 'text-center', width: '150px'},
+            { targets: [3], orderable: true, className: 'text-left', width: '200px'},
+            { targets: [5], orderable: true, className: 'text-center', width: '100px'},
+            { targets: [6], orderable: true, className: 'text-center', width: '100px'},
+            { targets: [7], orderable: true, className: 'text-center', width: '100px'},
+            { targets: [8], orderable: false, className: 'text-center', width: '150px'},
         ],
         search
     );

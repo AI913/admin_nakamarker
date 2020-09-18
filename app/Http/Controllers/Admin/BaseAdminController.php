@@ -159,7 +159,7 @@ class BaseAdminController extends Controller
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|void
      */
     public function validationFailRedirect(Request $request, $validator) {
-        return redirect($this->isCreate($request) ? route($this->mainRoot."/create") :  route($this->mainRoot."/edit"))
+        return redirect($this->isCreate($request) ? route($this->mainRoot."/create") :  route($this->mainRoot."/edit", ['id' => $request->id]))
             ->withErrors($validator)
             ->withInput();
     }

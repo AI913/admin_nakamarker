@@ -7,6 +7,7 @@ use App\Services\Model\CommunityService;
 use App\Services\Model\CommunityLocationService;
 use App\Services\Model\CommunityHistoryService;
 use App\Services\Model\UserService;
+use App\Services\Model\MarkerService;
 use App\Lib\Common;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -17,12 +18,14 @@ class CommunityController extends BaseAdminController
     protected $mainService;
     protected $communityLocationService;
     protected $communityHistoryService;
+    protected $markerService;
 
     public function __construct(
         CommunityService $mainService, 
         CommunityLocationService $communityLocationService, 
         CommunityHistoryService $communityHistoryService,
-        UserService $userService
+        UserService $userService,
+        MarkerService $markerService
     )
     {
         parent::__construct();
@@ -33,7 +36,9 @@ class CommunityController extends BaseAdminController
         $this->communityLocationService = $communityLocationService;
         $this->communityHistoryService = $communityHistoryService;
 
+        // MarkerServiceとUserServiceをインスタンス化
         $this->userService = $userService;
+        $this->markerService = $markerService;
     }
     
     /**
@@ -47,6 +52,7 @@ class CommunityController extends BaseAdminController
         $conditions = [];
         if ($request->id) { $conditions['communities.id'] = $request->id; }
         if ($request->name) { $conditions['communities.name@like'] = $request->name; }
+        if ($request->has('type') && is_numeric($request->type)) { $conditions['communities.type'] = $request->type; }
         // statusのリクエストがあり、かつリクエストが数値の場合に検索条件の値をセットする
         if ($request->has('status') && is_numeric($request->status)) { $conditions['communities.status'] = $request->status; }
         
@@ -57,6 +63,7 @@ class CommunityController extends BaseAdminController
     {
         // ステータスリスト追加
         return parent::index()->with([
+            'type_list'   => Common::getCommunityTypeList(),
             'status_list' => Common::getOpenStatusList(),
         ]);
     }
@@ -115,9 +122,20 @@ class CommunityController extends BaseAdminController
      * @param $id
      * @throws \Exception
      */
-    public function community_locations($id) {
+    public function community_locations(Request $request, $id) {
+        // マーカ名をマーカーのIDに変換
+        if ($request->marker_name) { 
+            $marker = $this->markerService->searchOne(['name@like' => $request->marker_name]);
+        }
+
+        // 〇検索条件
+        $conditions = [];
+        if ($request->id) { $conditions['community_locations.id'] = $request->id; }
+        if ($request->marker_name) { $conditions['community_locations.marker_id'] = $marker->id; }
+        if ($request->name) { $conditions['community_locations.name@like'] = $request->name; }
+
         // コミュニティの登録場所とそれに紐づくマーカー情報を取得
-        return DataTables::eloquent($this->communityLocationService->getCommunityLocationQuery($id))->make();
+        return DataTables::eloquent($this->communityLocationService->getCommunityLocationQuery($id, $conditions))->make();
     }
 
     /**

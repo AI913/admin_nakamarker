@@ -22,22 +22,6 @@ $(function(){
             $('#status').val(0);
         }
     })
-
-    /* 画像のレスポンシブ設定 */
-    // 詳細画面
-    $(window).on('load resize', function(){
-        var replaceWidth = 768;
-        var windowWidth = parseInt(window.innerWidth);
-        if(windowWidth >= replaceWidth) {
-            $('.detail-view').attr({'width': 400, 'height': 300});
-        }
-        if(windowWidth <= replaceWidth) {
-            $('.detail-view').attr({'width': 300, 'height': 250});
-        }
-        // if(windowWidth <= replaceWidth) {
-        //     $('#image_modal').attr({'height': 300, 'width': 250});
-        // }
-    })
 });
 
 // @1 ファイルドロップ
@@ -180,11 +164,6 @@ $(function(){
         $('#image').val(null);
         if($('#image_flg').val()) {
             $('#image_flg').val(null);
-
-            // 編集時に"強制削除フラグ"を一度もタッチしなかった場合の処理
-            if($('#delete_flg_on').val() == "") {
-                $('#delete_flg_on').val(false);
-            }
         }
 
         // .prevewの領域の中にロードした画像を表示するimageタグを追加

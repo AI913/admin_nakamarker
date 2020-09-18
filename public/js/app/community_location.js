@@ -238,8 +238,8 @@ function initList(search) {
         `/ajax${url}`,
         {
             'id': $('#id').val(),
+            'marker_name': $('#marker_name').val(),
             'name': $('#name').val(),
-            'marker_id': $('#marker_id').val(),
         },
         // 各列ごとの表示定義
         [

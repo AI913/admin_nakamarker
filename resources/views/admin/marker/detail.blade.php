@@ -50,7 +50,7 @@
                                     <dd class="col-8"><span id="detail_charge_flg" class="detail-view"></span></dd>
                                 </dl>
                                 <dl class="row">
-                                    <dt class="col-4 text-right">備考</dt>
+                                    <dt class="col-4 text-right">概要</dt>
                                     <dd class="col-8"><span id="detail_description" class="detail-view"></span></dd>
                                 </dl>
                             </div>

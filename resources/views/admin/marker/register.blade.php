@@ -76,12 +76,14 @@
                             <div class="col-sm-6">
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="marker_image">イメージ画像</label>
-                                    <span class="col-md-6 col-form-label" style="color: red">※画像の設定は必須です</span>   
+                                    {{-- <span class="col-md-6 col-form-label" style="color: red">※画像の設定は必須です</span>    --}}
+                                    {{-- エラーメッセージあれば表示 --}}
+                                    @include('admin.layouts.components.error_message', ['title' => 'upload_image'])
                                     <div class="col-md-9 offset-md-3 user-icon-dnd-wrapper">
                                         <div id="drop_area" class="drop_area">
                                             <div class="preview">
                                                 <img id="preview" 
-                                                     src="{{ $data->image_file ? Storage::url("images/".$data->image_file) : (old('upload_image') ? old('upload_image') : asset('images/noImage/no_image.png')) }}" 
+                                                     src="{{ $data->image_file ? Storage::url("images/".$data->image_file) : (session('file_src') ? session('file_src') : asset('images/noImage/no_image.png')) }}" 
                                                      width="350" 
                                                      height="250"
                                                 >
@@ -92,8 +94,6 @@
                                 </div>
                                 <div class="form-group row">
                                     <div id="image_delete" class="offset-md-3 col-md-9">
-                                        {{-- エラーメッセージあれば表示 --}}
-                                        @include('admin.layouts.components.error_message', ['title' => 'upload_image'])
                                         <input type="button" id="cancel" class="btn btn-danger" value="画像を消去">
                                         <input type="hidden" id="img_delete" name="img_delete" value=0>
                                     </div>
@@ -101,12 +101,25 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label">ポイントフラグ</label>
                                     <span class="col-md-9 col-form-label" style="color: red">※無償で提供する場合は"デフォルト"に✓を入れてください</span>
-                                    <div class="offset-md-3 col-md-9 form-inline">
-                                        <input type="checkbox" id="charge_flg" data-toggle="toggle" data-on="{{ __('有料ポイント') }}" data-off="{{ __('無料ポイント') }}" data-onstyle="danger" data-offstyle="primary"
-                                        {{ $data->charge_flg === config('const.charge_flg_on') || old('charge_flg') == config('const.charge_flg_on') ? 'checked' : '' }}>
-                                        
-                                        <input type="checkbox" id="charge_flg_default" name="charge_flg_default" {{ $data->charge_flg === config('const.charge_flg_default') || old('charge_flg_default') == 'on' ? 'checked' : '' }}>デフォルト
-                                        <input type="hidden" name="charge_flg" value="{{ $data->charge_flg ? $data->charge_flg : (old('charge_flg') ? old('charge_flg') : 1) }}">
+                                    <div class="offset-md-3 col-md-9 form-inline" id="type_checked">
+                                        <div class="custom-control custom-radio cursor-pointer mr-3">
+                                            <input type="radio" class="custom-control-input" id="flg1" name="charge_flg" value="{{ config('const.charge_flg_off') }}" data-type="{{ config('const.charge_flg_off_name') }}" 
+                                            {{ !$data->charge_flg || $data->charge_flg == config('const.charge_flg_off') || old('charge_flg') == config('const.charge_flg_off') ? 'checked' : '' }}>
+
+                                            <label class="custom-control-label cursor-pointer" for="flg1">{{ config('const.charge_flg_off_name') }}</label>
+                                        </div>
+                                        <div class="custom-control custom-radio cursor-pointer mr-3">
+                                            <input type="radio" class="custom-control-input" id="flg2" name="charge_flg" value="{{ config('const.charge_flg_on') }}" data-type="{{ config('const.charge_flg_on_name') }}" 
+                                            {{ $data->charge_flg == config('const.charge_flg_on') || old('charge_flg') == config('const.charge_flg_on') ? 'checked' : '' }}>
+
+                                            <label class="custom-control-label cursor-pointer" for="flg2">{{ config('const.charge_flg_on_name') }}</label>
+                                        </div>
+                                        <div class="custom-control custom-radio cursor-pointer mr-3">
+                                            <input type="radio" class="custom-control-input" id="flg3" name="charge_flg" value="{{ config('const.charge_flg_default') }}" data-type="{{ config('const.charge_flg_default_name') }}" 
+                                            {{ $data->charge_flg == config('const.charge_flg_default') || old('charge_flg') == config('const.charge_flg_default') ? 'checked' : '' }}>
+
+                                            <label class="custom-control-label cursor-pointer" for="flg3">{{ config('const.charge_flg_default_name') }}</label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -123,9 +136,11 @@
                             <div class="col-md-12">
                                 <input type="hidden" name="id" id="id" value="{{ $data->id }}" />
                                 <input type="hidden" id="register_mode" name="register_mode" value="{{ $register_mode }}" />
+                                <input type="hidden" id="file_src" name="file_src" value="{{ session('file_src') ? session('file_src') : '' }}" />
                                 @include('admin.layouts.components.button.register', ['register_mode' => $register_mode])
                                 @include('admin.layouts.components.button.cancel', ['url' => "/marker"])
                             </div>
+                            {{ var_dump(session('file_src')) }}
                         </div>
                     </form>
 

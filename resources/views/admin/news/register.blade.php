@@ -67,15 +67,6 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 col-form-label">強制削除フラグ</label>
-                                    <div class="col-md-9 form-inline">
-                                        <input type="file" id="image" name="upload_image" class="form-control-file" style="display: none">
-                                        <input type="checkbox" id="delete_flg" data-toggle="toggle" data-on="{{ __('ON') }}" data-off="{{ __('OFF') }}" data-onstyle="danger" {{ $data->image_file === config('const.out_image') ? 'checked' : '' }}>
-                                        <input type="hidden" id="delete_flg_on" name="delete_flg_on">
-                                        <input type="hidden" id="image_flg" name="image_flg" value="{{ $data->image_file ? $data->image_file : '' }}">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
                                     <div id="image_delete" class="offset-md-3 col-md-9">
                                         <input type="button" id="cancel" class="btn btn-danger" value="画像を消去">
                                         <input type="hidden" id="img_delete" name="img_delete" value=0>

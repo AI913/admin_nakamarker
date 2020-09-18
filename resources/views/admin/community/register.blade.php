@@ -99,7 +99,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 col-form-label">強制削除フラグ</label>
+                                    <label class="col-md-3 col-form-label">強制BANフラグ</label>
                                     <div class="col-md-9 form-inline">
                                         <input type="file" id="image" name="upload_image" class="form-control-file" style="display: none">
                                         <input type="checkbox" id="delete_flg" data-toggle="toggle" data-on="{{ __('ON') }}" data-off="{{ __('OFF') }}" data-onstyle="danger" {{ $data->image_file === config('const.out_image') ? 'checked' : '' }}>

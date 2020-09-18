@@ -376,6 +376,7 @@ function initList(search) {
         {
             'id': $('#id').val(),
             'name': $('#name').val(),
+            'type':   $('#type').val(),
             'status':   $('#status').val(),
         },
         // 各列ごとの表示定義
@@ -414,7 +415,7 @@ function initList(search) {
                 }
             },
             {data: 'name'},
-            {data: 'type_name'},
+            {data: 'type_name', name: 'type'},
             {data: 'created_at'},
             {data: 'total_counts'},
             {
@@ -425,7 +426,7 @@ function initList(search) {
                     }
                     // "公開"の場合は青色で表示
                     return (`<span style='color: blue'>${p.status_name}</span>`);
-                }
+                }, name: 'status'
             },
             {
                 data: function (p) {
@@ -448,9 +449,9 @@ function initList(search) {
         [
             { targets: [1], orderable: false, className: 'text-center', width: '150px'},
             { targets: [2], orderable: false},
-            { targets: [3], orderable: false, width: '120px'},
+            { targets: [3], orderable: true, width: '120px'},
             { targets: [5], orderable: true, className: 'text-center', width: '100px'},
-            { targets: [6], orderable: false, className: 'text-center', width: '100px'},
+            { targets: [6], orderable: true, className: 'text-center', width: '100px'},
             { targets: [7], orderable: false, className: 'text-center', width: '100px'},
             { targets: [8], orderable: false, className: 'text-center', width: '150px'},
            ],

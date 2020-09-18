@@ -22,7 +22,7 @@ class CommunityLocationService extends BaseService
      */
     public function getCommunityLocationQuery($community_id, $conditions=null) {
         $query = $this->model()->query();
-        
+
         $query->leftJoin('markers', 'community_locations.marker_id', 'markers.id')
               ->leftJoin('users', 'community_locations.user_id', 'users.id')
               ->select( 'community_locations.id as location_id', 'community_locations.user_id as user_id', 'community_locations.community_id as community_id',

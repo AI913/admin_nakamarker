@@ -25,7 +25,7 @@
                         </div>
                         <div class="col-lg-2">
                             @include('admin.layouts.components.select_option', [
-                                'label'         => 'マーカータイプ',
+                                'label'         => '種別',
                                 'list'          => $type_list,
                                 'name'          => 'type',
                                 'selected_id'   => null,
@@ -34,7 +34,7 @@
                             ])
                         </div>
                         <div class="col-lg-2">
-                            <input type="text" class="form-control search-text" value="" name="name" id="name" placeholder="名前">
+                            <input type="text" class="form-control search-text" value="" name="name" id="name" placeholder="マーカー名">
                         </div>
                         <div class="col-lg-2">
                             @include('admin.layouts.components.select_option', [
@@ -59,7 +59,6 @@
                                 <th>種別</th>
                                 <th>マーカーイメージ</th>
                                 <th>マーカー名</th>
-                                <th>マーカー概要</th>
                                 <th>価格(ポイント)</th>
                                 <th>有料フラグ</th>
                                 <th>DL数</th>

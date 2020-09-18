@@ -24,7 +24,17 @@
                             <input type="text" class="form-control search-text" value="" name="id" id="id" placeholder="ID">
                         </div>
                         <div class="col-lg-2">
-                            <input type="text" class="form-control search-text" value="" name="name" id="name" placeholder="名前">
+                            <input type="text" class="form-control search-text" value="" name="name" id="name" placeholder="コミュニティ名">
+                        </div>
+                        <div class="col-lg-2">
+                            @include('admin.layouts.components.select_option', [
+                                'label'         => '種別',
+                                'list'          => $type_list,
+                                'name'          => 'type',
+                                'selected_id'   => null,
+                                'class'         => 'search-select',
+                                'blank'         => true
+                            ])
                         </div>
                         <div class="col-lg-2">
                             @include('admin.layouts.components.select_option', [

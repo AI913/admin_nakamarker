@@ -67,15 +67,21 @@ class CommunityLocationController extends BaseAdminController
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function main_list(Request $request, $id) {
-        // 〇検索条件
-        $conditions = [];
-        if ($request->id) { $conditions['community_locations.id'] = $request->id; }
-        if ($request->name) { $conditions['community_locations.name@like'] = $request->name; }
-        if ($request->community_id) { $conditions['community_locations.community_id'] = $request->community_id; }
+    // public function main_list(Request $request) {
+    //     // マーカ名をマーカーのIDに変換
+    //     if ($request->marker_name) { 
+    //         $marker = $this->markerService->searchOne(['name@like' => $request->marker_name]);
+    //     }
+    //     echo $this->community->id;
+    //     // 〇検索条件
+    //     $conditions = [];
+    //     if ($request->id) { $conditions['community_locations.id'] = $request->id; }
+    //     if ($request->marker_name) { $conditions['community_locations.marker_id'] = $marker->id; }
+    //     if ($request->name) { $conditions['community_locations.name@like'] = $request->name; }
 
-        return DataTables::eloquent($this->mainService->getCommunityLocationQuery($id, $conditions))->make();
-    }
+    //     // コミュニティの登録場所とそれに紐づくマーカー情報を取得
+    //     return DataTables::eloquent($this->mainService->getCommunityLocationQuery($this->community->id, $conditions))->make();
+    // }
 
     /**
      * コミュニティロケーション一覧
@@ -84,7 +90,8 @@ class CommunityLocationController extends BaseAdminController
     public function index() {
         return parent::index()->with(
             [
-                'community_id' => $this->community->id,
+                'community_id'      => $this->community->id,
+                'community_name'    => $this->community->name,
             ]
         );
     }
@@ -213,8 +220,8 @@ class CommunityLocationController extends BaseAdminController
         $map = explode(',', $request->map);
 
         // 緯度・経度を数値化して配列に追加
-        $request['latitude'] = intval($map[0]);
-        $request['longitude'] = intval($map[1]);
+        $request['latitude'] = floatval($map[0]);
+        $request['longitude'] = floatval($map[1]);
 
         // 加工したリクエストを追加
         $request = $this->addRequest($request);
@@ -262,11 +269,14 @@ class CommunityLocationController extends BaseAdminController
      */
     public function validation_rules(Request $request)
     {
+        // dd($request);
         // バリデーションチェック
         return [
             // 緯度：-90~90の間を正規表現でチェック、経度：-180~180の間を正規表現でチェック
-            'latitude'          => ['numeric','regex:/^[-+]?([1-8]?d(.d+)?|90(.0+)?)$/'],
-            'longitude'         => ['numeric','regex:/^[-+]?(180(.0+)?|((1[0-7]d)|([1-9]?d))(.d+)?)$/'],
+            // 'latitude'          => ['numeric','regex:/^[-+]?([1-8]?d(.d+)?|90(.0+)?)$/'],
+            // 'longitude'         => ['numeric','regex:/^[-+]?(180(.0+)?|((1[0-7]d)|([1-9]?d))(.d+)?)$/'],
+            'latitude'          => ['numeric'],
+            'longitude'         => ['numeric'],
             'upload_image'      => ['image', 'max:1024'],
         ];
     }

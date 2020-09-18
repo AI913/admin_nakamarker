@@ -73,7 +73,7 @@
             
                 <li class="nav-item nav-dropdown ">
                     <a class="nav-link nav-dropdown-toggle " href="#">
-                        <i class="fas fa-map-marker-alt"></i> マーカー管理
+                        <i class="fas fa-fw fa-map-marker-alt"></i> マーカー管理
                     </a>
                     <ul class="nav-dropdown-items">
                         <li class="nav-item">

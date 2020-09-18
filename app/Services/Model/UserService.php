@@ -80,8 +80,7 @@ class UserService extends BaseService
         // サブクエリでポイントテーブルとユーザテーブルを結合
         $query->leftJoinSub($free_points_query, 'free_points', 'users.id', '=', 'free_points.user_id')
               ->leftJoinSub($points_query, 'charge_points', 'users.id', '=', 'charge_points.user_id')
-              ->select('users.*', 'free_points.free_total_points', 'charge_points.total_points')
-              ->orderBy('users.id');
+              ->select('users.*', 'free_points.free_total_points', 'charge_points.total_points');
 
         // 検索条件があれば実行
         if($conditions) {

@@ -13,6 +13,7 @@
     <li class="breadcrumb-item">
         <a href="{{ route('admin/community') }}">コミュニティ一覧</a>
     </li>
+    <li class="breadcrumb-item">{{ $community_name }}</li>
     <li class="breadcrumb-item">コミュニティロケーション一覧</li>
 @endsection
 
@@ -22,15 +23,18 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    <div class="community_location_communityName">
+                        コミュニティ名：<span class="badge badge-pill badge-info community_name">{{ $community_name }}</span>
+                    </div>
                     <div class="row mb-3 d-flex">
                         <div class="col-lg-2">
                             <input type="text" class="form-control search-text" value="" name="id" id="id" placeholder="ID">
                         </div>
                         <div class="col-lg-2">
-                            <input type="text" class="form-control search-text" value="" name="name" id="name" placeholder="名前">
+                            <input type="text" class="form-control search-text" value="" name="marker_name" id="marker_name" placeholder="マーカー名">
                         </div>
                         <div class="col-lg-2">
-                            <input type="text" class="form-control search-text" value="" name="marker_id" id="marker_id" placeholder="マーカー">
+                            <input type="text" class="form-control search-text" value="" name="name" id="name" placeholder="場所の名前">
                         </div>
                         <div class="col-lg-4">
                             @include('admin.layouts.components.button.search')
