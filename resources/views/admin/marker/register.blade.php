@@ -83,7 +83,7 @@
                                         <div id="drop_area" class="drop_area">
                                             <div class="preview">
                                                 <img id="preview" 
-                                                     src="{{ $data->image_file ? Storage::url("images/".$data->image_file) : (session('file_src') ? session('file_src') : asset('images/noImage/no_image.png')) }}" 
+                                                     src="{{ $data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : (session('file_path') ? session('file_path') : asset('images/noImage/no_image.png')) }}" 
                                                      width="350" 
                                                      height="250"
                                                 >
@@ -136,11 +136,10 @@
                             <div class="col-md-12">
                                 <input type="hidden" name="id" id="id" value="{{ $data->id }}" />
                                 <input type="hidden" id="register_mode" name="register_mode" value="{{ $register_mode }}" />
-                                <input type="hidden" id="file_src" name="file_src" value="{{ session('file_src') ? session('file_src') : '' }}" />
+                                <input type="hidden" id="image_file" name="image_file" value="{{ $data->image_file ? $data->image_file : '' }}" />
                                 @include('admin.layouts.components.button.register', ['register_mode' => $register_mode])
                                 @include('admin.layouts.components.button.cancel', ['url' => "/marker"])
                             </div>
-                            {{ var_dump(session('file_src')) }}
                         </div>
                     </form>
 

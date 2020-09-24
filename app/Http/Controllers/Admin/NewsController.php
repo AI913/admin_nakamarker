@@ -20,6 +20,9 @@ class NewsController extends BaseAdminController
         $this->mainService  = $mainService;
         $this->mainRoot     = "admin/news";
         $this->mainTitle    = 'お知らせ管理';
+
+        // テーブル名の設定
+        $this->table = 'news';
     }
 
     /**

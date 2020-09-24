@@ -57,14 +57,14 @@ class Common {
      * @param $image_file
      * @return string
      */
-    public static function getImageUrl($image_file) {
+    public static function getImageUrl($image_file, $folder) {
         if ($image_file === null) {
             return asset('images/noImage/no_image.png');
         }
         if ($image_file === config('const.out_image')) {
             return asset('images/noImage/out_images.png');
         }
-        return Storage::url("images/".$image_file);
+        return Storage::url("images/".$folder.'/'.$image_file);
     }
     /**
      * ファイル保存
@@ -73,7 +73,7 @@ class Common {
      * \Image : intervention/imageパッケージ
      * storage/app/public/imagesフォルダに保存
      */
-    public static function saveImage($file) {
+    public static function saveImage($file, $folder) {
         $tmp_name   = md5(microtime());                    // フィル名取得(microtime() : Unixタイムスタンプ)
         $ext        = $file->getClientOriginalExtension(); // 拡張子GET
         $image_name = $tmp_name.".".$ext;
@@ -84,7 +84,7 @@ class Common {
         $image->fit(config('const.resize_width'), config('const.resize_height'), function ($constraint) {
             $constraint->aspectRatio(); // リサイズの決まり文句
         });
-        Storage::put("public/images/".$image_name, $image, $image->encode());
+        Storage::put("public/images/".$folder."/".$image_name, $image, $image->encode());
 
         return $image_name;
     }
@@ -92,11 +92,12 @@ class Common {
      * ファイル削除
      * @param $file
      */
-    public static function removeImage($file) {
-        $ext    = self::getExt($file);
-        Storage::delete("images/".$file);
-        Storage::delete("images/".str_replace($ext, "-s".$ext, $file));
-        Storage::delete("images/".str_replace($ext, "-m".$ext, $file));
+    public static function removeImage($file, $folder) {
+        // $ext    = self::getExt($file);
+        Storage::delete("public/images/".$folder."/".$file);
+        // Storage::delete("images/".str_replace($ext, "-s".$ext, $file));
+        // Storage::delete("images/".str_replace($ext, "-m".$ext, $file));
+        return;
     }
 
     /**

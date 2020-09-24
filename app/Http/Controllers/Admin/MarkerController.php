@@ -8,6 +8,7 @@ use App\Services\Model\UserService;
 use App\Services\Model\UserMarkerService;
 use App\Lib\Common;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Storage;
 
 class MarkerController extends BaseAdminController
 {
@@ -25,6 +26,8 @@ class MarkerController extends BaseAdminController
         $this->mainTitle    = 'マーカー管理';
 
         $this->userMarkerService = $userMarkerService;
+        // テーブル名の設定
+        $this->table = 'markers';
     }
 
     /**
@@ -32,7 +35,7 @@ class MarkerController extends BaseAdminController
      * @return array
      */
     public function except() {
-        return ["_token", "register_mode", "upload_image", "img_delete", "delete_flg_on", 'image_flg', 'file_src'];
+        return ["_token", "register_mode", "upload_image", "img_delete", "delete_flg_on", 'image_flg', 'file_path', 'file_src'];
     }
 
     /**
@@ -60,6 +63,10 @@ class MarkerController extends BaseAdminController
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index() {
+        // $files = Storage::files('public/images');
+        // dd($files);
+        // exit;
+        
         // ステータスリスト追加
         return parent::index()->with([
             'type_list' => Common::getMarkerTypeList(),
@@ -102,77 +109,6 @@ class MarkerController extends BaseAdminController
     }
 
     /**
-     * 保存前処理
-     * @param Request $request
-     * @return array
-     * @throws \Exception
-     * $request->image_file : inputタイプのhidden属性
-     * $request->file('upload_image') : inputタイプのfile属性
-     */
-    public function saveBefore(Request $request) {
-        // 保存処理モード
-        $register_mode = $request->register_mode;
-        
-        // 除外項目
-        $input = $request->except($this->except());
-
-        if(is_null($request->image_flg)) {
-            // 強制削除フラグがONの場合、専用画像名をDBに保存
-            if(empty($request->file('upload_image')) && $request->delete_flg_on === 'true') {
-                $input['image_file'] = config('const.out_image');
-            }
-            
-            // 強制削除フラグがOFFでかつ画像がアップロードされていない場合、nullをDBに保存
-            if(empty($request->file('upload_image')) && $request->delete_flg_on === 'false') {
-                $input['image_file'] = null;
-            }
-        }
-
-        // 画像あり
-        if ($request->hasFile('upload_image')) {
-            // 編集の場合、登録済みの画像削除
-            if ($register_mode == "edit") {
-                Common::removeImage($request->image_file);
-            }
-            // 画像の新規保存
-            $input["image_file"] = Common::saveImage($request->file('upload_image'));
-        }
-
-        return $input;
-    }
-
-    /**
-     * 保存
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|void
-     * @throws \Exception
-     */
-    public function save(Request $request) {
-        // バリデーション
-        $validator = $this->validation($request);
-        // バリデーションエラー時はリダイレクト
-        if ($validator->fails()) {
-            return $this->validationFailRedirect($request, $validator);
-        }
-
-        try {
-            \DB::beginTransaction();
-            // 保存前処理で保存データ作成
-            $input = $this->saveBefore($request);
-            // 保存処理
-            $model = $this->mainService->save($input, true, false);
-            // 保存後処理
-            $this->saveAfter($request, $model);
-            \DB::commit();
-            // 対象データの一覧にリダイレクト
-            return redirect(route($this->mainRoot))->with('info_message', $request->register_mode == 'create' ? $this->mainTitle.'情報を登録しました' : $this->mainTitle.'情報を編集しました');
-        } catch (\Exception $e) {
-            \DB::rollBack();
-            return redirect(route($this->mainRoot))->with('error_message', 'データ登録時にエラーが発生しました。[詳細]<br>'.$e->getMessage());
-        }
-    }
-
-    /**
      * 削除
      * @param $id
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
@@ -191,7 +127,14 @@ class MarkerController extends BaseAdminController
      */
     public function validation_rules(Request $request)
     {
-        // バリデーションチェック
+        // 画像を設定した履歴がセッションに残っている場合
+        if (\Session::get('file_path')) {
+            return [
+                'price'         => ['integer'],
+                'upload_image'  => ['image', 'max:1024'],
+            ];
+        }
+        // バリデーションチェック(画像が設定されていない場合)
         return [
             'price'         => ['integer'],
             'upload_image'  => ['required', 'image', 'max:1024'],

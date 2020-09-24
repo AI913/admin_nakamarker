@@ -12,6 +12,13 @@ class CommunityLocation extends BaseModel
      */
     protected $fillable = ['name', 'latitude', 'longitude', 'image_file', 'memo', 'user_id', 'marker_id', 'community_id', 'del_flg'];
 
+    /**
+     * テーブル名を格納(オーバーライドで使用)
+     */
+    public function setTableName() {
+        return $this->table = 'community_locations';
+    }
+
     // usersテーブルと1対1のリレーション構築
     public function user()
     {

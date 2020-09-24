@@ -48,7 +48,7 @@ $(function () {
         event.stopPropagation();
         event.preventDefault();
         $('#drop_area').removeClass('dashed'); // 点線の枠を設定したクラスをリセット
-        $('#drop_area').addClass('solid');  // 枠を実線にする
+        $('#drop_area').addClass('solid');     // 枠を実線にする
     });
 
     // ドラッグしている要素がドロップ領域から外れたとき
@@ -132,29 +132,6 @@ $(function () {
 $(function(){
     // 画像のセット
     let outImage = 'http://nakamarker.localhost/images/noImage/no_image.png';
-    
-    $('#delete_flg').change(function() {
-        // 画像の強制削除フラグ確認
-        if($('#delete_flg').prop('checked') === true) {
-            outImage = 'http://nakamarker.localhost/images/noImage/out_images.png';
-            $('#delete_flg_on').val(true);
-        }
-        if($('#delete_flg').prop('checked') === false) {
-            outImage = 'http://nakamarker.localhost/images/noImage/no_image.png';
-            $('#delete_flg_on').val(false);
-        }
-        $preview = $(".preview");
-
-        // 強制削除の画像以外で画像ファイルがアップロードされていないことが条件
-        if($('#image').val() === "" && $('#image_flg').val() === "") {
-            $preview.append($('<img>').attr({
-                src: outImage,
-                width: "350px",
-                height: "250px",
-                class: "preview",
-            }));
-        }
-    })
 
     $('#cancel').on('click', function(){
         $preview = $(".preview");
@@ -165,7 +142,7 @@ $(function(){
         if($('#image_flg').val()) {
             $('#image_flg').val(null);
         }
-
+        
         // .prevewの領域の中にロードした画像を表示するimageタグを追加
         $preview.append($('<img>').attr({
             src: outImage,
@@ -175,7 +152,7 @@ $(function(){
         }));
 
         $('#drop_area').removeClass('solid'); // 枠を点線に戻す
-
+        
         // 削除フラグを設定
         $('#img_delete').val(1);
     });

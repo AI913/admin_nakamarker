@@ -35,6 +35,9 @@ class CommunityLocationController extends BaseAdminController
         $this->markerService = $markerService;
         $this->communityService = $communityService;
 
+        // テーブル名の設定
+        $this->table = 'community_locations';
+
         // コミュニティのID等を取得
         $this->middleware(function($request, $next) {
             // GET送信の場合
@@ -117,8 +120,8 @@ class CommunityLocationController extends BaseAdminController
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create() {
-        // ログインユーザの全マーカーデータを取得
-        $marker_list = $this->markerService->getLocationMarkerQuery(\Auth::user()->id)->get();
+        // 全マーカーデータを取得
+        $marker_list = $this->markerService->all();
 
         // コミュニティ情報
         $community_id = $this->community->id;
@@ -140,8 +143,8 @@ class CommunityLocationController extends BaseAdminController
         // 編集対象のロケーションデータを取得
         $data = $this->mainService->find($this->location_id);
 
-        // 編集対象のユーザに紐づく全マーカーを取得
-        $marker_list = $this->markerService->getLocationMarkerQuery($data->user_id)->get();
+        // 全マーカーデータを取得
+        $marker_list = $this->markerService->all();
 
         // コミュニティIDの代入
         $community_id = $this->community->id;
@@ -160,6 +163,7 @@ class CommunityLocationController extends BaseAdminController
             'marker_list'   => $marker_list,
             'data'          => $data,
             'community_id'  => $community_id,
+            'folder' => $this->table,
         ]);
     }
 
@@ -196,15 +200,11 @@ class CommunityLocationController extends BaseAdminController
             }
         }
 
-        // 画像あり
-        if ($request->hasFile('upload_image')) {
-            // 編集の場合、登録済みの画像削除
-            if ($register_mode == "edit") {
-                Common::removeImage($request->image_file);
-            }
-            // 画像の新規保存
-            $input["image_file"] = Common::saveImage($request->file('upload_image'));
+        // 画像名をレコードに設定
+        if(\Session::get('file_name')) {
+            $input['image_file'] = \Session::get('file_name');
         }
+
         return $input;
     }
 
@@ -215,7 +215,6 @@ class CommunityLocationController extends BaseAdminController
      * @throws \Exception
      */
     public function save(Request $request) {
-
         // 緯度・経度を分割
         $map = explode(',', $request->map);
 
@@ -225,6 +224,21 @@ class CommunityLocationController extends BaseAdminController
 
         // 加工したリクエストを追加
         $request = $this->addRequest($request);
+
+        // 削除ボタンを押下して画像を設定しない場合
+        if($request['img_delete'] && $request['img_delete'] == 1) {
+            // 設定済みだった画像をストレージから削除
+            Common::removeImage($request->image_file, $this->table);
+
+            // セッションの値を削除
+            \Session::forget('file_path');
+            \Session::forget('file_name');
+        }
+
+        // 画像ありの場合は保存処理実行
+        if ($request->hasFile('upload_image')) {
+            $this->fileSave($request);
+        }
 
         // バリデーション
         $validator = $this->validation($request);
@@ -247,6 +261,10 @@ class CommunityLocationController extends BaseAdminController
             return redirect(route('admin/community/detail/location/index', ['id' => $this->community->id]))->with('info_message', $request->register_mode == 'create' ? $this->mainTitle.'情報を登録しました' : $this->mainTitle.'情報を編集しました');
         } catch (\Exception $e) {
             \DB::rollBack();
+            // 保存処理を終えていた画像を削除
+            if($input["image_file"]) {
+                Common::removeImage($input["image_file"]);
+            }
             return redirect(route('admin/community/detail/location/index', ['id' => $this->community->id]))->with('error_message', 'データ登録時にエラーが発生しました。[詳細]<br>'.$e->getMessage());
         }
     }

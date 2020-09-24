@@ -32,13 +32,13 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="title">タイトル<span class="text-danger">※</span></label>
                                     <div class="col-md-9">
-                                        <input class="form-control required-text" type="text" id="title" name="title" maxlength="50" placeholder="タイトル" value="{{ $data->title }}" data-title="名前">
+                                        <input class="form-control required-text" type="text" id="title" name="title" maxlength="50" placeholder="タイトル" value="{{ $data->title ? $data->title : old('title') }}" data-title="名前">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="body">内容<span class="text-danger">※</span></label>
                                     <div class="col-md-9">
-                                        <textarea class="form-control" name="body" id="body" maxlength="2000" rows="10" placeholder="内容">{{ $data->body }}</textarea>
+                                        <textarea class="form-control" name="body" id="body" maxlength="2000" rows="10" placeholder="内容">{{ $data->body ? $data->body : old('body') }}</textarea>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -58,13 +58,14 @@
                                         <div id="drop_area" class="drop_area">
                                             <div class="preview">
                                                 <img id="preview" 
-                                                     src="{{ $data->image_file ? Storage::url("images/".$data->image_file) : asset('images/noImage/no_image.png') }}" 
+                                                     src="{{ $data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : (session('file_path') ? session('file_path') : asset('images/noImage/no_image.png')) }}" 
                                                      width="350" 
                                                      height="250"
                                                 >
                                             </div>
                                         </div>
                                     </div>
+                                    <input type="file" id="image" name="upload_image" class="form-control-file" style="display: none">
                                 </div>
                                 <div class="form-group row">
                                     <div id="image_delete" class="offset-md-3 col-md-9">
@@ -90,17 +91,18 @@
                                          value="{{ $data->condition_end_time ? $data->condition_end_time : old('condition_end_time') }}" {{ ($data->status && $data->status == 0) ? 'disabled' : '' }}>
                                     </div>
                                 </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <input type="hidden" name="id" id="id" value="{{ $data->id }}" />
+                                <input type="hidden" id="image_file" name="image_file" value="{{ $data->image_file ? $data->image_file : '' }}" />
                                 <input type="hidden" id="register_mode" name="register_mode" value="{{ $register_mode }}" />
                                 @include('admin.layouts.components.button.register', ['register_mode' => $register_mode])
                                 @include('admin.layouts.components.button.cancel', ['url' => "/news"])
                             </div>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>

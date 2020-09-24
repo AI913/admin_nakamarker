@@ -32,6 +32,13 @@ class Marker extends BaseModel
     }
 
     /**
+     * テーブル名を格納(オーバーライドで使用)
+     */
+    public function setTableName() {
+        return $this->table = 'markers';
+    }
+
+    /**
      * マーカータイプ名を返す
      * @return string
      */

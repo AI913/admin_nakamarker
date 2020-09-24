@@ -67,16 +67,16 @@ class MarkerService extends BaseService
         return $query;
     }
 
-    /**
-     * コミュニティロケーションの作成画面に表示するマーカーのデータリスト
-     * 
-     */
-    public function getLocationMarkerQuery($user_id) {
-        $query = $this->model()->query();
+    // /**
+    //  * コミュニティロケーションの作成画面に表示するマーカーのデータリスト
+    //  * 
+    //  */
+    // public function getLocationMarkerQuery() {
+    //     $query = $this->model()->query();
 
-        $query->leftJoin('user_markers', 'markers.id', '=', 'user_markers.marker_id')
-              ->select('markers.*', 'user_markers.id as user_markers_id');
+    //     $query->leftJoin('user_markers', 'markers.id', '=', 'user_markers.marker_id')
+    //           ->select('markers.*', 'user_markers.id as user_markers_id');
             
-        return $query;
-    }    
+    //     return $query;
+    // }    
 }

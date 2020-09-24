@@ -29,6 +29,13 @@ class Community extends BaseModel
     }
 
     /**
+     * テーブル名を格納(オーバーライドで使用)
+     */
+    public function setTableName() {
+        return $this->table = 'communities';
+    }
+
+    /**
      * コミュニティの申請状況を返す
      * (数値からconst.phpで定義した文字列へと変換)
      * @return string

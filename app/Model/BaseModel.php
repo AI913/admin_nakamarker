@@ -16,6 +16,9 @@ class BaseModel extends Model {
     protected $guarded = ['id'];
 
     protected $dates = ['created_at', 'updated_at'];
+    
+    // テーブル名
+    protected $table;
 
     /**
      * 独自アクセサ(attribute)
@@ -24,11 +27,18 @@ class BaseModel extends Model {
     protected $appends = ['image_url', 'memo_html', 'status_name'];
 
     /**
+     * テーブル名を格納(オーバーライドで使用)
+     */
+    public function setTableName() {
+        return $this->table;
+    }
+
+    /**
      * 画像URL取得
      * @return string
      */
     public function getImageUrlAttribute() {
-        return Common::getImageUrl($this->image_file);
+        return Common::getImageUrl($this->image_file, $this->table);
     }
 
     /**

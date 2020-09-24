@@ -22,6 +22,15 @@ $(function(){
             $('#status').val(0);
         }
     })
+
+    // ポイントフラグのデフォルト設定時
+    $('[name="charge_flg"]').on('change', function(){
+        $('#price').prop("disabled", false);
+        if($('#flg3').prop('checked')){
+            $('#price').prop("disabled", true);
+            $('#price').val(0);
+        }
+    });
 });
 
 /**
@@ -160,7 +169,6 @@ $(function () {
                     class: "preview",
                     title: file.name
                 }));  // previewに画像を表示
-                $('#file_src').val(e.target.result);
             };
         })(file);
         reader.readAsDataURL(file); // ファイル読み込みを非同期でバックグラウンドで開始
@@ -200,11 +208,6 @@ $(function(){
         $('#image').val(null);
         if($('#image_flg').val()) {
             $('#image_flg').val(null);
-
-            // 編集時に"強制削除フラグ"を一度もタッチしなかった場合の処理
-            if($('#delete_flg_on').val() == "") {
-                $('#delete_flg_on').val(false);
-            }
         }
         
         // .prevewの領域の中にロードした画像を表示するimageタグを追加
