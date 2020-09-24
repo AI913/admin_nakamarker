@@ -209,8 +209,8 @@ function setDetailView(data, button) {
         $('#detail_name').html(data.name);
         $('#detail_status').html(data.status_name);
         $('#detail_email').html(data.email);
-        $('#detail_login_time').html(data.login_time);
-        $('#detail_created_at').html(data.created_at);
+        $('#detail_login_time').html(data.login_time_style);
+        $('#detail_created_at').html(data.created_at_style);
         $('#detail_user_agent').html(data.user_agent);
         $('#detail_memo').html(data.memo);
         $('#user_id').data('id', data.id);              // 各タグで共有
@@ -271,7 +271,7 @@ function setDetailView(data, button) {
                             `;
                         }
                     },
-                    {data: 'created_at'},
+                    {data: 'created_at_style', name: 'created_at'},
                     // GoogleMapのリンクを埋め込み
                     {
                         data: function (p) {
@@ -387,7 +387,7 @@ function setDetailView(data, button) {
                         }, name: 'status'
                     },
                     // 参加日時
-                    {data: 'created_at'},
+                    {data: 'updated_at_style', name: 'updated_at'},
                     {
                         data: function (p) {
                             // 申請中・承認済み・却下ボタンの設定(usersのidとcommunitiesのidをdata要素に渡している)
@@ -520,8 +520,13 @@ function setMarkerTable(id) {
                     return p.charge_name;
                 }, name: 'charge'
             },
-            {data: 'user_markers_updated_at'},
-            
+            {
+                data: function(p) {
+                    // 日付フォーマットの形式を調整
+                    let time = moment(p.user_markers_updated_at);
+                    return time.format("YYYY年MM月DD日 HH時mm分");
+                }, name: 'user_markers_updated_at'
+            },
             // マーカー履歴の削除ボタン
             {
                 data: function (p) {
@@ -577,7 +582,7 @@ function setPointTable(id) {
                     return p.pay_point;
                 }
             }, // ポイント数(消費)
-            {data: 'created_at'},
+            {data: 'created_at_style', name: 'created_at'},
             {
                 data: function(p) {
                     // 有料フラグが"有料"の場合は赤色で表示
@@ -768,8 +773,8 @@ function initList(search) {
             {data: 'id'},
             {data: 'name'},
             {data: 'email'},
-            {data: 'created_at'},
-            {data: 'login_time'},
+            {data: 'created_at_style', name: 'created_at'},
+            {data: 'login_time_style', name: 'login_time'},
             {
                 data: function(p) {
                     // アカウントステータスが"アカウント停止"の場合は赤色で表示
@@ -811,14 +816,14 @@ function initList(search) {
         // 各列ごとの装飾
         [
             // ボタン部分
-            { targets: [1], orderable: false, width: '130px'},
-            { targets: [2], orderable: false, width: '130px'},
-            { targets: [3], orderable: false, width: '150px'},
-            { targets: [4], orderable: true, width: '150px'},
+            { targets: [1], orderable: false, width: '170px'},
+            { targets: [2], orderable: false, width: '170px'},
+            { targets: [3], orderable: true, width: '170px'},
+            { targets: [4], orderable: true, width: '170px'},
             { targets: [5], orderable: false, className: 'text-center', width: '110px'},
             { targets: [6], orderable: true, className: 'text-center', width: '110px'},
             { targets: [7], orderable: true, className: 'text-center', width: '110px'},
-            { targets: [8], orderable: false, className: 'text-center', width: '200px'},
+            { targets: [8], orderable: false, className: 'text-center', width: '150px'},
         ],
         search
     );

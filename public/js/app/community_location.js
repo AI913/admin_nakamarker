@@ -278,7 +278,7 @@ function initList(search) {
                 }
             },
             {data: 'user_name'},
-            {data: 'created_at'},
+            {data: 'created_at_style', name: 'created_at'},
             // GoogleMapのリンクを埋め込み
             {
                 data: function (p) {
@@ -306,6 +306,7 @@ function initList(search) {
             { targets: [2], orderable: false, width: '150px'},
             { targets: [3], orderable: false, className: 'text-center', width: '150px'},
             { targets: [4], orderable: false, width: '150px'},
+            { targets: [5], orderable: true, width: '150px'},
             { targets: [6], orderable: false, className: 'text-center', width: '100px'},
             { targets: [7], orderable: false, className: 'text-center', width: '150px'}
         ],

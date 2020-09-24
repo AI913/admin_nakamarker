@@ -24,7 +24,7 @@ class BaseModel extends Model {
      * 独自アクセサ(attribute)
      * @var array
      */
-    protected $appends = ['image_url', 'memo_html', 'status_name'];
+    protected $appends = ['image_url', 'memo_html', 'status_name', 'created_at_style', 'updated_at_style'];
 
     /**
      * テーブル名を格納(オーバーライドで使用)
@@ -55,5 +55,20 @@ class BaseModel extends Model {
      */
     public function getMemoHtmlAttribute() {
         return nl2br($this->memo);
+    }
+
+    /**
+     * 時刻表記(created_at)
+     * @return string
+     */
+    public function getCreatedAtStyleAttribute() {
+        return date("Y年m月d日 H時i分" , strtotime($this->created_at));
+    }
+    /**
+     * 時刻表記(updated_at)
+     * @return string
+     */
+    public function getUpdatedAtStyleAttribute() {
+        return date("Y年m月d日 H時i分", strtotime($this->updated_at));
     }
 }

@@ -193,6 +193,9 @@
 <script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap4.min.js"></script>
 <script src="{{ asset('js/datetimepicker/jquery.datetimepicker.full.min.js') }}"></script>
 <script src="{{ asset('js/vendor/short-and-sweet.min.js') }}" ></script>
+{{-- 日付フォーマットのライブラリ --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/locale/ja.js"></script>
 
 <script src="{{ asset('js/common.js') }}?v={{ config('const.app_version') }}" ></script>
 

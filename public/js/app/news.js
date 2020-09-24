@@ -247,8 +247,8 @@ function initList(search) {
                     return (`<span style='color: blue'>${p.status_name}</span>`);
                 }, name: 'status',
             },
-            {data: 'condition_start_time'},
-            {data: 'condition_end_time'},
+            {data: 'start_time', name: 'condition_start_time'},
+            {data: 'end_time', name: 'condition_end_time'},
             {data: 'user.name'},
             // 各操作列
             {

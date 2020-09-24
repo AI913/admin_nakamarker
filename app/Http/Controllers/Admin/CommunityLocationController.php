@@ -219,9 +219,9 @@ class CommunityLocationController extends BaseAdminController
         $map = explode(',', $request->map);
 
         // 緯度・経度を数値化して配列に追加
-        $request['latitude'] = floatval($map[0]);
-        $request['longitude'] = floatval($map[1]);
-
+        $request['latitude'] = $map[0];
+        $request['longitude'] = $map[1];
+        
         // 加工したリクエストを追加
         $request = $this->addRequest($request);
 
@@ -291,8 +291,6 @@ class CommunityLocationController extends BaseAdminController
         // バリデーションチェック
         return [
             // 緯度：-90~90の間を正規表現でチェック、経度：-180~180の間を正規表現でチェック
-            // 'latitude'          => ['numeric','regex:/^[-+]?([1-8]?d(.d+)?|90(.0+)?)$/'],
-            // 'longitude'         => ['numeric','regex:/^[-+]?(180(.0+)?|((1[0-7]d)|([1-9]?d))(.d+)?)$/'],
             'latitude'          => ['numeric'],
             'longitude'         => ['numeric'],
             'upload_image'      => ['image', 'max:1024'],
@@ -306,8 +304,8 @@ class CommunityLocationController extends BaseAdminController
      */
     public function validation_message(Request $request) {
         return [
-            'latitude.regex'     => '緯度は-90~90の半角数字で入力してください',
-            'longitude.regex'     => '経度は-180~180の半角数字で入力してください',
+            'latitude.numeric'     => '緯度は半角数字で入力してください',
+            'longitude.numeric'     => '経度は半角数字で入力してください',
 
             'upload_image.image'  => '画像は"jpeg, png, bmp, gif, or svg"形式のみでアップロードしてください',
             'upload_image.max'    => '画像は1,024kb以下しか登録できません',

@@ -118,7 +118,7 @@ function setDetailView(data, button) {
                 {data: 'history_id'},
                 {data: 'name'},
                 {data: 'email'},
-                {data: 'updated_at'},  // 参加日時はcommunity_historiesテーブルのstatusカラムが"承認済み"の場合のupdated_atカラムを参照
+                {data: 'updated_at_style', name: 'updated_at'},  // 参加日時はcommunity_historiesテーブルのstatusカラムが"承認済み"の場合のupdated_atカラムを参照
                 {
                     data: function(p) {
                         // アカウントステータスが"アカウント停止"の場合は赤色で表示
@@ -416,7 +416,7 @@ function initList(search) {
             },
             {data: 'name'},
             {data: 'type_name', name: 'type'},
-            {data: 'created_at'},
+            {data: 'created_at_style', name: 'created_at'},
             {data: 'total_counts'},
             {
                 data: function(p) {

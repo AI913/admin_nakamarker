@@ -14,7 +14,7 @@ class User extends Authenticatable
      * 独自アクセサ(attribute)
      * @var array
      */
-    protected $appends = ['status_name', 'entry_status_name'];
+    protected $appends = ['status_name', 'entry_status_name', 'created_at_style', 'updated_at_style', 'login_time_style'];
 
 
     /**
@@ -84,6 +84,30 @@ class User extends Authenticatable
         if ($this->entry_status == config('const.community_history_apply'))  return config('const.community_history_apply_name');
         if ($this->entry_status == config('const.community_history_approval'))     return config('const.community_history_approval_name');
         if ($this->entry_status == config('const.community_history_reject'))   return config('const.community_history_reject_name');
+    }
+
+    /**
+     * 時刻表記(created_at)
+     * @return string
+     */
+    public function getCreatedAtStyleAttribute() {
+        return date("Y年m月d日 H時i分" , strtotime($this->created_at));
+    }
+    /**
+     * 時刻表記(updated_at)
+     * @return string
+     */
+    public function getUpdatedAtStyleAttribute() {
+        return date("Y年m月d日 H時i分", strtotime($this->updated_at));
+    }
+    /**
+     * 時刻表記(login_time)
+     * @return string
+     */
+    public function getLoginTimeStyleAttribute() {
+        if(!is_null($this->login_time)) {
+            return date("Y年m月d日 H時i分", strtotime($this->login_time));
+        }
     }
 
     // communitiesテーブルと多対多のリレーション構築

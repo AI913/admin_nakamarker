@@ -70,7 +70,13 @@ function setDetailView(data, button) {
                 {data: 'user_markers_id'},
                 {data: 'user_name'},
                 {data: 'user_email'},
-                {data: 'user_markers_updated_at'},  // 購入日時
+                {
+                    data: function(p) {
+                        // 日付フォーマットの形式を調整
+                        let time = moment(p.user_markers_updated_at);
+                        return time.format("YYYY年MM月DD日 HH時mm分");
+                    }, name: 'user_markers_updated_at'
+                },  // 購入日時
                 {
                     data: function(p) {
                         // アカウントステータスが"アカウント停止"の場合は赤色で表示
