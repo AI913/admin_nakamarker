@@ -1,0 +1,341 @@
+/* basic setup */
+body { margin: 0px; padding: 0px; }
+
+a:hover {
+    /*
+    background-color: #ACE2FF;
+    */
+    background-color: #FFA500;
+    color: #000000;
+}
+
+/* header */
+#admin_header 
+{
+    background-color: #CCFF99;
+    border-bottom: 2px ridge #AAAAAA;
+    padding-top: 7px;
+    padding-bottom: 0px;
+
+}
+
+#admin_header h1 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding:0px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #000000;
+    float:left;
+}
+
+#admin_user_name {
+    text-align: right;
+    font-size: 80%;
+    font-weight:bold;
+}
+
+/* footer */
+#admin_footer {
+    background-color: #CCFF99;
+    border-top: 2px ridge #AAAAAA;
+    border-bottom: 1px solid #000000;
+}
+
+#admin_footer .copyright {
+    text-align: right;
+    padding-right: 10px;
+    color: #000000;
+}
+
+
+/* main area*/
+#admin_main table {
+    width: 100%;
+    border-spacing: 0px;
+}
+
+#admin_menu {
+    vertical-align: top;
+    border-right: 1px dashed #000000;
+    padding-top:10px;
+}
+
+#admin_menu ul {
+    margin-left: 30px;
+}
+
+#admin_menu li {
+    font-size: 95%;
+    list-style-type: square;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+#admin_contents {
+    width: 78%;
+    padding: 10px;
+    vertical-align: top;
+}
+
+#admin_contents h2 {
+    border-bottom: 5px solid #CCFF99;
+    border-left: 10px solid #CCFF99;
+    margin-bottom: 20px;
+}
+
+#body_menu {}
+
+#menu_local {
+    width: 555px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+#menu_local table{
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    vertical-align: middle;
+}
+
+#menu_local th{
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    background-color: #CCFF99;
+    color: #000000;
+    padding: 3px;
+}
+
+#menu_local td{
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    padding: 3px;
+}
+
+#menu_local .link{}
+
+#menu_local .description{
+    background-color: #E5E5E5;
+}
+
+/* contents class */
+/* list page style */
+.list table{
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    font-size: 95%;
+}
+
+.list th{
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    background-color: #CCFF99;
+    color: #000000;
+    padding: 3px;
+}
+
+.list td{
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    padding: 3px;
+}
+
+.hideitem {
+    background-color: #CCCCCC;
+}
+.hideitem td {
+    background-color: #FFFFFF;
+}
+.hideitem th {
+    background-color: #CCCCCC;
+}
+
+.t_right{
+    text-align:right;
+}
+.t_left{
+    text-align:left;
+}
+.t_center{
+    text-align:center;
+}
+
+
+
+/* narrow list style */
+.list_narrow {
+    width: 70%;
+    text-align: center;
+    margin-right: auto;
+    margin-left: auto;
+}
+.list_narrow table{
+    border: 1px solid #000000;
+    border-collapse: collapse;
+}
+
+.list_narrow th{
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    background-color: #CCFF99;
+    color: #000000;
+    padding: 3px;
+}
+
+.list_narrow td{
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    padding: 3px;
+}
+
+
+
+/* detail page style */
+.detail table{
+    border: 1px solid #000000;
+    border-collapse: collapse;
+}
+
+.detail th{
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    background-color: #CCFF99;
+    color: #000000;
+    padding: 3px;
+    width: 25%;
+}
+
+.detail td{
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    padding: 3px;
+}
+
+
+/* form area */
+.form_area table {
+    border: 1px solid #000000;
+    border-collapse: collapse;
+}
+
+.form_area th{
+    text-align: left;
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    background-color: #CCFF99;
+    color: #000000;
+    padding: 3px;
+}
+
+.form_area td{
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    padding: 3px;
+}
+
+.form_area .buttons {
+    text-align: center;
+}
+
+.login_form {
+    width: 400px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.login_form table {
+    border: 1px solid #000000;
+    border-collapse: collapse;
+}
+
+.login_form th{
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    background-color: #CCFF99;
+    color: #000000;
+    padding: 3px;
+}
+
+.login_form td{
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    padding: 3px;
+}
+
+.login_form .button {
+    font-weight: bold;
+    text-align: center;
+}
+
+.search_form {
+    margin-bottom: 10px;
+}
+
+.search_form table {
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    font-size: 90%;
+}
+.search_form th {
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    background-color: #8AC0FF;
+}
+.search_form td {
+    border: 1px solid #000000;
+    border-collapse: collapse;
+}
+.search_form .button {
+    font-weight: bold;
+    text-align: center;
+    background-color: #CCCCCC;
+}
+
+.pager {
+    padding-top: 10px;
+    padding-bottom: 5px;
+    text-align: center;
+}
+
+.errors {
+    color: #FF0000;
+    font-weight: bold;
+    font-size: 95%;
+    background-color: #CCFF99;
+}
+
+.caution {
+    color: #FF0000;
+}
+
+.required {
+    font-size: 80%;
+    color: #FF0000;
+}
+
+.hint {
+    font-size: 90%;
+    text-align: left;
+    padding: 5px;
+    background-color: #CCFF99;
+}
+
+.notice {
+    font-size: 80%;
+    text-align: left;
+    padding: 5px;
+}
+
+.show_kissnumber {
+    font-size: 120%;
+    padding: 5px;
+    background-color: #CCFF99;
+    border: 1px solid #FF0000;
+}
+

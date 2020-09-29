@@ -93,10 +93,7 @@ class Common {
      * @param $file
      */
     public static function removeImage($file, $folder) {
-        // $ext    = self::getExt($file);
         Storage::delete("public/images/".$folder."/".$file);
-        // Storage::delete("images/".str_replace($ext, "-s".$ext, $file));
-        // Storage::delete("images/".str_replace($ext, "-m".$ext, $file));
         return;
     }
 

@@ -1,0 +1,153 @@
+/* cmn.css */
+body {
+  font-size: 10px;
+  -webkit-text-size-adjust: none;
+}
+.msie body {
+  font-size: 62.5%;
+}
+
+
+body {
+  line-height: 1.3;
+}
+body img {
+  width: inherit;
+  max-width: 70%;
+  height: auto;
+  border: 1px solid #bdbdbd;
+}
+body h2 {
+  border-bottom: 1px solid #cccccc;
+  font-size: 1.83em;
+  font-weight: normal;
+  line-height: 1;
+  margin-bottom: 20px;
+  padding: 15px 0;
+}
+body h3 {
+  font-size: 1.5em;
+  border-left: 3px solid #e31b13;
+  padding-left: 4px;
+  font-weight: normal;
+  margin-bottom: 20px;
+}
+body h4 {
+  color: #ff6042;
+  font-size: 1.25em;
+  margin-bottom: 20px;
+}
+body h5 {
+  font-size: 1.25em;
+  margin-bottom: 20px;
+}
+body p {
+  font-size: 1.17em;
+  margin-bottom: 15px;
+}
+body table {
+  border-collapse: collapse;
+  border: 1px solid #999;
+  border-spacing: 0;
+  empty-cells: show;
+  font-size: 1.17em;
+  margin-bottom: 20px;
+  width:100%;
+}
+body table th {
+  text-align: left;
+  vertical-align: top;
+  padding: 5px;
+  border: 1px solid #999;
+  background: #e6e6e6;
+}
+body table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 5px;
+  border: 1px solid #999;
+}
+body ul {
+  margin-bottom: 20px;
+  margin-left: 1.75em;
+  font-size: 1.17em;
+}
+body ul li {
+  list-style: disc;
+}
+body ol {
+  margin-bottom: 20px;
+  margin-left: 1.75em;
+  font-size: 1.17em;
+}
+body ol li {
+  list-style-type: decimal;
+}
+body a {
+  text-decoration: underline;
+  /*font-size: 1.17em;*/
+}
+body a:hover {
+  text-decoration: none;
+}
+/*
+body a[href$=".pdf"] {
+  background: url(/design/img/cmn/icon_pdf.png) no-repeat left center;
+  padding: 3px 0 3px 21px;
+}
+*/
+body .aligncenter,
+body img.aligncenter {
+  clear: both;
+  display: block;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center;
+}
+body .alignleft,
+body img.alignleft {
+  display: inline;
+  float: left;
+  margin-right: 24px;
+  margin-bottom: 15px;
+}
+body .alignright,
+body img.alignright {
+  display: inline;
+  float: right;
+  margin-left: 24px;
+  margin-bottom: 15px;
+}
+body img.alignleft,
+body img.alignright,
+body img.aligncenter {
+  margin-bottom: 12px;
+}
+body .alignleft,
+body img.alignleft {
+  display: inline;
+  float: left;
+  margin-right: 24px;
+  margin-bottom: 15px;
+}
+body .alignright,
+body img.alignright {
+  display: inline;
+  float: right;
+  margin-left: 24px;
+  margin-bottom: 15px;
+}
+body .aligncenter,
+body img.aligncenter {
+  clear: both;
+  display: block;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center;
+}
+body img.alignleft,
+body img.alignright,
+body img.aligncenter {
+  margin-bottom: 12px;
+}
+

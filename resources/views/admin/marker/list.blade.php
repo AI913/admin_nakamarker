@@ -63,7 +63,7 @@
                                 <th>有料フラグ</th>
                                 <th>DL数</th>
                                 <th>公開ステータス</th>
-                                <th>編集</th>
+                                <th>操作</th>
                             </tr>
                         </thead>
                     </table>

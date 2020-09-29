@@ -35,10 +35,13 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            // Remember Meに関する設定
+            'remember_me_handler',
         ],
 
         'api' => [
             'throttle:60,1',
+            'bindings', // Remember Meに関する設定
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
@@ -61,6 +64,8 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        // Remember Meからのログインをログに出力するミドルウェアを登録
+        'remember_me_handler' => \App\Http\Middleware\RememberMeHandler::class,
     ];
 
     /**

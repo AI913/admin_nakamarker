@@ -26,13 +26,13 @@
                     </li>
                 </ul>
                 <div class="tab-content">
-                    {{-- タブ1つ目(参加ユーザリスト) --}}
+                    {{-- タブ(参加ユーザリスト) --}}
                     <div class="tab-pane fade show active" id="item1" role="tabpanel" aria-labelledby="item1-tab">
                         <div>
                             <table class="table table-striped table-bordered datatable table-sm" id="community_user_list">
                                 <thead>
                                     <tr role="row">
-                                        <th>ID</th>
+                                        <th>履歴ID</th>
                                         <th>ユーザ名</th>
                                         <th>メールアドレス</th>
                                         <th>参加日時</th>

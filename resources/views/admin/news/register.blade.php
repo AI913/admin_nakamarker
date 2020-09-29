@@ -2,7 +2,7 @@
 
 @section('app_title')
     {{-- タイトル --}}
-    {{ $register_mode == "create" ? 'ニュースの新規登録' : 'ニュースの編集' }}
+    {{ $register_mode == "create" ? 'お知らせ新規登録' : 'お知らせ編集' }}
 @endsection
 
 @section('app_style')
@@ -11,9 +11,9 @@
 @section('app_bread')
     {{-- パンくず --}}
     <li class="breadcrumb-item">
-        <a href="{{ route('admin/news') }}">マーカー一覧</a>
+        <a href="{{ route('admin/news') }}">お知らせ一覧</a>
     </li>
-    <li class="breadcrumb-item">{{ $register_mode == "create" ? 'ニュースの新規登録' : 'ニュースの編集' }}</li>
+    <li class="breadcrumb-item">{{ $register_mode == "create" ? 'お知らせ新規登録' : 'お知らせ編集' }}</li>
 @endsection
 
 @section('app_content')
@@ -22,7 +22,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    {{ $register_mode == "create" ? 'ニュースの新規登録　' : 'ニュースの編集　' }}<span class="text-danger">※は必須入力</span>
+                    {{ $register_mode == "create" ? 'お知らせ新規登録　' : 'お知らせ編集　' }}<span class="text-danger">※は必須入力</span>
                 </div>
                 <div class="card-body">
                     <form class="form-horizontal" action="{{ route('admin/news/save') }}" method="post" id="main_form" enctype='multipart/form-data'>
@@ -32,12 +32,16 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="title">タイトル<span class="text-danger">※</span></label>
                                     <div class="col-md-9">
+                                        {{-- エラーメッセージあれば表示 --}}
+                                        @include('admin.layouts.components.error_message', ['title' => 'title'])
                                         <input class="form-control required-text" type="text" id="title" name="title" maxlength="50" placeholder="タイトル" value="{{ $data->title ? $data->title : old('title') }}" data-title="名前">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="body">内容<span class="text-danger">※</span></label>
                                     <div class="col-md-9">
+                                        {{-- エラーメッセージあれば表示 --}}
+                                        @include('admin.layouts.components.error_message', ['title' => 'body'])
                                         <textarea class="form-control" name="body" id="body" maxlength="2000" rows="10" placeholder="内容">{{ $data->body ? $data->body : old('body') }}</textarea>
                                     </div>
                                 </div>
@@ -50,18 +54,27 @@
                                 </div>
                             </div>
                             <div class="col-sm-6">
+                                {{-- エラーメッセージあれば表示 --}}
+                                @include('admin.layouts.components.error_message', ['title' => 'upload_image'])
                                 <div class="form-group row">
-                                    {{-- エラーメッセージあれば表示 --}}
-                                    @include('admin.layouts.components.error_message', ['title' => 'upload_image'])
                                     <label class="col-md-3 col-form-label" for="marker_image">イメージ画像</label>
                                     <div class="col-md-9 user-icon-dnd-wrapper">
                                         <div id="drop_area" class="drop_area">
                                             <div class="preview">
-                                                <img id="preview" 
-                                                     src="{{ $data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : (session('file_path') ? session('file_path') : asset('images/noImage/no_image.png')) }}" 
-                                                     width="350" 
-                                                     height="250"
-                                                >
+                                                @if ($data->image_file && $data->image_file === config('const.out_image'))
+                                                    <img id="preview" 
+                                                        src="{{ session('file_path') ? session('file_path') : asset('images/noImage/out_images.png') }}"
+                                                        width="350" 
+                                                        height="250"
+                                                    >
+                                                @else
+                                                    <img id="preview" 
+                                                        {{-- src="{{ $data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : (session('file_path') ? session('file_path') : asset('images/noImage/no_image.png')) }}" --}}
+                                                        src="{{ session('file_path') ? session('file_path') : ($data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : asset('images/noImage/no_image.png')) }}"
+                                                        width="350" 
+                                                        height="250"
+                                                    >
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -74,11 +87,11 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 col-form-label" for="open_date" id="open_date_label" >公開日時{!! ($data->status == 1) ? '<span class="text-danger">※</span>' : ''  !!}</label>
+                                    <label class="col-md-3 col-form-label" for="open_date" id="open_date_label" >公開開始日時{!! ($data->status == 1) ? '<span class="text-danger">※</span>' : ''  !!}</label>
                                     <div class="col-md-9">
                                         {{-- エラーメッセージあれば表示 --}}
                                         @include('admin.layouts.components.error_message', ['title' => 'condition_start_time'])
-                                        <input class="form-control datetimepicker width-200 {{ ($data->status == 1) ? 'required-text' : '' }}" type="text" id="condition_start_time" name="condition_start_time" placeholder="公開日時" data-title="公開日時"
+                                        <input class="form-control datetimepicker width-200 {{ ($data->status == 1) ? 'required-text' : '' }}" type="text" id="condition_start_time" name="condition_start_time" placeholder="公開開始日時" data-title="公開開始日時"
                                          value="{{ $data->condition_start_time ? $data->condition_start_time : old('condition_start_time') }}" {{ ($data->status && $data->status == 0) ? 'disabled' : '' }}>
                                     </div>
                                 </div>
@@ -116,4 +129,26 @@
         let register_mode = "{{ $register_mode == "create" ? 'create' : 'edit' }}";
     </script>
     <script src="{{ asset('js/app/news.js') }}"></script>
+
+    {{-- CKエディター & KCファインダー --}}
+    <script type="text/javascript" src="/zf/js/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="/zf/js/zf/ckeditor.toolbar.js"></script>
+    <script>
+        $(function(){
+            jQuery(function() {
+                var editor = CKEDITOR.replace(
+                    'body',
+                    {
+                        format_tags: 'p;h2;h3;h4;pre',
+                        contentsCss: '/css/news.css',
+                        filebrowserUploadUrl:      "/js/kcfinder/upload.php?type=files&mypath=news",
+                        filebrowserImageUploadUrl: "/js/kcfinder/upload.php?type=images&mypath=news",
+                        filebrowserBrowseUrl:      "/js/kcfinder/browse.php?type=files&mypath=news",
+                        filebrowserImageBrowseUrl: "/js/kcfinder/browse.php?type=images&mypath=news",
+                        scayt_autoStartup : false,
+                        toolbar:standardCKToolbar
+                    });
+            });
+        });
+    </script>
 @endsection

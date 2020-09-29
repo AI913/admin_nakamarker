@@ -249,7 +249,7 @@ function initList(search) {
             },
             {data: 'start_time', name: 'condition_start_time'},
             {data: 'end_time', name: 'condition_end_time'},
-            {data: 'user.name'},
+            {data: 'user.name', name: 'update_user_id'},
             // 各操作列
             {
                 data: function (p) {
@@ -264,8 +264,8 @@ function initList(search) {
         // 操作列(ボタン等)や画像項目はソート不可・text-centerを付与する
         [
             { targets: [2], orderable: false, className: 'text-center', width: '80px'},
-            { targets: [3], orderable: false, className: 'text-center', width: '100px'},
-            { targets: [6], orderable: false, className: 'text-center', width: '110px'},
+            { targets: [3], orderable: true, className: 'text-center', width: '100px'},
+            { targets: [6], orderable: true, className: 'text-center', width: '110px'},
             { targets: [7], orderable: false, className: 'text-center', width: '150px'}
            ],
            search

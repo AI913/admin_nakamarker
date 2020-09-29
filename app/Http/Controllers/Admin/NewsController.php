@@ -96,6 +96,7 @@ class NewsController extends BaseAdminController
             // バリデーションチェック
             return [
                 'upload_image'  => ['image', 'max:1024'],
+                'title'         => ['required'],
                 'body'          => ['required'],
 
                 // 公開日の設定日時をチェック
@@ -106,6 +107,7 @@ class NewsController extends BaseAdminController
         // バリデーションチェック
         return [
             'upload_image'  => ['image', 'max:1024'],
+            'title'         => ['required'],
             'body'          => ['required'],
         ];
     }
@@ -120,9 +122,10 @@ class NewsController extends BaseAdminController
             'upload_image.image' => '画像は"jpeg, png, bmp, gif, or svg"形式のみでアップロードしてください',
             'upload_image.max'   => '画像は1,024kb以下しか登録できません',
             
+            'title.required'      => 'タイトルを入力してください',
             'body.required'      => '内容を入力してください',
 
-            'condition_start_time.after'  => '公開日時は現在時以前の日時を指定できません',
+            'condition_start_time.after'  => '公開開始日時は現在時以前の日時を指定できません',
             'condition_end_time.after'     => '公開終了日時は公開日時以前の日時を指定できません',
         ];
     }

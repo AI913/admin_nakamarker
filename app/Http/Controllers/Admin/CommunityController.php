@@ -220,7 +220,7 @@ class CommunityController extends BaseAdminController
         return [
             'name'     => [Rule::unique('communities')->ignore($request['id'], 'id')->where('del_flg', '=', 0)],
             
-            'upload_image'  => ['image', 'max:1024'],
+            'upload_image'  => ['image', 'max:1024'], // upload_imageの記載は必須
         ];
     }
 

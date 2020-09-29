@@ -88,7 +88,7 @@ class BaseAdminController extends Controller
                 Common::removeImage(session('file_name'), $this->table);
             }
         }
-        // セッションの削除
+        // 新規作成をキャンセルした場合のセッションの削除
         if(session('file_path')) {
             session()->forget('file_path');
         }
@@ -197,15 +197,17 @@ class BaseAdminController extends Controller
         // 除外項目
         $input = $request->except($this->except());
 
-        if(is_null($request->image_flg)) {
-            // 強制削除フラグがONの場合、専用画像名をDBに保存
-            if(empty($request->file('upload_image')) && $request->delete_flg_on === 'true') {
-                $input['image_file'] = config('const.out_image');
-            }
-            
+        // if(is_null($request->image_flg)) {
+        if($request->img_delete == 1) {
             // 強制削除フラグがOFFでかつ画像がアップロードされていない場合、nullをDBに保存
-            if(empty($request->file('upload_image')) && $request->delete_flg_on === 'false') {
+            if(is_null($request->file('upload_image'))) {
                 $input['image_file'] = null;
+            }
+
+            // 強制削除フラグがONの場合、専用画像名をDBに保存
+            if(is_null($request->file('upload_image')) && $request->delete_flg_on === 'true') {
+                // dd($request);
+                $input['image_file'] = config('const.out_image');
             }
         }
 
@@ -221,16 +223,16 @@ class BaseAdminController extends Controller
      * ファイル保存処理
      */
     public function fileSave(Request $request) {
-        // 保存処理モード
-        $register_mode = $request->register_mode;
+        // アップロードしたファイルが画像かどうかを判別
+        $rules = [
+            'upload_image'  => ['image', 'max:1024'],
+        ];
+        $validator = Validator::make($request->all(), $rules, $this->validation_message($request));
 
-        // 設定済みだった画像をストレージから削除
-        if(session('file_name')) {
-            Common::removeImage(session('file_name'), $this->table);
-        }
-        // 編集の場合、登録済みの画像削除
-        if ($register_mode == "edit") {
-            Common::removeImage($request->image_file, $this->table);
+        // バリデーションエラー時はリダイレクト
+        // ※画像のみ要件を満たしていれば後続の処理へと続く
+        if ($validator->fails()) {
+            return $this->validationFailRedirect($request, $validator);
         }
 
         // 画像の新規保存
@@ -249,20 +251,6 @@ class BaseAdminController extends Controller
      * @throws \Exception
      */
     public function save(Request $request) {
-        // 削除ボタンを押下して画像を設定しない場合
-        if($request['img_delete'] && $request['img_delete'] == 1) {
-            // 設定済みだった画像をストレージから削除
-            if(session('file_name')) {
-                Common::removeImage(session('file_name'), $this->table);
-            } else {
-                Common::removeImage($request->image_file, $this->table);
-            }
-
-            // セッションの値を削除
-            \Session::forget('file_path');
-            \Session::forget('file_name');
-        }
-
         // 画像ありの場合は保存処理実行
         if ($request->hasFile('upload_image')) {
             $this->fileSave($request);
@@ -272,6 +260,7 @@ class BaseAdminController extends Controller
         $validator = $this->validation($request);
         // バリデーションエラー時はリダイレクト
         if ($validator->fails()) {
+
             return $this->validationFailRedirect($request, $validator);
         }
         
@@ -288,9 +277,9 @@ class BaseAdminController extends Controller
             return redirect(route($this->mainRoot))->with('info_message', $request->register_mode == 'create' ? $this->mainTitle.'情報を登録しました' : $this->mainTitle.'情報を編集しました');
         } catch (\Exception $e) {
             \DB::rollBack();
-            // 保存処理を終えていた画像を削除
-            if($input["image_file"]) {
-                Common::removeImage($input["image_file"]);
+            // 先に保存処理を終えていた画像を削除(ロールバック処理)
+            if(isset($input["image_file"])) {
+                Common::removeImage($input["image_file"], $this->table);
             }
             return redirect(route($this->mainRoot))->with('error_message', 'データ登録時にエラーが発生しました。[詳細]<br>'.$e->getMessage());
         }
@@ -302,6 +291,24 @@ class BaseAdminController extends Controller
      * @param $model
      */
     public function saveAfter(Request $request, Model $model) {
+        // 削除ボタンを押下して画像を設定しない状態でデータを保存する場合
+        if($request['img_delete'] && $request['img_delete'] == 1) {
+            // 設定済みだった画像をストレージから削除
+            if(session('file_name')) {
+                Common::removeImage(session('file_name'), $this->table);
+            } else {
+                Common::removeImage($request->image_file, $this->table);
+            }
+
+            // セッションの値を削除
+            \Session::forget('file_path');
+            \Session::forget('file_name');
+        }
+
+        // 編集の場合、新たに登録する画像があった場合は登録済みの画像を削除
+        if ($request->register_mode == "edit" && session('file_name')) {
+            Common::removeImage($request->image_file, $this->table);
+        }
         return;
     }
 
@@ -314,4 +321,5 @@ class BaseAdminController extends Controller
         $this->mainService->remove($request->id);
         return redirect(route($this->mainRoot))->with('info_message', $this->mainTitle.'情報を削除しました');
     }
+
 }

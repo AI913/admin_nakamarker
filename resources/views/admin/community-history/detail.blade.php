@@ -21,7 +21,7 @@
                         <table class="table table-striped table-bordered datatable table-sm" id="community_entry_list">
                             <thead>
                                 <tr role="row">
-                                    <th>ID</th>
+                                    <th>履歴ID</th>
                                     <th>ユーザ名</th>
                                     <th>メールアドレス</th>
                                     <th>申請状況</th>

@@ -10,6 +10,7 @@ use App\Lib\Common;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
 
+use Illuminate\Validation\Rule;
 class MarkerController extends BaseAdminController
 {
 
@@ -63,9 +64,6 @@ class MarkerController extends BaseAdminController
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index() {
-        // $files = Storage::files('public/images');
-        // dd($files);
-        // exit;
         
         // ステータスリスト追加
         return parent::index()->with([
@@ -128,16 +126,18 @@ class MarkerController extends BaseAdminController
     public function validation_rules(Request $request)
     {
         // 画像を設定した履歴がセッションに残っている場合
-        if (\Session::get('file_path')) {
+        if (\Session::get('file_path') || $request->image_file) {
             return [
+                'name'          => [Rule::unique('markers')->ignore($request['id'], 'id')->where('del_flg', '=', 0)],
                 'price'         => ['integer'],
-                'upload_image'  => ['image', 'max:1024'],
+                'upload_image'  => ['image', 'max:1024'], // upload_imageの記載は必須
             ];
         }
         // バリデーションチェック(画像が設定されていない場合)
         return [
+            'name'          => [Rule::unique('markers')->ignore($request['id'], 'id')->where('del_flg', '=', 0)],
             'price'         => ['integer'],
-            'upload_image'  => ['required', 'image', 'max:1024'],
+            'upload_image'  => ['required', 'image', 'max:1024'], // upload_imageの記載は必須
         ];
     }
 
@@ -148,6 +148,8 @@ class MarkerController extends BaseAdminController
      */
     public function validation_message(Request $request) {
         return [
+            'name.unique'    => 'このマーカ名はすでに使用されています',
+
             'price.integer'   => '価格は半角数字で入力してください',
 
             'upload_image.required' => '画像の設定は必須項目です',

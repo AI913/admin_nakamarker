@@ -2,7 +2,7 @@
 
 @section('app_title')
     {{-- タイトル --}}
-    ニュース一覧
+    お知らせ一覧
 @endsection
 
 @section('app_style')
@@ -10,7 +10,7 @@
 
 @section('app_bread')
     {{-- パンくず --}}
-    <li class="breadcrumb-item">ニュース一覧</li>
+    <li class="breadcrumb-item">お知らせ一覧</li>
 @endsection
 
 @section('app_content')

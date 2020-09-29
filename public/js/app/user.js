@@ -404,6 +404,10 @@ function setDetailView(data, button) {
                     },
                     {
                         data: function (p) {
+                            // 登録場所の備考ボタン・削除ボタンの設定(備考はデータがあるときのみ表示)
+                            if(p.memo == null) {
+                                return null;
+                            }
                             return getListLink('history', p.community_history_id, '', 'list-button');
                         },
                     }
@@ -411,8 +415,8 @@ function setDetailView(data, button) {
                 // 各列ごとの装飾
                 [
                     { targets: [1], orderable: false, className: 'text-center', width: '120px'},
-                    { targets: [3], orderable: false, width: '70px'},
-                    { targets: [5], orderable: false, className: 'text-center', width: '120px'},
+                    { targets: [3], orderable: true, width: '70px'},
+                    { targets: [5], orderable: true, className: 'text-center', width: '120px'},
                     { targets: [6], orderable: false, className: 'text-center', width: '120px'},
                 ],
                 false
@@ -820,7 +824,7 @@ function initList(search) {
             { targets: [2], orderable: false, width: '170px'},
             { targets: [3], orderable: true, width: '170px'},
             { targets: [4], orderable: true, width: '170px'},
-            { targets: [5], orderable: false, className: 'text-center', width: '110px'},
+            { targets: [5], orderable: true, className: 'text-center', width: '110px'},
             { targets: [6], orderable: true, className: 'text-center', width: '110px'},
             { targets: [7], orderable: true, className: 'text-center', width: '110px'},
             { targets: [8], orderable: false, className: 'text-center', width: '150px'},

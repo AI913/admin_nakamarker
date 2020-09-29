@@ -294,8 +294,8 @@ class UserController extends BaseAdminController
             // 作成時のバリデーションチェック
             return [
                 'name'     => [Rule::unique('users')->ignore($request['id'], 'id')->where('del_flg', '=', 0)],
-                'email'    => ['email', 'max:100', Rule::unique('users')->ignore($request['id'], 'id')->where('del_flg', '=', 0)],
-                'password' => ['min:6'],
+                'email'    => ['email', 'max:100', 'regex:/^[a-zA-Z0-9]+$/', Rule::unique('users')->ignore($request['id'], 'id')->where('del_flg', '=', 0)],
+                'password' => ['min:6', 'regex:/^[0-9a-zA-Z\_@!?#%&]+$/'],
             ];
         } else {
             // 編集時のバリデーションチェック
@@ -317,8 +317,10 @@ class UserController extends BaseAdminController
             'email.email'    => 'メールアドレスの形式で入力してください',
             'email.max'      => 'メールアドレスは100文字以下で登録してください',
             'email.unique'   => 'このメールアドレスはすでに使用されています',
+            'email.regex'    => '@以前は半角英数字で入力してください',
 
             'password.min'      => 'パスワードは6文字以上で登録してください',
+            'password.regex'    => 'パスワードは半角英数字及び「_@!?#%&」の記号のみで入力してください',
         ];
     }
 }

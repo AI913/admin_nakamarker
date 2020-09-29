@@ -69,7 +69,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="description">コミュニティ概要</label>
                                     <div class="col-md-9">
-                                        <textarea class="form-control" name="description" id="description" maxlength="500" rows="10" placeholder="備考">{{ $data->memo ? $data->memo : old('memo') }}</textarea>
+                                        <textarea class="form-control" name="description" id="description" maxlength="500" rows="10" placeholder="備考">{{ $data->description ? $data->description : old('description') }}</textarea>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -81,18 +81,27 @@
                                 </div>
                             </div>
                             <div class="col-sm-6">
+                                {{-- エラーメッセージあれば表示 --}}
+                                @include('admin.layouts.components.error_message', ['title' => 'upload_image'])
                                 <div class="form-group row">
-                                    {{-- エラーメッセージあれば表示 --}}
-                                    @include('admin.layouts.components.error_message', ['title' => 'upload_image'])
-                                    <label class="col-md-3 col-form-label" for="marker_image">イメージ画像</label>
+                                    <label class="col-md-3 col-form-label" for="community_image">イメージ画像</label>
                                     <div class="col-md-9 user-icon-dnd-wrapper">
                                         <div id="drop_area" class="drop_area">
                                             <div class="preview">
-                                                <img id="preview" 
-                                                     src="{{ $data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : (session('file_path') ? session('file_path') : asset('images/noImage/no_image.png')) }}"
-                                                     width="350" 
-                                                     height="250"
-                                                >
+                                                @if ($data->image_file && $data->image_file === config('const.out_image'))
+                                                    <img id="preview" 
+                                                        src="{{ session('file_path') ? session('file_path') : asset('images/noImage/out_images.png') }}"
+                                                        width="350" 
+                                                        height="250"
+                                                    >
+                                                @else
+                                                    <img id="preview" 
+                                                        {{-- src="{{ $data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : (session('file_path') ? session('file_path') : asset('images/noImage/no_image.png')) }}" --}}
+                                                        src="{{ session('file_path') ? session('file_path') : ($data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : asset('images/noImage/no_image.png')) }}"
+                                                        width="350" 
+                                                        height="250"
+                                                    >
+                                                @endif
                                             </div>
                                         </div>
                                     </div>

@@ -11,9 +11,9 @@
 @section('app_bread')
     {{-- パンくず --}}
     <li class="breadcrumb-item">
-        <a href="{{ route('admin/user') }}">顧客一覧</a>
+        <a href="{{ route('admin/user') }}">ユーザ一覧</a>
     </li>
-    <li class="breadcrumb-item">{{ $register_mode == "create" ? '顧客新規登録' : '顧客編集' }}</li>
+    <li class="breadcrumb-item">{{ $register_mode == "create" ? 'ユーザ新規登録' : 'ユーザ編集' }}</li>
 @endsection
 
 @section('app_content')
@@ -22,7 +22,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    {{ $register_mode == "create" ? '顧客新規登録　' : '顧客編集　' }}<span class="text-danger">※は必須入力</span>
+                    {{ $register_mode == "create" ? 'ユーザ新規登録　' : 'ユーザ編集　' }}<span class="text-danger">※は必須入力</span>
                     @if ($register_mode == "edit")
                         @if ($data->status == config('const.user_app_account_stop'))
                             <button type="button" class="btn btn-dark text-white width-150 float-right" id="btn_account_stop">アカウント停止中</button>
@@ -77,15 +77,15 @@
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
                                             {{-- エラーメッセージあれば表示 --}}
                                             @include('admin.layouts.components.error_message', ['title' => 'status'])
-                                            <input type="radio" class="custom-control-input" id="status1" name="status" value="{{ config('const.user_app_member') }}" data-status="{{ config('const.user_app_member_name') }}" {{ !$data->status || $data->status == config('const.user_app_member') ? 'checked' : '' }} {{ $data->id === \Auth::user()->id ? 'disabled' : ''}}>
+                                            <input type="radio" class="custom-control-input" id="status1" name="status" value="{{ config('const.user_app_member') }}" data-status="{{ config('const.user_app_member_name') }}" {{ !$data->status || $data->status == config('const.user_app_member') || old('status') == config('const.user_app_member') ? 'checked' : '' }} {{ $data->id === \Auth::user()->id ? 'disabled' : ''}}>
                                             <label class="custom-control-label cursor-pointer" for="status1">{{ config('const.user_app_member_name') }}</label>
                                         </div>
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
-                                            <input type="radio" class="custom-control-input" id="status2" name="status" value="{{ config('const.user_app_unsubscribe') }}" data-status="{{ config('const.user_app_unsubscribe_name') }}" {{ $data->status == config('const.user_app_unsubscribe') ? 'checked' : '' }} {{ $data->id === \Auth::user()->id ? 'disabled' : ''}}>
+                                            <input type="radio" class="custom-control-input" id="status2" name="status" value="{{ config('const.user_app_unsubscribe') }}" data-status="{{ config('const.user_app_unsubscribe_name') }}" {{ $data->status == config('const.user_app_unsubscribe') || old('status') == config('const.user_app_unsubscribe') ? 'checked' : '' }} {{ $data->id === \Auth::user()->id ? 'disabled' : ''}}>
                                             <label class="custom-control-label cursor-pointer" for="status2">{{ config('const.user_app_unsubscribe_name') }}</label>
                                         </div>
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
-                                        <input type="radio" class="custom-control-input" id="status3" name="status" value="{{ config('const.user_admin_system') }}" data-status="{{ config('const.user_admin_system_name') }}" {{ $data->status == config('const.user_admin_system') ? 'checked' : '' }} {{ $data->id === \Auth::user()->id ? 'disabled' : ''}}>
+                                        <input type="radio" class="custom-control-input" id="status3" name="status" value="{{ config('const.user_admin_system') }}" data-status="{{ config('const.user_admin_system_name') }}" {{ $data->status == config('const.user_admin_system') || old('status') == config('const.user_admin_system') ? 'checked' : '' }} {{ $data->id === \Auth::user()->id ? 'disabled' : ''}}>
                                             <label class="custom-control-label cursor-pointer" for="status3">{{ config('const.user_admin_system_name') }}</label>
                                         </div>
                                     </div>
