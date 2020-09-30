@@ -126,13 +126,15 @@ class MarkerController extends BaseAdminController
     public function validation_rules(Request $request)
     {
         // 画像を設定した履歴がセッションに残っている場合
-        if (\Session::get('file_path') || $request->image_file) {
+        // もしくは編集画面で画像の変更は無く、また画像の消去ボタンを押さずに保存した場合
+        if (\Session::get('file_path') || $request->image_file && $request->img_delete == 0) {
             return [
                 'name'          => [Rule::unique('markers')->ignore($request['id'], 'id')->where('del_flg', '=', 0)],
                 'price'         => ['integer'],
                 'upload_image'  => ['image', 'max:1024'], // upload_imageの記載は必須
             ];
         }
+        
         // バリデーションチェック(画像が設定されていない場合)
         return [
             'name'          => [Rule::unique('markers')->ignore($request['id'], 'id')->where('del_flg', '=', 0)],

@@ -49,6 +49,13 @@ function setDetailView(data, button) {
     $('#detail_description').html(data.description);
     $('#marker_id').data('id', data.id);
 
+    // 有料フラグに応じて文字色を変更
+    if(data.charge_flg == 2) {
+        $('#detail_charge_flg').css('color','red');
+    } else {
+        $('#detail_charge_flg').css('color','black');
+    }
+
     if(button == '.btn-detail') {
         if ($.fn.DataTable.isDataTable('#marker_user_list')) {
             $('#marker_user_list').DataTable().destroy();

@@ -197,10 +197,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/locale/ja.js"></script>
 
-{{-- CKエディター & KCファインダー --}}
-<script type="text/javascript" src="/zf/js/zf/fancybox.init.js"></script>
-<script type="text/javascript" src="/zf/js/jquery-ui-1.11.0/eggplant/jquery-ui.min.js"></script>
-
 <script src="{{ asset('js/common.js') }}?v={{ config('const.app_version') }}" ></script>
 
 @yield('app_js')

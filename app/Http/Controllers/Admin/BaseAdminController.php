@@ -251,6 +251,8 @@ class BaseAdminController extends Controller
      * @throws \Exception
      */
     public function save(Request $request) {
+        // dd($request);
+        
         // 画像ありの場合は保存処理実行
         if ($request->hasFile('upload_image')) {
             $this->fileSave($request);
@@ -263,7 +265,7 @@ class BaseAdminController extends Controller
 
             return $this->validationFailRedirect($request, $validator);
         }
-        
+        // dd($request->upload_image);
         try {
             \DB::beginTransaction();
             // 保存前処理で保存データ作成

@@ -688,70 +688,16 @@ function updatePoints() {
  * @returns {boolean}
  */
 function customCheck() {
-	var check = true;
-    var char_count_check = true;
 
-    //メールアドレスの形式チェック
-    // var regexp_email = /^[A-Za-z0-9]{1}[A-Za-z0-9_.-]*@{1}[A-Za-z0-9_.-]{1,}\.[A-Za-z0-9]{1,}$/;
-    // if (regexp_email.test($('#email').val())) {
-    // } else {
-    // 	$('#email').focus();
-    //     $('#email').after("<p class='error-area text-danger mb-0'>メールアドレスの形式で入力してください</p>");
-    //     check = false;
-    // }
+    // アカウントのステータス入力をチェック（アカウント停止時は除く）
+    if ($('#btn_account_stop').text() == 'アカウントの停止' && $('input[type="radio"]:checked').val() == undefined) {
+        $('#status_checked').after("<p class='error-area text-danger mb-0' style='padding-left: 155px'>ステータスを選択してください</p>");
+        return false;
+    }
 
-    // if (!check) {
-    //     return false;
-    // }
-
-    // // パスワードの文字数チェック結果
-    // let password_char_count = $('.char-count-text').val().length;
-    // // 新規登録時は無条件でチェック
-    // // →新規登録時は文字数０の時、requiredのチェックがあるのでいらないが念の為
-    // if (register_mode == 'create') {
-    //     char_count_check = characterCountCheck(password_char_count);
-    // }
-    // // 編集時はパスワードの文字数が０超のときにチェック
-    // if (register_mode == 'edit' && password_char_count > 0) {
-    //     char_count_check = characterCountCheck(password_char_count);
-    // }
-
-    // // アカウントのステータス入力をチェック（アカウント停止時は除く）
-    // if ($('#btn_account_stop').text() == 'アカウントの停止' && $('input[type="radio"]:checked').val() == undefined) {
-    //     $('#status_checked').after("<p class='error-area text-danger mb-0' style='padding-left: 155px'>ステータスを選択してください</p>");
-    //     return false;
-    // }
-
-    // // メールアドレスの重複チェック結果
-    // // パスワードの文字数チェックのエラーがある場合、同時に出したいので少し冗長な書き方
-    // isDuplicateEmailAjax().done(function(response) {
-    //     // エラーがない場合falseが返ってくる
-    //     if(response.is_email) {
-    //         if (!char_count_check) {
-    //             $('#password').focus();
-    //             $('#password').after("<p class='error-area text-danger mb-0'>パスワードは６文字以上入力してください</p>");
-    //             check = false;
-    //         }
-    //         // 重複チェックにエラーがある場合
-    //         $('#email').focus();
-    //         $('#email').after("<p class='error-area text-danger mb-0'>メールアドレスが重複しています</p>");
-    //         check = false;
-    //     } else {
-    //         // 重複かつ文字数チェックでエラーがない場合のみsubmit
-    //         if(char_count_check) {
-    //         	check = true;
-    //         } else {
-    //             $('#password').focus();
-    //             $('#password').after("<p class='error-area text-danger mb-0'>パスワードは６文字以上入力してください</p>");
-    //             check = false;
-    //         }
-    //     }
-    //     if (!check) {
-    //         return false;
-    //     }else{
-        	$('#main_form').submit();
-        // }
-    // });
+    
+    $('#main_form').submit();
+     
 }
 
 /**

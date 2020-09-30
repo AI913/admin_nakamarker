@@ -36,16 +36,7 @@
                                 'blank'         => true
                             ])
                         </div>
-                        <div class="col-lg-2">
-                            @include('admin.layouts.components.select_option', [
-                                'label'         => '種別',
-                                'list'          => $type_list,
-                                'name'          => 'type',
-                                'selected_id'   => null,
-                                'class'         => 'search-select',
-                                'blank'         => true
-                            ])
-                        </div>
+
                         <div class="col-lg-4">
                             @include('admin.layouts.components.button.search')
                             @include('admin.layouts.components.button.clear')

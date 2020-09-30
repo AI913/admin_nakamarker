@@ -85,12 +85,6 @@
     {{-- 詳細Modal読み込み --}}
     @include('admin.marker.detail')
 
-    {{-- セッションの削除 --}}
-    @php
-        // MarkerController::fileCancel();
-        
-    @endphp
-
 @endsection
 
 @section('app_js')
