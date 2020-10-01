@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 /**
  * 管理画面用Baseコントローラー
@@ -311,6 +312,7 @@ class BaseAdminController extends Controller
         if ($request->register_mode == "edit" && session('file_name')) {
             Common::removeImage($request->image_file, $this->table);
         }
+
         return;
     }
 
