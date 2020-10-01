@@ -23,7 +23,8 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/ajax/user',              'Admin\UserController@main_list');
     Route::get('/ajax/marker',            'Admin\MarkerController@main_list');
     Route::get('/ajax/community',         'Admin\CommunityController@main_list');
-    Route::get('/ajax/news',     'Admin\NewsController@main_list');
+    Route::get('/ajax/news',              'Admin\NewsController@main_list');
+    Route::get('/ajax/push',              'Admin\PushHistoryController@main_list');
 
     // メールアドレス重複チェック
     Route::post('/ajax/is_duplicate_email','Admin\Ajax\AdminAjaxController@isDuplicateEmail');
@@ -114,12 +115,12 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('/news/remove',     'Admin\NewsController@remove')->name('admin/news/remove');
     
     /******************** 通知履歴管理(push_histories) ********************/
-    Route::get('/push',             'Admin\PushController@index')->name('admin/push');
-    Route::get('/push/create',      'Admin\PushController@create')->name('admin/push/create');
-    Route::get('/push/edit/{id}',   'Admin\PushController@edit')->name('admin/push/edit');
-    Route::get('/push/detail/{id}', 'Admin\PushController@detail')->name('admin/push/detail');
-    Route::post('/push/save',       'Admin\PushController@save')->name('admin/push/save');
-    Route::post('/push/remove',     'Admin\PushController@remove')->name('admin/push/remove');
+    Route::get('/push',             'Admin\PushHistoryController@index')->name('admin/push');
+    Route::get('/push/create',      'Admin\PushHistoryController@create')->name('admin/push/create');
+    Route::get('/push/edit/{id}',   'Admin\PushHistoryController@edit')->name('admin/push/edit');
+    Route::get('/push/detail/{id}', 'Admin\PushHistoryController@detail')->name('admin/push/detail');
+    Route::post('/push/save',       'Admin\PushHistoryController@save')->name('admin/push/save');
+    Route::post('/push/remove',     'Admin\PushHistoryController@remove')->name('admin/push/remove');
 
     /******************** 共通設定管理(configs) ********************/
     Route::get('/config',             'Admin\ConfigController@index')->name('admin/config');

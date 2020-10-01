@@ -103,7 +103,7 @@ return [
     'push_error'            => 9,
     'push_before_name'      => '送信前',
     'push_now_name'         => '送信中',
-    'push_after_name'       => '送信後',
+    'push_after_name'       => '送信済み',
     'push_error_name'       => '送信エラー',
 
     // BingMapのURL

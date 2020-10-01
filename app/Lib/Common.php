@@ -217,14 +217,27 @@ class Common {
         ];
     }
     /**
+     * プッシュ通知のステータスリスト
+     * @return number[][]|string[][]
+     */
+    public static function getPushStatusList() {
+
+        return [
+            ['id' => config('const.push_before'), 'name' => config('const.push_before_name')],
+            ['id' => config('const.push_now'), 'name' => config('const.push_now_name')],
+            ['id' => config('const.push_after'), 'name' => config('const.push_after_name')],
+            ['id' => config('const.push_error'), 'name' => config('const.push_error_name')],
+        ];
+    }
+    /**
      * お知らせプッシュ通知種別リスト
      * @return number[][]|string[][]
      */
-    public static function getInformationPushList() {
+    public static function getPushTypeList() {
 
         return [
-            ['id' => 0, 'name' => '通知しない'],
-            ['id' => 1, 'name' => '通知する'],
+            ['id' => config('const.push_all'), 'name' => config('const.push_all_name')],
+            ['id' => config('const.push_condition'), 'name' => config('const.push_condition_name')],
         ];
     }
     
