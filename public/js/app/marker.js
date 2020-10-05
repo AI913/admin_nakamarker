@@ -24,6 +24,10 @@ $(function(){
     })
 
     // ポイントフラグのデフォルト設定時
+    if($('#flg3').prop('checked')) {
+        $('#price').prop("disabled", true);
+        $('#price').val(0);
+    }
     $('[name="charge_flg"]').on('change', function(){
         $('#price').prop("disabled", false);
         if($('#flg3').prop('checked')){
@@ -97,7 +101,7 @@ function setDetailView(data, button) {
             ],
             // 各列ごとの装飾
             [
-                { targets: [4], orderable: false, className: 'text-center', width: '120px'},
+                { targets: [4], orderable: true, className: 'text-center', width: '120px'},
             ],
             false
         );
@@ -280,7 +284,7 @@ function initList(search) {
             {
                 data: function (p) {
                     if (p.type == 1) {
-                        return `<button class="btn btn-primary" disabled><i class="fas fa-fw fa-map-pin"></i></button> ${p.type_name}`;
+                        return `<button class="btn btn-primary" disabled><i class="fas fa-fw fa-map-marker-alt"></i></button> ${p.type_name}`;
                     }
                     if (p.type == 2) {
                         return `<button class="btn btn-warning text-white" disabled><i class="fas fa-fw fa-cog"></i></button> ${p.type_name}`;
@@ -347,6 +351,10 @@ function initList(search) {
                     if(p.charge_flg === 3) {
                         return (`<span>―</span>`);
                     }
+                    // DL数がnullの場合は'0'で表示
+                    if(p.total_counts == null) {
+                        return 0;
+                    }
                     // それ以外は数値で表示
                     return p.total_counts;
                 }, name: 'total_counts'
@@ -385,6 +393,16 @@ function initList(search) {
         ],
         search
     );
+    
+    $.fn.dataTable.ext.order['filter'] = function (settings, col){
+        return this.api().column(col, {order:'index'}).nodes().map(function (td, i) {
+            let number = $(td).html();
+            if(number == `<span>―</span>`) {
+                return 1000000000;
+            }
+            return number;
+        });
+      }
 };
 
 /**

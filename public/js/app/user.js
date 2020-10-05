@@ -512,8 +512,6 @@ function setMarkerTable(id) {
                     `;
                 }
             },
-            {data: 'name'},
-            {data: 'pay_point'},
             {
                 data: function(p) {
                     // 有料フラグが"有料"の場合は赤色で表示
@@ -524,6 +522,9 @@ function setMarkerTable(id) {
                     return p.charge_name;
                 }, name: 'charge'
             },
+            {data: 'name'},
+            {data: 'pay_charge_point'},
+            {data: 'pay_free_point'},
             {
                 data: function(p) {
                     // 日付フォーマットの形式を調整
@@ -544,9 +545,10 @@ function setMarkerTable(id) {
         [
             // ボタン部分
             { targets: [1], orderable: false, className: 'text-center', width: '100px'},
-            { targets: [3], orderable: false, className: 'text-center', width: '100px'},
-            { targets: [4], orderable: false, className: 'text-center', width: '100px'},
-            { targets: [6], orderable: false, className: 'text-center', width: '120px'},
+            { targets: [2], orderable: true, className: 'text-center', width: '100px'},
+            { targets: [4], orderable: true, className: 'text-center', width: '100px'},
+            { targets: [5], orderable: true, className: 'text-center', width: '100px'},
+            { targets: [7], orderable: false, className: 'text-center', width: '120px'},
         ],
         false
     );
@@ -766,8 +768,8 @@ function initList(search) {
         // 各列ごとの装飾
         [
             // ボタン部分
-            { targets: [1], orderable: false, width: '170px'},
-            { targets: [2], orderable: false, width: '170px'},
+            { targets: [1], orderable: true, width: '170px'},
+            { targets: [2], orderable: true, width: '170px'},
             { targets: [3], orderable: true, width: '170px'},
             { targets: [4], orderable: true, width: '170px'},
             { targets: [5], orderable: true, className: 'text-center', width: '110px'},

@@ -14,11 +14,15 @@ class UserPointsHistoryTableSeeder extends Seeder
         // faker使う(引数には日本語を設定している)
         $faker = Faker\Factory::create('ja_JP');
 
+        // ポイントの値を配列にセット
+        $point = [100, 150, 200, 250, 300, 500, 700, 1000];
+
         // レコード30件分出力
         for($i=0; $i < 30; $i++){
             \App\Model\UserPointsHistory::create([
-                'give_point'     => $faker->numberBetween(400, 1000),
-                'pay_point'      => $faker->numberBetween(100, 500),
+                'give_point'     => $point[array_rand($point , 1 )],   // 付与ポイントの値をランダムに抽出
+                'pay_point'      => $point[array_rand($point , 1 )],   // 消費ポイントの値をランダムに抽出
+                'charge_flg'     => $faker->numberBetween(1, 2),
                 'type'           => $faker->numberBetween(1, 4),
                 'user_id'        => $faker->numberBetween(1, 30),
                 'memo'           => 'テストメモ'.$i,

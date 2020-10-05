@@ -80,7 +80,7 @@ function initList(search) {
         [
             // ボタン部分
             { targets: [1], orderable: true, className: 'text-left', width: '170px'},
-            { targets: [2], orderable: false, className: 'text-left', width: 'auto'},
+            { targets: [2], orderable: true, className: 'text-left', width: 'auto'},
             { targets: [3], orderable: false, className: 'text-left', width: 'auto'},
             { targets: [5], orderable: true, className: 'text-center', width: '100px'},
             { targets: [6], orderable: false, className: 'text-center', width: '150px'},

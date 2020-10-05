@@ -252,7 +252,6 @@ class BaseAdminController extends Controller
      * @throws \Exception
      */
     public function save(Request $request) {
-        // dd($request);
         
         // 画像ありの場合は保存処理実行
         if ($request->hasFile('upload_image')) {

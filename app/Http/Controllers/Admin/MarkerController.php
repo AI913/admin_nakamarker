@@ -48,7 +48,7 @@ class MarkerController extends BaseAdminController
     public function main_list(Request $request) {
         // 〇検索条件
         $conditions = [];
-        $conditions['del_flg'] = 0;
+        $conditions['markers.del_flg'] = 0;
         if ($request->id) { $conditions['markers.id'] = $request->id; }
         if ($request->type) { $conditions['markers.type'] = $request->type; }
         if ($request->name) { $conditions['markers.name@like'] = $request->name; }

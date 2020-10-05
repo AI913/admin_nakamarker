@@ -110,7 +110,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 col-form-label">ポイントフラグ</label>
+                                    <label class="col-md-3 col-form-label">ポイント区分</label>
                                     <span class="col-md-9 col-form-label" style="color: red">※無償で提供する場合は"デフォルト"に✓を入れてください</span>
                                     <div class="offset-md-3 col-md-9 form-inline" id="type_checked">
                                         <div class="custom-control custom-radio cursor-pointer mr-3">

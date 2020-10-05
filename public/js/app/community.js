@@ -127,7 +127,7 @@ function setDetailView(data, button) {
                         }
                         // それ以外は普通に表示
                         return p.status_name;
-                    }
+                    }, name: 'status'
                 },
                 {
                     data: function (p) {
@@ -149,14 +149,14 @@ function setDetailView(data, button) {
                         if(p.entry_memo == null) {
                             return ;
                         }
-                        return getListLink('user', p.history_id, '', 'list-button');
+                        return getListLink('user', p.id, '', 'list-button');
                     }
                 },
             ],
             // 各列ごとの装飾
             [
-                { targets: [4], orderable: false, className: 'text-center', width: '120px'},
-                { targets: [5], orderable: false, className: 'text-center', width: '120px'},
+                { targets: [4], orderable: true, className: 'text-center', width: '120px'},
+                { targets: [5], orderable: true, className: 'text-center', width: '120px'},
                 { targets: [6], orderable: false, className: 'text-center', width: '120px'},
             ],
             false
@@ -448,7 +448,7 @@ function initList(search) {
         // 操作列(ボタン等)や画像項目はソート不可・text-centerを付与する
         [
             { targets: [1], orderable: false, className: 'text-center', width: '150px'},
-            { targets: [2], orderable: false},
+            { targets: [2], orderable: true},
             { targets: [3], orderable: true, width: '120px'},
             { targets: [5], orderable: true, className: 'text-center', width: '100px'},
             { targets: [6], orderable: true, className: 'text-center', width: '100px'},

@@ -42,7 +42,7 @@
                                     <div class="col-md-9">
                                         {{-- エラーメッセージあれば表示 --}}
                                         @include('admin.layouts.components.error_message', ['title' => 'body'])
-                                        <textarea class="form-control" name="body" id="body" maxlength="2000" rows="10" placeholder="内容">{{ $data->body ? $data->body : old('body') }}</textarea>
+                                        <textarea class="form-control" name="body" id="body" maxlength="2000" rows="10" placeholder="内容">{{ old('body') ? old('body') : ($data->body ? $data->body : '') }}</textarea>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -69,7 +69,6 @@
                                                     >
                                                 @else
                                                     <img id="preview" 
-                                                        {{-- src="{{ $data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : (session('file_path') ? session('file_path') : asset('images/noImage/no_image.png')) }}" --}}
                                                         src="{{ session('file_path') ? session('file_path') : ($data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : asset('images/noImage/no_image.png')) }}"
                                                         width="350" 
                                                         height="250"

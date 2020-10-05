@@ -294,7 +294,7 @@ class UserController extends BaseAdminController
             // 作成時のバリデーションチェック
             return [
                 'name'     => [Rule::unique('users')->ignore($request['id'], 'id')->where('del_flg', '=', 0)],
-                'email'    => ['email', 'max:100', 'regex:/^[a-zA-Z0-9]+$/', Rule::unique('users')->ignore($request['id'], 'id')->where('del_flg', '=', 0)],
+                'email'    => ['email', 'max:100', 'regex:/^[a-zA-Z0-9\.\-@]+$/', Rule::unique('users')->ignore($request['id'], 'id')->where('del_flg', '=', 0)],
                 'password' => ['min:6', 'regex:/^[0-9a-zA-Z\_@!?#%&]+$/'],
             ];
         } else {

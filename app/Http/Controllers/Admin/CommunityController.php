@@ -64,6 +64,7 @@ class CommunityController extends BaseAdminController
 
     public function index()
     {
+        // dd($this->userService->getCommunityUserQuery(1, 11)->first());
         // ステータスリスト追加
         return parent::index()->with([
             'type_list'   => Common::getCommunityTypeList(),

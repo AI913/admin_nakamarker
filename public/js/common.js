@@ -472,8 +472,8 @@ function settingDataTables(elm_id, url, data, columns, columnDefs, search) {
         "initComplete": function( ) {
             // (レスポンシブが利かなくなるので、再定義)
             $(this).css('width', '100%');
-            // ツールチップ設定
-            $(this).find('[data-toggle="tooltip"]').tooltip();
+            // ツールチップ設定(triggerの設定により、マウスカーソルが離れた場合はツールチップを隠す)
+            $(this).find('[data-toggle="tooltip"]').tooltip({trigger : 'hover'});
             document.body.style.cursor = 'auto';
 
         },
@@ -537,4 +537,3 @@ function loading_finish() {
     $('#loading').hide();
     $('#loading_text').hide();
 }
-

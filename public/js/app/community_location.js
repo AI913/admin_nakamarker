@@ -302,10 +302,10 @@ function initList(search) {
         ],
         // 各列ごとの装飾
         [
-            { targets: [1], orderable: false, width: '150px'},
-            { targets: [2], orderable: false, width: '150px'},
+            { targets: [1], orderable: true, width: '150px'},
+            { targets: [2], orderable: true, width: '150px'},
             { targets: [3], orderable: false, className: 'text-center', width: '150px'},
-            { targets: [4], orderable: false, width: '150px'},
+            { targets: [4], orderable: true, width: '150px'},
             { targets: [5], orderable: true, width: '150px'},
             { targets: [6], orderable: false, className: 'text-center', width: '100px'},
             { targets: [7], orderable: false, className: 'text-center', width: '150px'}
@@ -326,7 +326,7 @@ function getListLink(type, id, link, clazz) {
         return '<a href="javascript:void(0)" class="btn btn-success btn-location '+clazz+'" data-toggle="tooltip" title="備考" data-placement="top" data-id="'+id+'"><i class="fas fa-search fa-fw"></i></a>';
     }
     if (type == "map") {
-        return '<a href="'+ link +'" target="_blank" class="btn btn-primary btn-map '+clazz+'" data-toggle="tooltip" title="Google Mapで表示" data-placement="top" data-id="'+id+'"><i class="fas fa-map-marked-alt"></i></a>';
+        return '<a href="'+ link +'" target="_blank" class="btn btn-primary btn-map '+clazz+'" data-toggle="tooltip" title="Google Mapで表示" data-placement="top" data-id="'+id+'"><i class="fas fa-map-marked-alt fa-fw"></i></a>';
     }
     if (type == "edit") {
         return '<a href="'+link+'" class="btn btn-primary '+clazz+'" data-toggle="tooltip" title="編集" data-placement="top"><i class="fas fa-edit fa-fw"></i></a>';

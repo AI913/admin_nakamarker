@@ -24,7 +24,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="community_location_communityName">
-                        コミュニティ名：<span class="badge badge-pill badge-info community_name">{{ $community_name }}</span>
+                        コミュニティ名：<span style="font-weight: bold">{{ $community_name }}</span>
                     </div>
                     <div class="row mb-3 d-flex">
                         <div class="col-lg-2">

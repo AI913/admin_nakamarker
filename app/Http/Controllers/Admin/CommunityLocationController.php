@@ -186,7 +186,6 @@ class CommunityLocationController extends BaseAdminController
         
         // マーカーとコミュニティのIDを配列に追加
         $input['marker_id'] = $marker->id;
-        $input['community_id'] = $this->community->id;
 
         if(is_null($request->image_flg)) {
             // 強制削除フラグがONの場合、専用画像名をDBに保存
@@ -251,21 +250,20 @@ class CommunityLocationController extends BaseAdminController
             \DB::beginTransaction();
             // 保存前処理で保存データ作成
             $input = $this->saveBefore($request);
-            
             // 保存処理
             $model = $this->mainService->save($input, true, false);
             // 保存後処理
             $this->saveAfter($request, $model);
             \DB::commit();
             // 対象データの一覧にリダイレクト
-            return redirect(route('admin/community/detail/location/index', ['id' => $this->community->id]))->with('info_message', $request->register_mode == 'create' ? $this->mainTitle.'情報を登録しました' : $this->mainTitle.'情報を編集しました');
+            return redirect(route('admin/community/detail/location/index', ['id' => $request->community_id]))->with('info_message', $request->register_mode == 'create' ? $this->mainTitle.'情報を登録しました' : $this->mainTitle.'情報を編集しました');
         } catch (\Exception $e) {
             \DB::rollBack();
             // 保存処理を終えていた画像を削除
             if($input["image_file"]) {
                 Common::removeImage($input["image_file"]);
             }
-            return redirect(route('admin/community/detail/location/index', ['id' => $this->community->id]))->with('error_message', 'データ登録時にエラーが発生しました。[詳細]<br>'.$e->getMessage());
+            return redirect(route('admin/community/detail/location/index', ['id' => $request->community_id]))->with('error_message', 'データ登録時にエラーが発生しました。[詳細]<br>'.$e->getMessage());
         }
     }
 
