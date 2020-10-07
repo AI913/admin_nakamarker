@@ -3,6 +3,9 @@ $(function(){
     if ($('#main_list').length) {
         // DataTables初期化
         initList(false);
+
+        // 詳細ボタンをクリック
+        settingDetailAjax('/push/detail/', '.btn-detail');
     }
     // ステータス状態変更イベント
     $('input[name="status"]').on('change', function() {
@@ -15,7 +18,40 @@ $(function(){
     }
 });
 
+/**
+ * 詳細表示
+ * @param data
+ */
+function setDetailView(data, button) {
+    console.log(data)
+    /* 
+     *   モーダルに表示するプッシュ通知情報
+     */
+        $('#detail_title').html(data.title);
+        $('#detail_type').html(data.type_name);
+        $('#detail_reservation_date').html(data.reservation_date_style);
+        $('#detail_memo').html(data.memo);
+        $('#detail_status').html(data.status_name);
+        $('#detail_content').html(data.content);
 
+        // 送信ステータスが"送信中"の場合
+        if(data.status == 1) {
+            $('#detail_status').css('color','black');
+        }
+        if(data.status == 2) {
+            $('#detail_status').css('color','blue');
+        }
+        // 送信ステータスが"送信済み"の場合
+        if(data.status == 3) {
+            $('#detail_status').css('color','green');
+        }
+        // 送信ステータスが"送信エラー"の場合
+        if(data.status == 9) {
+            $('#detail_status').css('color','red');
+        }
+
+        $('#detail_modal').modal('show');
+}
 
 /**
  * 画面固有チェック

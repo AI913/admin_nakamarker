@@ -6,23 +6,26 @@ use Illuminate\Http\Request;
 use App\Lib\Common;
 use Yajra\DataTables\Facades\DataTables;
 use App\Services\Model\UserPointsHistoryService;
+use App\Services\Model\PointsGiftHistoryService;
 
 class UserPointsHistoryController extends BaseAdminController
 {
     protected $mainService;
-    protected $userLocationService;
+    protected $pointsGiftHistoryService;
 
     /**
      * 顧客管理コントローラー
      * Class UserPointsHistoryController
      * @package App\Http\Controllers
      */
-    public function __construct(UserPointsHistoryService $mainService) 
+    public function __construct(UserPointsHistoryService $mainService, PointsGiftHistoryService $pointsGiftHistoryService) 
     {
         parent::__construct();
         $this->mainService  = $mainService;
         $this->mainRoot     = "admin/user-points-history";
         $this->mainTitle    = 'ポイント履歴管理';
+
+        $this->pointsGiftHistoryService = $pointsGiftHistoryService;
     }
     
     /**
@@ -129,9 +132,14 @@ class UserPointsHistoryController extends BaseAdminController
         if(!empty($request->id)) {
             $data['id'] = $request->id;
         }
-
+        $model = $this->mainService->save($data);
         // ポイント履歴の更新or作成
-        if($this->mainService->save($data)) {
+        if($model) {
+            
+            $data['user_points_history_id'] = $model->id;
+            $input = $this->pointsGiftHistoryService->saveBefore($data);
+            $this->pointsGiftHistoryService->save($input);
+
             return [
                 'status' => 1,
                 'id' => $request->user_id 

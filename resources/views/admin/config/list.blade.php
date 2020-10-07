@@ -2,7 +2,7 @@
 
 @section('app_title')
     {{-- タイトル --}}
-    プッシュ通知一覧
+    共通設定管理一覧
 @endsection
 
 @section('app_style')
@@ -10,7 +10,7 @@
 
 @section('app_bread')
     {{-- パンくず --}}
-    <li class="breadcrumb-item">プッシュ通知一覧</li>
+    <li class="breadcrumb-item">共通設定管理一覧</li>
 @endsection
 
 @section('app_content')
@@ -24,27 +24,10 @@
                             <input type="text" class="form-control search-text" value="" name="id" id="id" placeholder="ID">
                         </div>
                         <div class="col-lg-2">
-                            <input type="text" class="form-control search-text" value="" name="title" id="title" placeholder="タイトル">
+                            <input type="text" class="form-control search-text" value="" name="key" id="key" placeholder="キー">
                         </div>
                         <div class="col-lg-2">
-                            @include('admin.layouts.components.select_option', [
-                                'label'         => '配信ステータス',
-                                'list'          => $status_list,
-                                'name'          => 'status',
-                                'selected_id'   => null,
-                                'class'         => 'search-select',
-                                'blank'         => true
-                            ])
-                        </div>
-                        <div class="col-lg-2">
-                            @include('admin.layouts.components.select_option', [
-                                'label'         => '送信種別',
-                                'list'          => $type_list,
-                                'name'          => 'type',
-                                'selected_id'   => null,
-                                'class'         => 'search-select',
-                                'blank'         => true
-                            ])
+                            <input type="text" class="form-control search-text" value="" name="key" id="update_user_name" placeholder="最終更新者">
                         </div>
                         <div class="col-lg-4">
                             @include('admin.layouts.components.button.search')
@@ -56,11 +39,10 @@
                         <thead>
                             <tr role="row">
                                 <th>ID</th>
-                                <th>配信日時</th>
-                                <th>タイトル</th>
-                                <th>本文</th>
-                                <th>配信ステータス</th>
-                                <th>送信対象</th>
+                                <th>キー</th>
+                                <th>値</th>
+                                <th>備考</th>
+                                <th>最終更新者</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
@@ -78,12 +60,10 @@
     ])
 
     {{-- 削除Form読み込み --}}
-    @include('admin.layouts.components.remove_form', ['url' => url('push/remove')])
+    @include('admin.layouts.components.remove_form', ['url' => url('config/remove')])
 
-    {{-- 詳細Modal読み込み --}}
-    @include('admin.push-history.detail')
 @endsection
 
 @section('app_js')
-    <script src="{{ asset('js/app/push_history.js') }}"></script>
+    <script src="{{ asset('js/app/config.js') }}"></script>
 @endsection

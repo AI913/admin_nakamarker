@@ -25,6 +25,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/ajax/community',         'Admin\CommunityController@main_list');
     Route::get('/ajax/news',              'Admin\NewsController@main_list');
     Route::get('/ajax/push',              'Admin\PushHistoryController@main_list');
+    Route::get('/ajax/config',            'Admin\ConfigController@main_list');
 
     // メールアドレス重複チェック
     Route::post('/ajax/is_duplicate_email','Admin\Ajax\AdminAjaxController@isDuplicateEmail');

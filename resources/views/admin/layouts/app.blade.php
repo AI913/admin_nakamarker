@@ -53,106 +53,106 @@
                     </a>
                 </li>
                 
-                <li class="nav-item nav-dropdown ">
-                    <a class="nav-link nav-dropdown-toggle " href="#">
+                <li class="nav-item nav-dropdown {{ \App\Services\View\ViewService::isMenuOpen('user') }}">
+                    <a class="nav-link nav-dropdown-toggle {{ \App\Services\View\ViewService::isMenuActive('user') }}" href="#">
                         <i class="fas fa-user fa-fw"></i> ユーザ管理
                     </a>
                     <ul class="nav-dropdown-items">
                         <li class="nav-item">
-                            <a class="nav-link " href="{{ route('admin/user') }}">
+                            <a class="nav-link {{ \App\Services\View\ViewService::isMenuActive('user') }}" href="{{ route('admin/user') }}">
                                 <i class="fas fa-list-alt fa-fw ml-3"></i> ユーザ一覧
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " href="{{ route('admin/user/create') }}">
+                            <a class="nav-link {{ \App\Services\View\ViewService::isMenuActive('user') }}" href="{{ route('admin/user/create') }}">
                                 <i class="fas fa-plus fa-fw ml-3"></i> ユーザ新規登録
                             </a>
                         </li>
                     </ul>
                 </li>
             
-                <li class="nav-item nav-dropdown ">
-                    <a class="nav-link nav-dropdown-toggle " href="#">
+                <li class="nav-item nav-dropdown {{ \App\Services\View\ViewService::isMenuOpen('marker') }}">
+                    <a class="nav-link nav-dropdown-toggle {{ \App\Services\View\ViewService::isMenuActive('marker') }}" href="#">
                         <i class="fas fa-fw fa-map-marker-alt"></i> マーカー管理
                     </a>
                     <ul class="nav-dropdown-items">
                         <li class="nav-item">
-                            <a class="nav-link " href="{{ route('admin/marker') }}">
+                            <a class="nav-link {{ \App\Services\View\ViewService::isMenuActive('marker') }}" href="{{ route('admin/marker') }}">
                                 <i class="fas fa-list-alt fa-fw ml-3"></i> マーカー一覧
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " href="{{ route('admin/marker/create') }}">
+                            <a class="nav-link {{ \App\Services\View\ViewService::isMenuActive('marker') }}" href="{{ route('admin/marker/create') }}">
                                 <i class="fas fa-plus fa-fw ml-3"></i> マーカー新規登録
                             </a>
                         </li>
                     </ul>
                 </li>
                 
-                <li class="nav-item nav-dropdown ">
-                    <a class="nav-link nav-dropdown-toggle " href="#">
+                <li class="nav-item nav-dropdown {{ \App\Services\View\ViewService::isMenuOpen('community') }}">
+                    <a class="nav-link nav-dropdown-toggle {{ \App\Services\View\ViewService::isMenuActive('community') }}" href="#">
                         <i class="fas fa-users"></i> コミュニティ管理
                     </a>
                     <ul class="nav-dropdown-items">
                         <li class="nav-item">
-                           <a class="nav-link " href="{{ route('admin/community') }}">
+                           <a class="nav-link {{ \App\Services\View\ViewService::isMenuActive('community') }}" href="{{ route('admin/community') }}">
                                 <i class="fas fa-list-alt fa-fw ml-3"></i> コミュニティ一覧
                             </a>
                         </li>
                         <li class="nav-item">
-                           <a class="nav-link" href="{{ route('admin/community/create') }}">
+                           <a class="nav-link {{ \App\Services\View\ViewService::isMenuActive('community') }}" href="{{ route('admin/community/create') }}">
                                 <i class="fas fa-plus fa-fw ml-3"></i> コミュニティ新規登録
                             </a>
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item nav-dropdown">
-                    <a class="nav-link nav-dropdown-toggle" href="#">
+                <li class="nav-item nav-dropdown {{ \App\Services\View\ViewService::isMenuOpen('news') }}">
+                    <a class="nav-link nav-dropdown-toggle {{ \App\Services\View\ViewService::isMenuActive('news') }}" href="#">
                         <i class="fas fa-info fa-fw"></i> お知らせ管理
                     </a>
                     <ul class="nav-dropdown-items">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin/news') }}">
+                            <a class="nav-link {{ \App\Services\View\ViewService::isMenuActive('news') }}" href="{{ route('admin/news') }}">
                                 <i class="fas fa-list-alt fa-fw ml-3"></i> お知らせ一覧
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin/news/create') }}">
+                            <a class="nav-link {{ \App\Services\View\ViewService::isMenuActive('news') }}" href="{{ route('admin/news/create') }}">
                                 <i class="fas fa-plus fa-fw ml-3"></i> お知らせ新規登録
                             </a>
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item nav-dropdown">
-                    <a class="nav-link nav-dropdown-toggle" href="#">
+                <li class="nav-item nav-dropdown {{ \App\Services\View\ViewService::isMenuOpen('push') }}">
+                    <a class="nav-link nav-dropdown-toggle {{ \App\Services\View\ViewService::isMenuActive('push') }}" href="#">
                         <i class="far fa-bell"></i> プッシュ通知管理
                     </a>
                     <ul class="nav-dropdown-items">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin/push') }}">
+                            <a class="nav-link {{ \App\Services\View\ViewService::isMenuActive('push') }}" href="{{ route('admin/push') }}">
                                 <i class="fas fa-list-alt fa-fw ml-3"></i> プッシュ通知一覧
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin/push/create') }}">
+                            <a class="nav-link {{ \App\Services\View\ViewService::isMenuActive('push') }}" href="{{ route('admin/push/create') }}">
                                 <i class="fas fa-plus fa-fw ml-3"></i> プッシュ通知新規登録
                             </a>
                         </li>
                     </ul>
                 </li>
                 
-                <li class="nav-item nav-dropdown">
-                    <a class="nav-link nav-dropdown-toggle" href="#">
+                <li class="nav-item nav-dropdown {{ \App\Services\View\ViewService::isMenuOpen('config') }}">
+                    <a class="nav-link nav-dropdown-toggle {{ \App\Services\View\ViewService::isMenuActive('config') }}" href="#">
                         <i class="fas fa-cog fa-fw"></i> 共通設定管理
                     </a>
                     <ul class="nav-dropdown-items">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin/config') }}">
+                            <a class="nav-link {{ \App\Services\View\ViewService::isMenuActive('config') }}" href="{{ route('admin/config') }}">
                                 <i class="fas fa-list-alt fa-fw ml-3"></i> 共通設定一覧
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin/config/create') }}">
+                            <a class="nav-link {{ \App\Services\View\ViewService::isMenuActive('config') }}" href="{{ route('admin/config/create') }}">
                                 <i class="fas fa-plus fa-fw ml-3"></i> 共通設定新規登録
                             </a>
                         </li>

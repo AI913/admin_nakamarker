@@ -125,7 +125,7 @@ class NewsController extends BaseAdminController
             'title.required'      => 'タイトルを入力してください',
             'body.required'      => '内容を入力してください',
 
-            'condition_start_time.after'  => '公開開始日時は現在時以前の日時を指定できません',
+            'condition_start_time.after'  => '公開開始日時は現在以前の日時を指定できません',
             'condition_end_time.after'     => '公開終了日時は公開日時以前の日時を指定できません',
         ];
     }

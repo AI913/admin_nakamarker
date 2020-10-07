@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\View;
 use App\Services\Model\UserService;
 use App\Services\Model\UserLocationService;
 use App\Services\Model\UserPointsHistoryService;
+use App\Services\Model\PointsGiftHistoryService;
 use App\Services\Model\UserMarkerService;
 use App\Services\Model\MarkerService;
 use App\Services\Model\CommunityService;
@@ -20,6 +21,7 @@ class UserController extends BaseAdminController
 {
     protected $mainService;
     protected $userPointHistoryService;
+    protected $pointsGiftHistoryService;
     protected $userLocationService;
     protected $userMarkerService;
     protected $markerService;
@@ -32,6 +34,7 @@ class UserController extends BaseAdminController
     public function __construct(
         UserService $mainService, 
         UserPointsHistoryService $userPointHistoryService,
+        PointsGiftHistoryService $pointsGiftHistoryService,
         UserLocationService $userLocationService,
         UserMarkerService $userMarkerService,
         MarkerService $markerService
@@ -43,6 +46,7 @@ class UserController extends BaseAdminController
         $this->mainTitle    = 'ユーザ管理';
 
         $this->userPointHistoryService = $userPointHistoryService;
+        $this->pointsGiftHistoryService = $pointsGiftHistoryService;
         $this->userLocationService = $userLocationService;
         $this->userMarkerService = $userMarkerService;
         $this->markerService = $markerService;
@@ -192,6 +196,17 @@ class UserController extends BaseAdminController
         if (!$request->user_id) {
             return ['status' => -1];
         }
+        // 選択したユーザの総ポイント数を取得
+        $points = $this->mainService->getUserPointQuery(['users.id' => \Auth::user()->id])->first();
+
+        // ポイント付与の種別がギフトかつ無料の付与ポイントが無料の所持ポイントより多い場合
+        if($request->type == 2 && $request->charge_flg == 1 && $request->give_point > $points->free_total_points) {
+            return ['status' => -2];
+        }
+        // ポイント付与の種別がギフトかつ有料の付与ポイントが有料の所持ポイントより多い場合
+        if($request->type == 2 && $request->charge_flg == 2 && $request->give_point > $points->total_points) {
+            return ['status' => -2];
+        }
 
         // 保存データを配列に格納
         $data = [
@@ -203,8 +218,18 @@ class UserController extends BaseAdminController
             'update_user_id'    => \Auth::user()->id,
         ];
 
-        // ポイント履歴作成
-        if($this->userPointHistoryService->save($data)) {
+        // ポイント履歴の更新or作成
+        if($model = $this->userPointHistoryService->save($data)) {
+            // ポイント付与の種別がギフトだった場合
+            if($model->type == 2) {
+                // points_gift_historiesテーブルの更新
+                $data['user_points_history_id'] = $model->id;
+                $input = $this->pointsGiftHistoryService->saveBefore($data);
+                $this->pointsGiftHistoryService->save($input);
+
+                // ポイントを付与した側に
+            }
+        
             return [
                 'status' => 1,
                 'id' => $request->user_id 

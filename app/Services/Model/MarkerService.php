@@ -45,16 +45,19 @@ class MarkerService extends BaseService
         $query->leftJoinSub($download, 'd', 'markers.id', '=', 'd.marker_id')
               ->select('markers.*', 'd.total_counts');
         
-        // DL数カラムのソートが降順の場合
-        if (request()->order[0]['column'] && request()->order[0]['column'] == 6 && request()->order[0]['dir'] == 'desc') {
-            $query->orderBy('d.total_counts', 'desc')
-                    ->orderByRaw('d.total_counts IS NULL ASC')
-                    ->orderBy('d.total_counts')
-                    ->orderBy('markers.charge_flg');
-        // DL数カラムのソートが昇順の場合
-        }else if(request()->order[0]['column'] && request()->order[0]['column'] == 6 && request()->order[0]['dir'] == 'asc') {
-            $query->orderBy('d.total_counts')
-                  ->orderBy('markers.charge_flg', 'desc');
+        // ソートのリクエストが存在する場合
+        if(request()->has('order')) {
+            // DL数カラムのソートが降順の場合
+            if (request()->order[0]['column'] == 6 && request()->order[0]['dir'] == 'desc') {
+                $query->orderBy('d.total_counts', 'desc')
+                        ->orderByRaw('d.total_counts IS NULL ASC')
+                        ->orderBy('d.total_counts')
+                        ->orderBy('markers.charge_flg');
+            // DL数カラムのソートが昇順の場合
+            }else if(request()->order[0]['column'] == 6 && request()->order[0]['dir'] == 'asc') {
+                $query->orderBy('d.total_counts')
+                    ->orderBy('markers.charge_flg', 'desc');
+            }
         }
         
         // 検索条件があれば実行

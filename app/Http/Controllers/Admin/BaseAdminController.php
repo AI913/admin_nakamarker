@@ -198,7 +198,6 @@ class BaseAdminController extends Controller
         // 除外項目
         $input = $request->except($this->except());
 
-        // if(is_null($request->image_flg)) {
         if($request->img_delete == 1) {
             // 強制削除フラグがOFFでかつ画像がアップロードされていない場合、nullをDBに保存
             if(is_null($request->file('upload_image'))) {
@@ -207,7 +206,6 @@ class BaseAdminController extends Controller
 
             // 強制削除フラグがONの場合、専用画像名をDBに保存
             if(is_null($request->file('upload_image')) && $request->delete_flg_on === 'true') {
-                // dd($request);
                 $input['image_file'] = config('const.out_image');
             }
         }

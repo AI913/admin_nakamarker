@@ -665,6 +665,9 @@ function updatePoints() {
             if(response.status == -1) {
                 alert('データの保存に失敗しました')
             }
+            if(response.status == -2) {
+                alert('ギフトできるポイントの上限を超えています')
+            }
             
             // 表のデータを再取得して更新
             if(response.status == 1) {
