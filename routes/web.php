@@ -64,7 +64,7 @@ Route::middleware('auth:admin')->group(function () {
     
     /******************** マーカー管理(markers) ********************/
     Route::get('/marker',             'Admin\MarkerController@index')->name('admin/marker');
-    Route::get('/merker/create',      'Admin\MarkerController@create')->name('admin/marker/create');
+    Route::get('/marker/create',      'Admin\MarkerController@create')->name('admin/marker/create');
     Route::get('/marker/edit/{id}',   'Admin\MarkerController@edit')->name('admin/marker/edit');
     Route::get('/marker/detail/{id}', 'Admin\MarkerController@detail')->name('admin/marker/detail');
     Route::post('/marker/save',       'Admin\MarkerController@save')->name('admin/marker/save');

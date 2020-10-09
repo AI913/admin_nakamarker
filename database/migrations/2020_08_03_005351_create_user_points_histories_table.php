@@ -20,6 +20,7 @@ class CreateUserPointsHistoriesTable extends Migration
             $table->unsignedInteger('pay_point')->default(0);   // 消費ポイント
             $table->unsignedInteger('charge_flg')->default(1);  // 有料フラグ
             $table->dateTime('limit_date')->nullable();         // 有効期限日時
+            $table->boolean('used_flg')->default(0);            // 使用済みフラグ
             $table->unsignedInteger('user_id');                 // ユーザID
             $table->text('memo')->nullable();                   // 備考
             $table->tinyInteger('del_flg')->default(0);         // 削除フラグ
