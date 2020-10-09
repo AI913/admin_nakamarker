@@ -34,7 +34,7 @@
                                     <div class="col-md-9">
                                         {{-- エラーメッセージあれば表示 --}}
                                         @include('admin.layouts.components.error_message', ['title' => 'title'])
-                                        <input class="form-control required-text" type="text" id="title" name="title" maxlength="50" placeholder="タイトル" value="{{ $data->title ? $data->title : old('title') }}" data-title="名前">
+                                        <input class="form-control required-text" type="text" id="title" name="title" maxlength="50" placeholder="タイトル" value="{{ $data->title ? $data->title : old('title') }}" data-title="タイトル">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -90,7 +90,7 @@
                                     <div class="col-md-9">
                                         {{-- エラーメッセージあれば表示 --}}
                                         @include('admin.layouts.components.error_message', ['title' => 'condition_start_time'])
-                                        <input class="form-control datetimepicker width-200 {{ ($data->status == 1) ? 'required-text' : '' }}" type="text" id="condition_start_time" name="condition_start_time" placeholder="公開開始日時" data-title="公開開始日時"
+                                        <input class="form-control datetimepicker width-200 " type="text" id="condition_start_time" name="condition_start_time" placeholder="公開開始日時" data-title="公開開始日時"
                                          value="{{ $data->condition_start_time ? $data->condition_start_time : old('condition_start_time') }}" {{ ($data->status && $data->status == 0) ? 'disabled' : '' }}>
                                     </div>
                                 </div>
@@ -99,7 +99,7 @@
                                     <div class="col-md-9">
                                         {{-- エラーメッセージあれば表示 --}}
                                         @include('admin.layouts.components.error_message', ['title' => 'condition_end_time'])
-                                        <input class="form-control datetimepicker width-200 {{ ($data->status == 1) ? 'required-text' : '' }}" type="text" id="condition_end_time" name="condition_end_time" placeholder="公開終了日時" data-title="公開終了日時"
+                                        <input class="form-control datetimepicker width-200 " type="text" id="condition_end_time" name="condition_end_time" placeholder="公開終了日時" data-title="公開終了日時"
                                          value="{{ $data->condition_end_time ? $data->condition_end_time : old('condition_end_time') }}" {{ ($data->status && $data->status == 0) ? 'disabled' : '' }}>
                                     </div>
                                 </div>

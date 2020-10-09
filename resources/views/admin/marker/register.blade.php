@@ -58,7 +58,7 @@
                                     <div class="col-md-9">
                                         {{-- エラーメッセージあれば表示 --}}
                                         @include('admin.layouts.components.error_message', ['title' => 'name'])
-                                        <input class="form-control required-text" type="text" id="name" name="name" maxlength="50" placeholder="名前" value="{{ $data->name ? $data->name : old('name') }}" data-title="名前">
+                                        <input class="form-control required-text" type="text" id="name" name="name" maxlength="50" placeholder="マーカー名" value="{{ $data->name ? $data->name : old('name') }}" data-title="マーカー名">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -92,7 +92,6 @@
                                                     >
                                                 @else
                                                     <img id="preview" 
-                                                        {{-- src="{{ $data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : (session('file_path') ? session('file_path') : asset('images/noImage/no_image.png')) }}" --}}
                                                         src="{{ session('file_path') ? session('file_path') : ($data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : asset('images/noImage/no_image.png')) }}"
                                                         width="350" 
                                                         height="250"
@@ -111,7 +110,7 @@
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label">ポイント区分</label>
-                                    <span class="col-md-9 col-form-label" style="color: red">※無償で提供する場合は"デフォルト"に✓を入れてください</span>
+                                    <span class="col-md-9 col-form-label" style="color: blue">※無償で提供する場合は"デフォルト"に✓を入れてください</span>
                                     <div class="offset-md-3 col-md-9 form-inline" id="type_checked">
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
                                             <input type="radio" class="custom-control-input" id="flg1" name="charge_flg" value="{{ config('const.charge_flg_off') }}" data-type="{{ config('const.charge_flg_off_name') }}" 

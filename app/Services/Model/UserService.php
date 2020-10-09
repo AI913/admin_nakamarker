@@ -101,7 +101,8 @@ class UserService extends BaseService
               ->select('user_markers.id as user_markers_id', 'user_markers.updated_at as user_markers_updated_at', 
                        'users.id as user_id', 'users.name as user_name', 'users.email as user_email', 'users.status'
                        )
-              ->where('markers.id', '=', $marker_id);
+              ->where('markers.id', '=', $marker_id)
+              ->where('user_markers.del_flg', '=', 0);
 
         return $query;
     }

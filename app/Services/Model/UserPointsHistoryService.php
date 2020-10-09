@@ -88,6 +88,7 @@ class UserPointsHistoryService extends BaseService
      */
     protected function getPayAction($pay_points, $data, $type) {
         $current_pay_points = null;
+        $tmp = null;
         $loop_time = 0;
         
         foreach($data as $value) {
@@ -102,7 +103,13 @@ class UserPointsHistoryService extends BaseService
 
             // 消費ポイントの残量を算出(ループ処理が2回目以降)
             if (isset($current_pay_points)) {
-                $current_pay_points = $current_pay_points - $current_points;
+                // 計算結果を一時的に変数へ代入
+                $tmp = $current_pay_points - $current_points;
+                // 消費ポイントが保存しきれない場合は計算結果を反映させる
+                // ※保存しきれる場合はDBに保存した後に計算結果を反映させる
+                if ($tmp > 0) {
+                    $current_pay_points = $tmp;
+                }
             }
             // 消費ポイントの残量を算出(ループ処理が1回目のとき)
             if (!isset($current_pay_points)) {
@@ -116,9 +123,11 @@ class UserPointsHistoryService extends BaseService
                 break;
             }
             // 消費ポイントを保存できる、かつループ処理が2回目以上の場合
-            if($current_pay_points <= 0 && $loop_time >= 2) {
+            if($tmp <= 0 && $loop_time >= 2) {
                 // 保存後に処理を抜け出す
                 $this->payPointSave($current_pay_points, $value->id);
+                // 計算結果を一時変数から$current_pay_pointsに反映
+                $current_pay_points = $tmp;
                 break;
             }
             // 消費ポイントを保存しきれない場合
@@ -182,6 +191,7 @@ class UserPointsHistoryService extends BaseService
 
         // 検索条件とソート条件を設定
         $conditions = [
+            'del_flg'  => 0,
             'user_id'  => $user_id,
             'used_flg' => 0, // 使用済みのポイントは利用しないように排除
         ];

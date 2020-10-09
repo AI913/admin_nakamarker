@@ -15,9 +15,9 @@ class UserPointsHistoryTableSeeder extends Seeder
         $faker = Faker\Factory::create('ja_JP');
 
         // 付与ポイントの値を配列にセット
-        $give_point = [200, 250, 300, 500, 700, 1000];
+        $give_point = [200, 250, 300, 350, 500];
         // 消費ポイントの値を配列にセット
-        $pay_point = [100, 150, 200, 250, 300];
+        $pay_point = [100, 150, 200];
 
         // レコード30件分出力
         for($i=0; $i < 30; $i++){
@@ -27,7 +27,7 @@ class UserPointsHistoryTableSeeder extends Seeder
                 'charge_flg'     => $faker->numberBetween(1, 2),
                 'type'           => $faker->numberBetween(1, 4),
                 'used_flg'       => 0,
-                'user_id'        => $faker->numberBetween(1, 30),
+                'user_id'        => $faker->numberBetween(1, 15),
                 'memo'           => 'テストメモ'.$i,
                 'del_flg'        => 0,
                 'update_user_id' => $faker->numberBetween(1, 5),

@@ -12,14 +12,26 @@ $(function(){
     // 公開フラグのvalue値設定
     if($('#open_flg').prop('checked')) {
         $('#status').val(1);
+        // 未入力のバリデーションチェック用クラスを追加
+        $('#condition_start_time').addClass('required-text');
+        $('#condition_end_time').addClass('required-text');
     } else {
         $('#status').val(0);
+        // 未入力のバリデーションチェック用クラスを削除
+        $('#condition_start_time').removeClass('required-text');
+        $('#condition_end_time').removeClass('required-text');
     }
     $('#open_flg').change(function() {
         if($('#open_flg').prop('checked')) {
             $('#status').val(1);
+            // 未入力のバリデーションチェック用クラスを追加
+            $('#condition_start_time').addClass('required-text');
+            $('#condition_end_time').addClass('required-text');
         } else {
             $('#status').val(0);
+            // 未入力のバリデーションチェック用クラスを削除
+            $('#condition_start_time').removeClass('required-text');
+            $('#condition_end_time').removeClass('required-text');
         }
     })
 });
@@ -178,9 +190,14 @@ function setDetailView(data) {
  */
 function customCheck() {
 
-    // 固有チェック、なければform.submitを行う
-    // 問題なければsubmit
-    $('#main_form').submit();
+    // 公開フラグの確認アラート
+	if($('#status').val() == 0){
+        if(confirm('公開ステータスが非公開に設定されています。\n\nこのまま登録しても宜しいでしょうか？')) {
+            $('#main_form').submit();
+        }
+	}else{
+        $('#main_form').submit();
+	}
 }
 
 /**

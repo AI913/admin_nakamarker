@@ -39,11 +39,11 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group row">
-                                    <label class="col-md-3 col-form-label" for="name">名前<span class="text-danger">※</span></label>
+                                    <label class="col-md-3 col-form-label" for="name">ユーザ名<span class="text-danger">※</span></label>
                                     <div class="col-md-9">
                                         {{-- エラーメッセージあれば表示 --}}
                                         @include('admin.layouts.components.error_message', ['title' => 'name'])
-                                        <input class="form-control required-text" type="text" id="name" name="name" maxlength="50" placeholder="名前" value="{{ $data->name ? $data->name : old('name') }}" data-title="名前" {{ $data->id === \Auth::user()->id ? 'disabled' : ''}}>
+                                        <input class="form-control required-text" type="text" id="name" name="name" maxlength="50" placeholder="ユーザ名" value="{{ $data->name ? $data->name : old('name') }}" data-title="ユーザ名" {{ $data->id === \Auth::user()->id ? 'disabled' : ''}}>
                                     </div>
                                 </div>
                                 <div class="form-group row">

@@ -263,7 +263,7 @@ class BaseAdminController extends Controller
 
             return $this->validationFailRedirect($request, $validator);
         }
-        // dd($request->upload_image);
+
         try {
             \DB::beginTransaction();
             // 保存前処理で保存データ作成

@@ -200,9 +200,6 @@
                                 <div class="col-1">
                                     <button type="button" class="btn btn-primary" id="pay_point_submit">消費</button>
                                 </div>
-                                <div class="col-2">
-                                    <button type="button" class="btn btn-secondary" id="detail_point_reset" data-id="">リセット</button>
-                                </div>
                             </div>
 
 

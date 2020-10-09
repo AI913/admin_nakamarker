@@ -63,13 +63,13 @@
                                     <div class="col-md-9">
                                         {{-- エラーメッセージあれば表示 --}}
                                         @include('admin.layouts.components.error_message', ['title' => 'name'])
-                                        <input class="form-control required-text" type="text" id="name" name="name" maxlength="50" placeholder="名前" value="{{ $data->name ? $data->name : old('name') }}" data-title="名前">
+                                        <input class="form-control required-text" type="text" id="name" name="name" maxlength="50" placeholder="コミュニティ名" value="{{ $data->name ? $data->name : old('name') }}" data-title="コミュニティ名">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="description">コミュニティ概要</label>
                                     <div class="col-md-9">
-                                        <textarea class="form-control" name="description" id="description" maxlength="500" rows="10" placeholder="備考">{{ $data->description ? $data->description : old('description') }}</textarea>
+                                        <textarea class="form-control" name="description" id="description" maxlength="500" rows="10" placeholder="概要">{{ $data->description ? $data->description : old('description') }}</textarea>
                                     </div>
                                 </div>
                                 <div class="form-group row">

@@ -35,7 +35,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="name">ロケーション名<span class="text-danger">※</span></label>
                                     <div class="col-md-9">
-                                        <input class="form-control required-text" type="text" id="name" name="name" maxlength="50" placeholder="ロケーション名" value="{{ $data->name ? $data->name : old('name') }}" data-title="名前">
+                                        <input class="form-control required-text" type="text" id="name" name="name" maxlength="50" placeholder="ロケーション名" value="{{ $data->name ? $data->name : old('name') }}" data-title="ロケーション名">
                                     </div>
                                 </div>
                                 <div class="form-group row">
