@@ -641,6 +641,11 @@ $(function(){
         }
         updatePoints();
     });
+
+    // (削除予定)
+    $(document).on("click", '#pay_point_submit', function(){
+        payPoints();
+    });
 });
 
 /**
@@ -667,6 +672,50 @@ function updatePoints() {
             }
             if(response.status == -2) {
                 alert('ギフトできるポイントの上限を超えています')
+            }
+            
+            // 表のデータを再取得して更新
+            if(response.status == 1) {
+                // DataTablesの再作成
+                if ($.fn.DataTable.isDataTable('#user_points_list')) {
+                    $('#user_points_list').DataTable().destroy();
+                }
+
+                $('#create_point').val('');
+                $('#select_point_type').val(null);
+                $('#select_charge_flg').val(null);
+                
+                setPointTable(response.id);
+            }
+        })
+        .fail(function(response){
+            alert('データの保存に失敗しました')
+        });
+}
+
+/**
+ * 消費ポイントの更新処理(削除予定)
+ * @param {*} button 
+ */
+function payPoints() {
+    let user_id = $('#user_id').data('id');
+    $.ajax({
+        url: `/ajax/user/detail/${user_id}/point/pay`,
+        type: 'POST',
+        dataType: 'json',
+        headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        data:   {
+            'pay_point': $('#pay_point').val(),
+            'charge_flg': $('#select_pay_charge_flg').val(),
+            'user_id': user_id,
+        }
+    })
+        .done(function(response){
+            if(response.status == -1) {
+                alert('データの保存に失敗しました')
+            }
+            if(response.status == -2) {
+                alert('ポイントが不足しております')
             }
             
             // 表のデータを再取得して更新

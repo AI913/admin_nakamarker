@@ -192,7 +192,6 @@ class UserController extends BaseAdminController
      * @throws \Exception
      */
     public function updatePoints(Request $request) {
-
         if (!$request->user_id) {
             return ['status' => -1];
         }
@@ -227,7 +226,8 @@ class UserController extends BaseAdminController
                 $input = $this->pointsGiftHistoryService->saveBefore($data);
                 $this->pointsGiftHistoryService->save($input);
 
-                // ポイントを付与した側に
+                // ポイントをギフトしたユーザのポイントを消費
+                $this->userPointHistoryService->getPayPointQuery($input['give_user_id'], $input['give_point'], $input['charge_flg']);
             }
         
             return [
@@ -347,5 +347,20 @@ class UserController extends BaseAdminController
             'password.min'      => 'パスワードは6文字以上で登録してください',
             'password.regex'    => 'パスワードは半角英数字及び「_@!?#%&」の記号のみで入力してください',
         ];
+    }
+
+    // ポイント削除機能(削除予定)
+    public function pay_points(Request $request) {
+        if (!$request->user_id) {
+            return ['status' => -1];
+        }
+
+        if($this->userPointHistoryService->getPayPointQuery($request->user_id, $request->pay_point, $request->charge_flg)){
+            return [
+                'status' => 1,
+                'id' => $request->user_id
+            ];
+        }
+        return ['status' => -2];
     }
 }

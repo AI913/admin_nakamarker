@@ -146,7 +146,7 @@
                             <hr>
                             <div class="row">
                                 <div class="col-3">
-                                    <label class="edit_point_label">ポイントの付与（新規）</label>
+                                    <label class="edit_point_label">ポイントの付与</label>
                                 </div>
                             </div>
                             <div class="row">
@@ -177,6 +177,35 @@
                                     <button type="button" class="btn btn-secondary" id="detail_point_reset" data-id="">リセット</button>
                                 </div>
                             </div>
+
+                            {{-- あとで削除予定 --}}
+                            <hr>
+                            <div class="row">
+                                <div class="col-3">
+                                    <label class="edit_point_label">ポイントの消費</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-2">
+                                    <input type="text" class="form-control" name="pay_point" value="" placeholder="消費ポイント"  id="pay_point">
+                                    <input type="hidden" name="id" value="">
+                                </div>
+                                <div class="col-2">
+                                    <select id="select_pay_charge_flg" class="form-control">
+                                        <option value="" disabled selected>{{ __('有料フラグ') }}</option>
+                                        <option value="1">{{ config('const.charge_flg_off_name') }}</option>
+                                        <option value="2">{{ config('const.charge_flg_on_name') }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-1">
+                                    <button type="button" class="btn btn-primary" id="pay_point_submit">消費</button>
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" class="btn btn-secondary" id="detail_point_reset" data-id="">リセット</button>
+                                </div>
+                            </div>
+
+
                         </div>
                     </div>
 

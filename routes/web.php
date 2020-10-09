@@ -61,6 +61,11 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('/user/detail/{id}/marker/remove',  'Admin\UserController@removeMarker')->name('admin/user/detail/marker/remove');
     // 特定ユーザのポイント削除(user_points_histories)
     Route::post('/user/detail/{id}/point/remove',  'Admin\UserController@removePoint')->name('admin/user/detail/point/remove');
+
+
+    // 特定ユーザのポイント消費(削除予定)
+    Route::post('/ajax/user/detail/{id}/point/pay', 'Admin\UserController@pay_points')->name('admin/user/point/pay');
+
     
     /******************** マーカー管理(markers) ********************/
     Route::get('/marker',             'Admin\MarkerController@index')->name('admin/marker');

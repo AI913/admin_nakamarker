@@ -89,10 +89,10 @@ class UserPointsHistoryService extends BaseService
     protected function getPayAction($pay_points, $data, $type) {
         $current_pay_points = null;
         $loop_time = 0;
-
+        
         foreach($data as $value) {
             // 指定したポイント区分と異なる場合は消費処理をスキップ
-            if($value->charge_flg !== $type) {
+            if($value->charge_flg != $type) {
                 continue;
             }
             // ループ処理の回数をカウント
@@ -109,19 +109,19 @@ class UserPointsHistoryService extends BaseService
                 $current_pay_points = $pay_points - $current_points;
             }
 
-            // 消費ポイントの残量を保存できる、かつループ処理が1回目の場合
+            // 消費ポイントを保存できる、かつループ処理が1回目の場合
             if($current_pay_points <= 0 && $loop_time == 1) {
                 // 保存後に処理を抜け出す
                 $this->payPointSave($pay_points, $value->id);
                 break;
             }
-            // 消費ポイントの残量を保存できる、かつループ処理が2回目以上の場合
+            // 消費ポイントを保存できる、かつループ処理が2回目以上の場合
             if($current_pay_points <= 0 && $loop_time >= 2) {
                 // 保存後に処理を抜け出す
                 $this->payPointSave($current_pay_points, $value->id);
                 break;
             }
-            // 消費ポイントの残量を保存しきれない場合
+            // 消費ポイントを保存しきれない場合
             if($current_pay_points > 0) {
                 // 保存して次の処理へ
                 $this->payPointSave($current_points, $value->id);
@@ -193,7 +193,7 @@ class UserPointsHistoryService extends BaseService
         $order = ['created_at' => 'asc'];
         // ポイント履歴データを取得
         $data = $this->searchList($conditions, $order);
-
+        
         \DB::beginTransaction();
         try {
             // ポイントの消費処理(有料ポイント)
