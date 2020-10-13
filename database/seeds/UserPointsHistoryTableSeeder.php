@@ -21,13 +21,15 @@ class UserPointsHistoryTableSeeder extends Seeder
 
         // レコード30件分出力
         for($i=0; $i < 30; $i++){
+            $type = $faker->numberBetween(1, 4);
             \App\Model\UserPointsHistory::create([
                 'give_point'     => $give_point[array_rand($give_point , 1 )],   // 付与ポイントの値をランダムに抽出
                 'pay_point'      => $pay_point[array_rand($pay_point , 1 )],   // 消費ポイントの値をランダムに抽出
                 'charge_flg'     => $faker->numberBetween(1, 2),
-                'type'           => $faker->numberBetween(1, 4),
+                'type'           => $type,
                 'used_flg'       => 0,
-                'user_id'        => $faker->numberBetween(1, 15),
+                'to_user_id'     => $faker->numberBetween(1, 15),
+                'from_user_id'   => $type == 2 ? $faker->numberBetween(1, 15) : null,
                 'memo'           => 'テストメモ'.$i,
                 'del_flg'        => 0,
                 'update_user_id' => $faker->numberBetween(1, 5),
