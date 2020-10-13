@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\View;
 use App\Services\Model\UserService;
 use App\Services\Model\UserLocationService;
 use App\Services\Model\UserPointsHistoryService;
-use App\Services\Model\PointsGiftHistoryService;
 use App\Services\Model\UserMarkerService;
 use App\Services\Model\MarkerService;
 use App\Services\Model\CommunityService;
@@ -21,7 +20,6 @@ class UserController extends BaseAdminController
 {
     protected $mainService;
     protected $userPointHistoryService;
-    protected $pointsGiftHistoryService;
     protected $userLocationService;
     protected $userMarkerService;
     protected $markerService;
@@ -34,7 +32,6 @@ class UserController extends BaseAdminController
     public function __construct(
         UserService $mainService, 
         UserPointsHistoryService $userPointHistoryService,
-        PointsGiftHistoryService $pointsGiftHistoryService,
         UserLocationService $userLocationService,
         UserMarkerService $userMarkerService,
         MarkerService $markerService
@@ -46,7 +43,6 @@ class UserController extends BaseAdminController
         $this->mainTitle    = 'ユーザ管理';
 
         $this->userPointHistoryService = $userPointHistoryService;
-        $this->pointsGiftHistoryService = $pointsGiftHistoryService;
         $this->userLocationService = $userLocationService;
         $this->userMarkerService = $userMarkerService;
         $this->markerService = $markerService;
@@ -173,7 +169,7 @@ class UserController extends BaseAdminController
         // 詳細(Modal)のDataTable
         // 〇検索条件
         $conditions = [];
-        $conditions['user_id'] = $id;
+        $conditions['to_user_id'] = $id;
         $conditions['del_flg'] = 0;
         // 〇ソート条件
         $sort = [];
@@ -213,7 +209,9 @@ class UserController extends BaseAdminController
             'give_point'        => $request->give_point,
             'pay_point'         => 0,
             'charge_flg'        => $request->charge_flg,
-            'user_id'           => $request->user_id,
+            'to_user_id'        => $request->user_id,
+            'from_user_id'      => $request->type == 2 ? \Auth::user()->id : null,
+            'status'            => 2,
             'update_user_id'    => \Auth::user()->id,
         ];
 
@@ -221,13 +219,8 @@ class UserController extends BaseAdminController
         if($model = $this->userPointHistoryService->save($data)) {
             // ポイント付与の種別がギフトだった場合
             if($model->type == 2) {
-                // points_gift_historiesテーブルの更新
-                $data['user_points_history_id'] = $model->id;
-                $input = $this->pointsGiftHistoryService->saveBefore($data);
-                $this->pointsGiftHistoryService->save($input);
-
                 // ポイントをギフトしたユーザのポイントを消費
-                $this->userPointHistoryService->getPayPointQuery($input['give_user_id'], $input['give_point'], $input['charge_flg']);
+                $this->userPointHistoryService->getPayPointQuery($data['from_user_id'], $data['give_point'], $data['charge_flg']);
             }
         
             return [

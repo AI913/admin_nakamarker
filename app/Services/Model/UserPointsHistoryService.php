@@ -49,7 +49,7 @@ class UserPointsHistoryService extends BaseService
 
         // 現在の所有ポイント数(有料)合計を算出
         $charge = $this->userService->getPointQuery()
-                                    ->where('user_points_histories.user_id', '=', $user_id)
+                                    ->where('user_points_histories.to_user_id', '=', $user_id)
                                     ->first();
         // nullチェック
         $charge = $this->getDataChangeQuery($charge, 2);
@@ -66,7 +66,7 @@ class UserPointsHistoryService extends BaseService
         if($type == 1) {
             // 現在の所有ポイント数(無料)合計を算出
             $free = $this->userService->getFreePointQuery()
-                                      ->where('user_points_histories.user_id', '=', $user_id)
+                                      ->where('user_points_histories.to_user_id', '=', $user_id)
                                       ->first();
             // nullチェック
             $free = $this->getDataChangeQuery($free, 1);
@@ -184,7 +184,7 @@ class UserPointsHistoryService extends BaseService
         }
         
         // ポイント区分が無料で、現在無料ポイントがない場合
-        if($type == 1 && !$this->searchExists(['charge_flg' => $type, 'used_flg' => 0, 'user_id' => $user_id])) {
+        if($type == 1 && !$this->searchExists(['charge_flg' => $type, 'used_flg' => 0, 'to_user_id' => $user_id])) {
             // ポイント区分を反転させる
             $type = 2;
         }
@@ -192,7 +192,7 @@ class UserPointsHistoryService extends BaseService
         // 検索条件とソート条件を設定
         $conditions = [
             'del_flg'  => 0,
-            'user_id'  => $user_id,
+            'to_user_id'  => $user_id,
             'used_flg' => 0, // 使用済みのポイントは利用しないように排除
         ];
         // ポイント区分が有料の場合
@@ -215,7 +215,7 @@ class UserPointsHistoryService extends BaseService
             if($type == 1) {
                 $current_points = $this->getPayAction($pay_points, $data, $type);
                 // 無料ポイントを使い切った場合有料ポイントの消費に移る
-                if($current_points > 0 && !$this->searchExists(['charge_flg' => $type, 'used_flg' => 0, 'user_id' => $user_id])) {
+                if($current_points > 0 && !$this->searchExists(['charge_flg' => $type, 'used_flg' => 0, 'to_user_id' => $user_id])) {
                     // 消費ポイントの残量を渡して再度消費処理を実行
                     $this->getPayAction($current_points, $data, 2);
                 }

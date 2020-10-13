@@ -40,10 +40,10 @@ class UserService extends BaseService
     public function getFreePointQuery() {
         $query = $this->model()->query();
 
-        $query->leftJoin('user_points_histories', 'users.id', 'user_points_histories.user_id')
+        $query->leftJoin('user_points_histories', 'users.id', 'user_points_histories.to_user_id')
               ->selectRaw('sum(user_points_histories.give_point) - sum(user_points_histories.pay_point) as free_total_points')
-              ->addselect('user_points_histories.user_id')
-              ->groupByRaw('user_points_histories.user_id')
+              ->addselect('user_points_histories.to_user_id')
+              ->groupByRaw('user_points_histories.to_user_id')
               ->where('user_points_histories.charge_flg', '=', 1)
               ->where('user_points_histories.del_flg', '=', 0);
 
@@ -56,10 +56,10 @@ class UserService extends BaseService
     public function getPointQuery() {
         $query = $this->model()->query();
 
-        $query->leftJoin('user_points_histories', 'users.id', 'user_points_histories.user_id')
+        $query->leftJoin('user_points_histories', 'users.id', 'user_points_histories.to_user_id')
               ->selectRaw('sum(user_points_histories.give_point) - sum(user_points_histories.pay_point) as total_points')
-              ->addselect('user_points_histories.user_id')
-              ->groupByRaw('user_points_histories.user_id')
+              ->addselect('user_points_histories.to_user_id')
+              ->groupByRaw('user_points_histories.to_user_id')
               ->where('user_points_histories.charge_flg', '=', 2)
               ->where('user_points_histories.del_flg', '=', 0);
 
@@ -78,8 +78,8 @@ class UserService extends BaseService
         $points_query = $this->getPointQuery();
 
         // サブクエリでポイントテーブルとユーザテーブルを結合
-        $query->leftJoinSub($free_points_query, 'free_points', 'users.id', '=', 'free_points.user_id')
-              ->leftJoinSub($points_query, 'charge_points', 'users.id', '=', 'charge_points.user_id')
+        $query->leftJoinSub($free_points_query, 'free_points', 'users.id', '=', 'free_points.to_user_id')
+              ->leftJoinSub($points_query, 'charge_points', 'users.id', '=', 'charge_points.to_user_id')
               ->select('users.*', 'free_points.free_total_points', 'charge_points.total_points');
 
         // 検索条件があれば実行
