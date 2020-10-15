@@ -23,7 +23,7 @@ class PushHistoryTableSeeder extends Seeder
                 'title' => 'title'.$i,
                 'content' => $faker->sentences($nb = 1, $asText = true),
                 'type' => 1,
-                'reservation_date' => $faker->dateTimeBetween($startDate = '-10 days', $endDate = '10 days'), // 本日から前後10日で設定
+                'reservation_date' => date_format($faker->dateTimeBetween($startDate = '-10 days', $endDate = '10 days'), 'Y-m-d H:i'), // 本日から前後10日で設定
                 'status' => $status[array_rand($status , 1 )],  // ステータスの値をランダムに抽出
                 'del_flg' => 0,
                 'update_user_id' => $faker->numberBetween(1, 5),

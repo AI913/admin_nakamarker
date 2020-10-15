@@ -33,6 +33,9 @@ class Kernel extends ConsoleKernel
         // 毎日深夜12時にDBに保存されていない画像をストレージから削除
         $schedule->command('image:delete')
                  ->daily();
+        // 毎分プッシュ通知の送信日時を確認 & 送信処理
+        $schedule->command('firebase:notification_order_check')
+                 ->everyMinute();
     }
 
     /**
