@@ -199,6 +199,7 @@ abstract class BaseService{
                 // ※fillメソッド使用時は、updated_atが必須となるため
                 $model->timestamps = false;
             }
+
             $model->fill($data);
             $model->save();
             if ($transaction) \DB::commit();

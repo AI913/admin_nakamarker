@@ -139,6 +139,11 @@ $(function(){
         $(document).on('click', '#history_modal_close', function(){
             $('#community_history_modal').modal('hide');
         });
+
+        // 2つ目のモーダルを閉じた後にbodyがスクロール出来る現象を防ぐため
+        $(document).on('hidden.bs.modal', '.modal', function () {
+            if ($('.modal').is(':visible')) $('body').addClass('modal-open');
+        });
 });
 
 /**

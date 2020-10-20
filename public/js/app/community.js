@@ -51,6 +51,11 @@ $(function(){
         $(document).on('click', '#user_modal_close', function(){
             $('#community_user_modal').modal('hide');
         });
+
+        // 2つ目のモーダルを閉じた後にbodyがスクロール出来る現象を防ぐため
+        $('#community_user_modal').on('hidden.bs.modal', function () {
+            if ($('.modal').is(':visible')) $('body').addClass('modal-open');
+        });
 });
 
 /**
