@@ -14,13 +14,13 @@ class CreateUserMarkersTable extends Migration
     public function up()
     {
         Schema::create('user_markers', function (Blueprint $table) {
-            $table->increments('id');                                   // ID
-            $table->unsignedInteger('marker_id');                       // マーカーID
-            $table->unsignedInteger('user_id');                         // ユーザID
-            $table->unsignedInteger('pay_free_point')->default(0);      // マーカー購入時の消費ポイント(無料)
-            $table->unsignedInteger('pay_charge_point')->default(0);    // マーカー購入時の消費ポイント(有料)
-            $table->tinyInteger('del_flg')->default(0);                 // 削除フラグ
-            $table->integer('update_user_id');                          // 更新者ユーザID
+            $table->increments('id')->comment('履歴ID');                                                            // ID
+            $table->unsignedInteger('marker_id')->comment('マーカーID');                                            // マーカーID
+            $table->unsignedInteger('user_id')->comment('ユーザID');                                                // ユーザID
+            $table->unsignedInteger('pay_free_point')->default(0)->comment('マーカー購入時の消費ポイント(無料)');      // マーカー購入時の消費ポイント(無料)
+            $table->unsignedInteger('pay_charge_point')->default(0)->comment('マーカー購入時の消費ポイント(有料)');    // マーカー購入時の消費ポイント(有料)
+            $table->tinyInteger('del_flg')->default(0)->comment('削除フラグ');                                      // 削除フラグ
+            $table->integer('update_user_id')->comment('更新者ユーザID');                                           // 更新者ユーザID
 
             $table->timestamps();
 

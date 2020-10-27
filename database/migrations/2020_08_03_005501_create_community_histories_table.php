@@ -14,13 +14,13 @@ class CreateCommunityHistoriesTable extends Migration
     public function up()
     {
         Schema::create('community_histories', function (Blueprint $table) {
-            $table->bigIncrements('id');                    // ID
-            $table->unsignedInteger('community_id');        // コミュニティID
-            $table->unsignedInteger('user_id');             // ユーザID
-            $table->tinyInteger('status')->default(1);      // コミュニティ申請の状態フラグ
-            $table->text('memo')->nullable();               // 備考
-            $table->tinyInteger('del_flg')->default(0);     // 削除フラグ
-            $table->integer('update_user_id');              // 更新者ユーザID
+            $table->bigIncrements('id')->comment('履歴ID');                                         // ID
+            $table->unsignedInteger('community_id')->comment('コミュニティID');                      // コミュニティID
+            $table->unsignedInteger('user_id')->comment('ユーザID');                                // ユーザID
+            $table->tinyInteger('status')->default(1)->comment('コミュニティ申請の状態フラグ');       // コミュニティ申請の状態フラグ
+            $table->text('memo')->nullable()->comment('備考');                                      // 備考
+            $table->tinyInteger('del_flg')->default(0)->comment('削除フラグ');                      // 削除フラグ
+            $table->integer('update_user_id')->comment('更新者ユーザID');                           // 更新者ユーザID
 
             $table->timestamps();
 
