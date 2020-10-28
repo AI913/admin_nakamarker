@@ -15,10 +15,10 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id')->comment('ID');                                                                // ユーザーID
-            $table->string('name')->nullable()->comment('ユーザ名');                                                 // ユーザ名
-            $table->string('email')->nullable()->unique()->comment('メールアドレス');                                // メールアドレス
-            $table->timestamp('email_verified_at')->nullable()->comment('メールアドレス確認カラム');                  // メールアドレス確認カラム
-            $table->string('password')->comment('パスワード');                                                      // パスワード
+            $table->string('name')->nullable()->comment('ユーザ名');                                                // ユーザ名
+            $table->string('email')->nullable()->unique()->comment('メールアドレス');                               // メールアドレス
+            $table->timestamp('email_verified_at')->nullable()->comment('メールアドレス確認カラム');                 // メールアドレス確認カラム
+            $table->string('password')->comment('パスワード')->nullable();                                          // パスワード
             $table->rememberToken()->nullable()->comment('トークン');                                               // トークン
             $table->string('user_token', '100')->nullable()->comment('ユーザトークン(アクセストークンとして利用)');    // ユーザトークン(アクセストークンとして利用)
             $table->datetime('login_time')->nullable()->comment('最終ログイン日時');                                 // 最終ログイン日時

@@ -18,7 +18,7 @@ class CreateCommunitiesTable extends Migration
             $table->tinyInteger('type')->default(1)->comment('種別');                       // 種別
             $table->string('name')->comment('コミュニティの名前');                           // コミュニティの名前
             $table->string('description')->nullable()->comment('コミュニティの説明');        // コミュニティの説明
-            $table->tinyInteger('status')->default(1)->comment('マーカーの公開フラグ');      // マーカーの公開フラグ
+            $table->tinyInteger('status')->default(1)->comment('コミュニティの公開フラグ');  // コミュニティの公開フラグ
             $table->string('image_file')->nullable()->comment('画像ファイル名');            // 画像ファイル名
             $table->tinyInteger('del_flg')->default(0)->comment('削除フラグ');              // 削除フラグ
             $table->integer('update_user_id')->comment('更新者ユーザID');                   // 更新者ユーザID

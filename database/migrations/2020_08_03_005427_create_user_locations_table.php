@@ -15,7 +15,7 @@ class CreateUserLocationsTable extends Migration
     {
         Schema::create('user_locations', function (Blueprint $table) {
             $table->bigIncrements('id')->comment('ロケーションID');                    // ID
-            $table->string('name')->comment('コミュニティの名前');                      // コミュニティの名前
+            $table->string('name')->comment('ロケーションの名前');                     // ロケーションの名前
             $table->string('latitude', '50')->comment('緯度');                        // 緯度
             $table->string('longitude', '50')->comment('経度');                       // 経度
             $table->string('image_file')->nullable()->comment('画像ファイル名');       // 画像ファイル名
