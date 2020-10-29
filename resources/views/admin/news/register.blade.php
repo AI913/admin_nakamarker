@@ -111,6 +111,7 @@
                                 <input type="hidden" id="image_file" name="image_file" value="{{ $data->image_file ? $data->image_file : '' }}" />
                                 <input type="hidden" id="register_mode" name="register_mode" value="{{ $register_mode }}" />
                                 @include('admin.layouts.components.button.register', ['register_mode' => $register_mode])
+                                @include('admin.layouts.components.button.detail')
                                 @include('admin.layouts.components.button.cancel', ['url' => "/news"])
                             </div>
                         </div>
@@ -120,6 +121,8 @@
         </div>
     </div>
 
+    {{-- 詳細Modal読み込み --}}
+    @include('admin.news.detail')
 @endsection
 
 @section('app_js')

@@ -34,6 +34,17 @@ $(function(){
             $('#condition_end_time').removeClass('required-text');
         }
     })
+    //プレビューボタン押下時
+    $(document).on('click', '#btn_preview', function(){
+        // 画面内容をセット
+        setDetailView({
+            title: $('#title').val(),
+            body: CKEDITOR.instances.body.getData(), // CKエディターからデータを取得するメソッド
+            status_name: $('#open_flg').prop('checked') ? '公開' : '非公開',
+            image_url: $('#preview').attr('src'),
+            open_date: getWeekYmdDate($('#open_date_label').val()),
+        });
+    });
 });
 
 // @1 ファイルドロップ
@@ -111,9 +122,10 @@ $(function () {
                     width: "350px",
                     height: "250px",
                     class: "preview",
+                    id: "preview",
                     title: file.name
                 }));  // previewに画像を表示
-            };   
+            };
         })(file);
 
         reader.readAsDataURL(file); // ファイル読み込みを非同期でバックグラウンドで開始
@@ -161,6 +173,7 @@ $(function(){
             width: "350px",
             height: "250px",
             class: "preview",
+            id: "preview",
         }));
 
         $('#drop_area').removeClass('solid'); // 枠を点線に戻す

@@ -7,7 +7,7 @@
 --}}
 <div class="modal fade" id="detail_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-success modal-xl" role="document">
-        <div class="offset-4 col-4 offset-4">
+        <div class="col-12 offset-sm-4 col-sm-4 offset-sm-4">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">プレビュー</h5>
