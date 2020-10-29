@@ -179,7 +179,7 @@ function setDetailView(data) {
     $('#detail_title').html(data.title);
     $('#detail_status').html(data.status_name);
     $('#detail_image_file').attr('src', data.image_url);
-    $('#detail_body').html(replaceBR(data.body));
+    $('#detail_body').html(data.body);
     $('#detail_open_date').html(data.condition_start_time);
     $('#detail_modal').modal('show');
 }
