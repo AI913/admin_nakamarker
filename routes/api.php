@@ -2,4 +2,6 @@
 
 use Illuminate\Http\Request;
 
-Route::post('/login', 'API\AuthController@login');
+
+Route::post('/login', 'Api\AuthController@login');
+Route::post('/user/create', 'Api\UserController@create');
