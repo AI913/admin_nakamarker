@@ -16,11 +16,12 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id')->comment('ID');                                                                // ユーザーID
             $table->string('name')->nullable()->comment('ユーザ名');                                                // ユーザ名
+            $table->string('user_token', '100')->nullable()->comment('ユーザトークン(アクセストークンとして利用)');    // ユーザトークン(アクセストークンとして利用)
+            $table->string('firebase_uid')->nullable()->comment('Firebaseが発行するトークン');                       // UID(コミュニティ加入時に登録必須データ)
             $table->string('email')->nullable()->unique()->comment('メールアドレス');                               // メールアドレス
             $table->timestamp('email_verified_at')->nullable()->comment('メールアドレス確認カラム');                 // メールアドレス確認カラム
             $table->string('password')->comment('パスワード')->nullable();                                          // パスワード
             $table->rememberToken()->nullable()->comment('トークン');                                               // トークン
-            $table->string('user_token', '100')->nullable()->comment('ユーザトークン(アクセストークンとして利用)');    // ユーザトークン(アクセストークンとして利用)
             $table->datetime('login_time')->nullable()->comment('最終ログイン日時');                                 // 最終ログイン日時
             $table->string('device_token')->nullable()->comment('デバイストークン');                                 // デバイストークン
             $table->tinyInteger('status')->default(1)->comment('ステータス');                                       // ステータス

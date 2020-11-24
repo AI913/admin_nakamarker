@@ -27,4 +27,23 @@ class HomeController extends BaseAdminController
     {
         return view($this->mainRoot."/index");
     }
+
+    /**
+     * Firebase認証のテスト用コントローラ
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function testLogin()
+    {
+        return view($this->mainRoot."/testLogin");
+    }
+    /**
+     * Firebase認証のテスト用コントローラ
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function testDone()
+    {
+        return view($this->mainRoot."/testDone");
+    }
 }

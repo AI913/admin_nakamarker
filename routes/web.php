@@ -18,6 +18,8 @@ Route::middleware('auth:admin')->group(function () {
     /******************** HOME ********************/
     Route::get('/',     'Admin\HomeController@index')->name('admin');
     Route::get('/home', 'Admin\HomeController@index')->name('admin/home');
+    Route::get('/test/login',     'Admin\HomeController@testLogin')->name('admin/testLogin');
+    Route::get('/test/done',     'Admin\HomeController@testDone')->name('admin/testDone');
 
     /******************** 各機能一覧データ取得(ajax) ********************/
     Route::get('/ajax/user',              'Admin\UserController@main_list');

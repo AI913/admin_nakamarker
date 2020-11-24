@@ -59,10 +59,25 @@ class UserController extends BaseApiController
             \DB::rollBack();
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
-        // ステータスリスト追加
-        return parent::index()->with(
-            ['status_list' => Common::getUserStatusList()]
-        );
     }
 
+    /**
+     * Firebaseログイン処理
+     */
+    public function register(Request $request) {
+
+        try {
+            // データを配列化
+            $data = $request->all();
+
+            // データを保存
+            $user = $this->mainService->save($data);
+    
+            // ステータスOK
+            return $this->success(['uid' => $user->firebase_uid]);
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
 }
