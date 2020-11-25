@@ -116,4 +116,24 @@ class UserController extends BaseApiController
         }
     }
 
+    /**
+     * アプリ引き継ぎ時の認証処理
+     */
+    public function login(Request $request) {
+        try {
+            // データを配列化
+            $conditions = $request->all();
+
+            // データを保存
+            if($this->mainService->searchExists($conditions)) {
+                // ユーザ情報を取得
+                $user = $this->mainService->searchOne($conditions);
+                // ステータスOK
+                return $this->success(['user_token' => $user->user_token]);
+            }
+            return $this->error(-9, ["message" => __FUNCTION__.":ユーザ名もしくはパスワードが違います"]);
+        } catch (\Exception $e) {
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
 }
