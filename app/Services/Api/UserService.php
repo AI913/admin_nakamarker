@@ -29,7 +29,7 @@ class UserService extends BaseService
     }
 
     /**
-     * ワンタイムパスワード発行　md5(ランダム＋id)
+     * ワンタイムパスワード発行
      *   ※12文字で設定(大文字英数字で表示)
      *   ※1とI、0とOは設定から省く
      * @param $id
