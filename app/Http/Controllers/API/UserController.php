@@ -5,18 +5,22 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\Api\UserService;
+use App\Services\Api\ConfigService;
+use Carbon\Carbon;
 
 class UserController extends BaseApiController
 {
     protected $mainService;
+    protected $configService;
 
     /**
      * ユーザ管理コントローラー
      * Class UserController
      * @package App\Http\Controllers
      */
-    public function __construct(UserService $mainService) {
+    public function __construct(UserService $mainService, ConfigService $configService) {
         $this->mainService  = $mainService;
+        $this->configService = $configService;
     }
 
     /**
@@ -76,8 +80,40 @@ class UserController extends BaseApiController
             // ステータスOK
             return $this->success(['uid' => $user->firebase_uid]);
         } catch (\Exception $e) {
-            \DB::rollBack();
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
+
+    /**
+     * ワンタイムパスワード発行処理
+     * ※期限は1週間単位で設定する
+     */
+    public function password(Request $request) {
+
+        try {
+            // パスワードをリターン
+            $password = $this->mainService->issueOnetimePassword();
+            
+            // 発行したパスワードデータを保存(有効期限は共通設定テーブルから値を抽出)
+            $data = [
+                'id'               => $request->input('id'), // ユーザID
+                'onetime_password' => $password,
+                'limit_date'       => Carbon::now()->addWeek($this->configService->searchOne(['key' => 'password_limit_date'])->value),
+            ];
+            // ユーザデータを更新
+            $user = $this->mainService->save($data);
+
+            // アプリ表示用にカスタマイズ
+            $confirmPassword = str_split($password, 4);
+            $confirmPassword = $confirmPassword[0].'-'.$confirmPassword[1].'-'.$confirmPassword[2];
+    
+            // ステータスOK
+            return $this->success([
+                'password' => $confirmPassword,
+            ]);
+        } catch (\Exception $e) {
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+
 }

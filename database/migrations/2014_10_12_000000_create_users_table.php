@@ -22,10 +22,12 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable()->comment('メールアドレス確認カラム');                 // メールアドレス確認カラム
             $table->string('password')->comment('パスワード')->nullable();                                          // パスワード
             $table->rememberToken()->nullable()->comment('トークン');                                               // トークン
-            $table->datetime('login_time')->nullable()->comment('最終ログイン日時');                                 // 最終ログイン日時
+            $table->dateTime('login_time')->nullable()->comment('最終ログイン日時');                                 // 最終ログイン日時
             $table->string('device_token')->nullable()->comment('デバイストークン');                                 // デバイストークン
             $table->tinyInteger('status')->default(1)->comment('ステータス');                                       // ステータス
             $table->string('user_agent')->nullable()->comment('ユーザエージェント');                                 // ユーザエージェント
+            $table->string('onetime_password')->nullable()->comment('ワンタイムパスワード');                         // ワンタイムパスワード
+            $table->dateTime('limit_date')->nullable()->comment('ワンタイムパスワードの有効期限');                    // ワンタイムパスワードの有効期限
             $table->text('memo')->nullable()->comment('備考');                                                      // 備考
             $table->tinyInteger('del_flg')->default(0)->comment('削除フラグ');                                      // 削除フラグ
             $table->integer('update_user_id')->comment('更新者ユーザID');                                           // 更新者ユーザID

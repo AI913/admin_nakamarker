@@ -28,5 +28,31 @@ class UserService extends BaseService
         return md5(Str::random(64).$id);
     }
 
-    
+    /**
+     * ワンタイムパスワード発行　md5(ランダム＋id)
+     *   ※12文字で設定(大文字英数字で表示)
+     *   ※1とI、0とOは設定から省く
+     * @param $id
+     * @return string
+     */
+    public function issueOnetimePassword() {
+
+        // パスワード発行に利用する文字列と数字の配列を用意
+        $str_list = range('A', 'Z');
+        $str_list = array_diff($str_list, array('I', 'O')); // パスワードの除外文字を設定
+
+        $number_list = range(1, 9);
+        $number_list = array_diff($number_list, array(1)); // パスワードの除外文字を設定
+
+        // パスワード発行用の文字と数字を結合
+        $password_list = array_merge($str_list, $number_list);
+
+        // パスワードの発行
+        $password = '';
+        for($i=0; $i<12; $i++) {
+            $password .= $password_list[array_rand($password_list)];
+        }
+        
+        return $password;
+    }
 }

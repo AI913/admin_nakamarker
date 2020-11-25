@@ -14,6 +14,13 @@ class ConfigTableSeeder extends Seeder
         // faker使う(引数には日本語を設定している)
         $faker = Faker\Factory::create('ja_JP');
 
+        \App\Model\Config::create([
+            'key' => 'password_limit_date',
+            'value' => 1,
+            'del_flg' => 0,
+            'update_user_id' => $faker->numberBetween(1, 5),
+        ]);
+
         // レコード15件分出力
         for($i=0; $i < 30; $i++){
             \App\Model\Config::create([
