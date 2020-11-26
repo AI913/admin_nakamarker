@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class AppAuth
 {
     /**
-     * Handle an incoming request.
+     * アプリからの認証処理
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
