@@ -161,6 +161,24 @@ class UserController extends BaseApiController
     }
 
     /**
+     * ユーザ名の編集
+     * @param RoleService $roleService
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function update(Request $request) {
+        try {
+            // ユーザ名の更新
+            $user = $this->mainService->save($request->all());
+
+            // ステータスOK
+            return $this->success(['name'    => $user->name]);
+
+        } catch (\Exception $e) {
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+
+    /**
      * ユーザー情報取得
      * @return \Illuminate\Http\JsonResponse
      */
