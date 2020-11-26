@@ -11,4 +11,5 @@ Route::post('/login', 'Api\UserController@login');
 Route::middleware('app.auth')->group(function(){
     Route::post('/user/register', 'Api\UserController@register');
     Route::post('/password', 'Api\UserController@password');
+    Route::post('/config', 'Api\ConfigController@index');
 });
