@@ -33,6 +33,29 @@ class UserController extends BaseApiController
     // }
 
     /**
+     * ユーザー情報取得(ユーザートークンをキーとする)
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function info(Request $request) {
+        try {
+            // トークンチェック
+            $user = $this->mainService->searchOne(['user_token' => $request->user_token]);
+
+            if (!$user) {
+                // URL無効エラー
+                return $this->error(-2, ['message' => Message::ERROR_REGISTER_TOKEN]);
+            }
+
+            // ステータスOK
+            return $this->success(['name' => $user->name]);
+
+        } catch (\Exception $e) {
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+
+    /**
      * ユーザ作成
      * @param RoleService $roleService
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -136,4 +159,20 @@ class UserController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
+
+    /**
+     * ユーザー情報取得
+     * @return \Illuminate\Http\JsonResponse
+     */
+    // public function user(Request $request) {
+    //     try {
+    //         // デバイストークン更新
+    //         $this->loginService->updateDeviceToken($request->user()->email, $request->device_token);
+
+    //         return $this->success(['user' => $this->userService->find($request->user()->id)]);
+    //     } catch (\Exception $e) {
+    //         return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+    //     }
+    // }
+
 }
