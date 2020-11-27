@@ -179,6 +179,34 @@ class UserController extends BaseApiController
     }
 
     /**
+     * ユーザーの所有ポイント情報取得(ユーザーIDをキーとする)
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function pointInfo(Request $request) {
+        try {
+            // ポイント取得
+            $free_points = $this->mainService->getFreePointQuery(['user_points_histories.to_user_id' => $request->id])->get();
+            $points = $this->mainService->getPointQuery(['user_points_histories.to_user_id' => $request->id])->get();
+
+            if (!$points) {
+                // URL無効エラー
+                return $this->error(-2, ['message' => Message::ERROR_REGISTER_TOKEN]);
+            }
+
+            // ステータスOK
+            return $this->success([
+                'points' => $points,
+                'free_points' => $free_points
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+
+    
+    /**
      * ユーザー情報取得
      * @return \Illuminate\Http\JsonResponse
      */

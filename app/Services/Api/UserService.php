@@ -55,4 +55,48 @@ class UserService extends BaseService
         
         return $password;
     }
+
+    /**
+     * ポイント履歴から現在の無料ポイント数を算出
+     * 引数：検索条件
+     */
+    public function getFreePointQuery($conditions=null) {
+        $query = $this->model()->query();
+
+        $query->leftJoin('user_points_histories', 'users.id', 'user_points_histories.to_user_id')
+              ->selectRaw('sum(user_points_histories.give_point) - sum(user_points_histories.pay_point) as free_total_points')
+              ->addselect('user_points_histories.to_user_id')
+              ->groupByRaw('user_points_histories.to_user_id')
+              ->where('user_points_histories.charge_flg', '=', 1)
+              ->where('user_points_histories.del_flg', '=', 0);
+
+        // 検索条件があれば実行
+        if($conditions) {
+            $query = $this->getConditions($query, $this->model()->getTable(), $conditions);
+        }
+
+        return $query;
+    }
+
+    /**
+     * ポイント履歴から現在の有料ポイント数を算出
+     * 引数：検索条件
+     */
+    public function getPointQuery($conditions=null) {
+        $query = $this->model()->query();
+
+        $query->leftJoin('user_points_histories', 'users.id', 'user_points_histories.to_user_id')
+              ->selectRaw('sum(user_points_histories.give_point) - sum(user_points_histories.pay_point) as total_points')
+              ->addselect('user_points_histories.to_user_id')
+              ->groupByRaw('user_points_histories.to_user_id')
+              ->where('user_points_histories.charge_flg', '=', 2)
+              ->where('user_points_histories.del_flg', '=', 0);
+
+        // 検索条件があれば実行
+        if($conditions) {
+            $query = $this->getConditions($query, $this->model()->getTable(), $conditions);
+        }
+        
+        return $query;
+    }
 }
