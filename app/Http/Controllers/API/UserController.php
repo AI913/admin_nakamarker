@@ -5,21 +5,32 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\Api\UserService;
+use App\Services\Api\UserPointsHistoryService;
+use App\Services\Api\UserLocationService;
 use App\Services\Api\ConfigService;
 use Carbon\Carbon;
 
 class UserController extends BaseApiController
 {
     protected $mainService;
+    protected $userPointHistoryService;
+    protected $userLocationService;
     protected $configService;
+    
 
     /**
      * ユーザ管理コントローラー
      * Class UserController
      * @package App\Http\Controllers
      */
-    public function __construct(UserService $mainService, ConfigService $configService) {
+    public function __construct(
+        UserService $mainService, 
+        ConfigService $configService, 
+        UserPointsHistoryService $userPointHistoryService,
+        UserLocationService $userLocationService
+    ) {
         $this->mainService  = $mainService;
+        $this->userPointHistoryService = $userPointHistoryService;
         $this->configService = $configService;
     }
 
@@ -185,19 +196,27 @@ class UserController extends BaseApiController
      */
     public function pointInfo(Request $request) {
         try {
+            // ユーザ情報の取得
+            $user = $this->mainService->searchOne(['user_token' => $request->bearerToken()]);
             // ポイント取得
-            $free_points = $this->mainService->getFreePointQuery(['user_points_histories.to_user_id' => $request->id])->get();
-            $points = $this->mainService->getPointQuery(['user_points_histories.to_user_id' => $request->id])->get();
+            $free_points = $this->mainService->getFreePointQuery(['user_points_histories.to_user_id' => $user->id])->get();
+            $points = $this->mainService->getPointQuery(['user_points_histories.to_user_id' => $user->id])->get();
 
             if (!$points) {
                 // URL無効エラー
                 return $this->error(-2, ['message' => Message::ERROR_REGISTER_TOKEN]);
             }
 
+            // 有効期限の最も近いポイントをそれぞれ取得
+            $free_limit_date = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 1, 'used_flg' => 0])->first();
+            $limit_date = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 2, 'used_flg' => 0])->first();
+
             // ステータスOK
             return $this->success([
+                'free_points' => $free_points,
                 'points' => $points,
-                'free_points' => $free_points
+                'free_limit_date' => $free_limit_date,
+                'limit_date' => $limit_date
             ]);
 
         } catch (\Exception $e) {
@@ -205,6 +224,96 @@ class UserController extends BaseApiController
         }
     }
 
+    /**
+     * ユーザーポイントの更新処理(ポイント付与を実施した場合)
+     * @param Request $request
+     * @param UserPointService $userPointService
+     * @return array
+     * @throws \Exception
+     */
+    public function pointUpdate(Request $request) {
+        try {
+            // ポイントが増加する場合
+            if($request->give_point) {
+                // ユーザ情報の取得
+                $user = $this->mainService->searchOne(['user_token' => $request->bearerToken()]);
+                // 選択したユーザの総ポイント数を取得
+                $points = $this->mainService->getUserPointQuery(['users.id' => $user->id])->first();
+
+                // ポイント付与の種別がギフトかつ無料の付与ポイントが無料の所持ポイントより多い場合
+                if($request->type == 2 && $request->charge_flg == 1 && $request->give_point > $points->free_total_points) {
+                    return ['status' => -2];
+                }
+                // ポイント付与の種別がギフトかつ有料の付与ポイントが有料の所持ポイントより多い場合
+                if($request->type == 2 && $request->charge_flg == 2 && $request->give_point > $points->total_points) {
+                    return ['status' => -2];
+                }
+
+                // 保存データを配列に格納
+                $data = [
+                    'type'              => 2,
+                    'give_point'        => $request->give_point,
+                    'charge_flg'        => $request->charge_flg,
+                    'to_user_id'        => $request->to_user_id,
+                    'from_user_id'      => $user->id,
+                    'status'            => 2,
+                    'update_user_id'    => $user->id,
+                ];
+
+                // ポイント履歴の更新or作成
+                $model = $this->userPointHistoryService->save($data);
+                // ポイント付与の種別がギフトだった場合
+                if($model->type == 2) {
+                    // ポイントをギフトしたユーザのポイントを消費
+                    $this->userPointHistoryService->getPayPointQuery($data['from_user_id'], $data['give_point'], $data['charge_flg']);
+                }
+
+                // ポイント取得
+                $free_points = $this->mainService->getFreePointQuery(['user_points_histories.to_user_id' => $data['from_user_id']])->get();
+                $points = $this->mainService->getPointQuery(['user_points_histories.to_user_id' => $data['from_user_id']])->get();
+
+                // 有効期限の最も近いポイントをそれぞれ取得
+                $free_limit_date = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $data['from_user_id'], 'charge_flg' => 1, 'used_flg' => 0])->first();
+                $limit_date = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $data['from_user_id'], 'charge_flg' => 2, 'used_flg' => 0])->first();
+                
+                return $this->success([
+                    'status' => 1,
+                    'total_give_free_point' => $free_points,
+                    'total_give_charge_point' => $points,
+                    'free_limit_date' => $free_limit_date,
+                    'limit_date' => $limit_date
+                ]);
+
+            } else if ($request->pay_point) {
+                // ユーザ情報の取得
+                $user = $this->mainService->searchOne(['user_token' => $request->bearerToken()]);
+
+                // ポイント消費処理
+                $this->userPointHistoryService->getPayPointQuery($user->id, $request->pay_point, $request->charge_flg);
+
+                // ポイント取得
+                $free_points = $this->mainService->getFreePointQuery(['user_points_histories.to_user_id' => $request->to_user_id])->get();
+                $points = $this->mainService->getPointQuery(['user_points_histories.to_user_id' => $request->to_user_id])->get();
+
+                // 有効期限の最も近いポイントをそれぞれ取得
+                $free_limit_date = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 1, 'used_flg' => 0])->first();
+                $limit_date = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 2, 'used_flg' => 0])->first();
+
+                return $this->success([
+                    'status' => 1,
+                    'total_give_free_point' => $free_points,
+                    'total_give_charge_point' => $points,
+                    'free_limit_date' => $free_limit_date,
+                    'limit_date' => $limit_date
+                ]);
+            }
+    
+        } catch (\Exception $e) {
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+
+    
     
     /**
      * ユーザー情報取得

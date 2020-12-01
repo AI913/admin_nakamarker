@@ -99,4 +99,27 @@ class UserService extends BaseService
         
         return $query;
     }
+
+    /**
+     * ユーザの所持ポイントを算出したデータの取得
+     * 引数：データの検索条件
+     */
+    public function getUserPointQuery($conditions=null) {
+        $query = $this->model()->query();
+
+        // 無料ポイントと有料ポイントの算出クエリをそれぞれインスタンス化
+        $free_points_query = $this->getFreePointQuery();
+        $points_query = $this->getPointQuery();
+
+        // サブクエリでポイントテーブルとユーザテーブルを結合
+        $query->leftJoinSub($free_points_query, 'free_points', 'users.id', '=', 'free_points.to_user_id')
+              ->leftJoinSub($points_query, 'charge_points', 'users.id', '=', 'charge_points.to_user_id')
+              ->select('users.*', 'free_points.free_total_points', 'charge_points.total_points');
+
+        // 検索条件があれば実行
+        if($conditions) {
+            $query = $this->getConditions($query, $this->model()->getTable(), $conditions);
+        }
+        return $query;
+    }
 }
