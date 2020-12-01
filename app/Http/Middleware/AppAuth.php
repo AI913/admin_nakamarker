@@ -20,7 +20,7 @@ class AppAuth
         $token = $request->bearerToken();
 
         // 認証
-        if (DB::table('users')->where('id', '=', $request->input('id'))->where('user_token', '=', $token)->first()) {
+        if (DB::table('users')->where('user_token', '=', $token)->first()) {
             return $next($request);
         }
         // エラーをリターン
