@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\Api\LoginService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 
@@ -25,4 +26,6 @@ class AuthController extends Controller
             'message' => 'Unauthenticated.'
         ], 401);
     }
+
+    
 }
