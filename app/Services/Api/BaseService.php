@@ -316,11 +316,9 @@ abstract class BaseService{
      * @return \Illuminate\Contracts\Auth\Authenticatable|int|null
      */
     private function getUserId() {
-        if (Auth::guard('admin')->check()) {
-            return Auth::guard('admin')->user()->id;
-        }
-        if (Auth::guard('user')->check()) {
-            return Auth::guard('user')->user()->id;
+        if (request()->bearerToken()) {
+            $user = \DB::table('users')->select('id')->where('user_token', request()->bearerToken())->first();
+            return $user->id;
         }
         return 0;
     }
