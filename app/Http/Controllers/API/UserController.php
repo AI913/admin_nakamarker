@@ -31,6 +31,7 @@ class UserController extends BaseApiController
     ) {
         $this->mainService  = $mainService;
         $this->userPointHistoryService = $userPointHistoryService;
+        $this->userLocationService = $userLocationService;
         $this->configService = $configService;
     }
 
@@ -313,7 +314,27 @@ class UserController extends BaseApiController
         }
     }
 
-    
+    /**
+     * 登録場所情報の取得
+     * @param $id
+     * @throws \Exception
+     */
+    public function locationInfo(Request $request) {
+        try {
+            // ユーザ情報の取得
+            $user = $this->mainService->searchOne(['user_token' => $request->bearerToken()]);
+            // ユーザの登録場所とそれに紐づくマーカー情報を取得
+            $user_location = $this->userLocationService->getUserLocationQuery($user->id)->get();
+
+            // ステータスOK
+            return $this->success([
+                'status' => 1,
+                'location_list' => $user_location,
+            ]);
+        } catch (\Exception $e) {
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
     
     /**
      * ユーザー情報取得
