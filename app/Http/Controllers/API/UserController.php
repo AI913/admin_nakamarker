@@ -368,6 +368,25 @@ class UserController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
+
+    /**
+     * 登録場所情報の削除
+     * @param $id
+     * @throws \Exception
+     */
+    public function locationRemove(Request $request) {
+        try {
+            // ユーザの登録場所とそれに紐づくマーカー情報を取得
+            $this->userLocationService->remove($request->input('location_id'));
+
+            // ステータスOK
+            return $this->success([
+                'status' => 1,
+            ]);
+        } catch (\Exception $e) {
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
     
     /**
      * ユーザー情報取得
