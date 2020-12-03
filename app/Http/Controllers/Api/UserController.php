@@ -387,6 +387,28 @@ class UserController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
+
+    /**
+     * マーカー情報の取得
+     * @param $id
+     * @throws \Exception
+     */
+    public function markerInfo(Request $request) {
+        try {
+            // ユーザ情報の取得
+            $user = $this->mainService->searchOne(['user_token' => $request->bearerToken()]);
+            // ユーザの登録場所とそれに紐づくマーカー情報を取得
+            $user_marker = $this->markerService->getUserMarkerQuery($user->id)->get();
+
+            // ステータスOK
+            return $this->success([
+                'status' => 1,
+                'marker_list' => $user_marker,
+            ]);
+        } catch (\Exception $e) {
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
     
     /**
      * ユーザー情報取得

@@ -25,6 +25,8 @@ Route::middleware('app.auth')->group(function(){
     Route::post('/user/location',           'Api\UserController@locationInfo');
     Route::post('/user/location/register',  'Api\UserController@locationRegister');
     Route::post('/user/location/remove',    'Api\UserController@locationRemove');
+    /******************** ユーザマーカー管理(user_markers) ********************/
+    Route::post('/user/marker',             'Api\UserController@markerInfo');
 
     /******************** 共通設定管理(configs) ********************/
     Route::post('/config',                  'Api\ConfigController@index');
