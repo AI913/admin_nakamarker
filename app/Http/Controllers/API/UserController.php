@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Services\Api\UserService;
 use App\Services\Api\UserPointsHistoryService;
 use App\Services\Api\UserLocationService;
+use App\Services\Api\MarkerService;
 use App\Services\Api\ConfigService;
 use Carbon\Carbon;
 
@@ -15,6 +16,7 @@ class UserController extends BaseApiController
     protected $mainService;
     protected $userPointHistoryService;
     protected $userLocationService;
+    protected $markerService;
     protected $configService;
     
 
@@ -27,12 +29,14 @@ class UserController extends BaseApiController
         UserService $mainService, 
         ConfigService $configService, 
         UserPointsHistoryService $userPointHistoryService,
-        UserLocationService $userLocationService
+        UserLocationService $userLocationService,
+        MarkerService $markerService
     ) {
         $this->mainService  = $mainService;
         $this->userPointHistoryService = $userPointHistoryService;
         $this->userLocationService = $userLocationService;
         $this->configService = $configService;
+        $this->markerService = $markerService;
     }
 
     /**
@@ -330,6 +334,35 @@ class UserController extends BaseApiController
             return $this->success([
                 'status' => 1,
                 'location_list' => $user_location,
+            ]);
+        } catch (\Exception $e) {
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+
+    /**
+     * 場所情報の登録
+     * @param $id
+     * @throws \Exception
+     */
+    public function locationRegister(Request $request) {
+        try {
+            // ユーザ情報の取得
+            $user = $this->mainService->searchOne(['user_token' => $request->bearerToken()]);
+            // マーカー情報の取得
+            $marker = $this->markerService->searchOne(['type' => $request->input('marker_type'), 'name' => $request->input('marker_name')]);
+
+            // 保存データを配列に格納
+            $data = $request->all();
+            $data['user_id'] = $user->id;
+            $data['marker_id'] = $marker->id;
+
+            // 保存処理
+            $location = $this->userLocationService->save($data);
+            
+            // ステータスOK
+            return $this->success([
+                'status' => 1,
             ]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
