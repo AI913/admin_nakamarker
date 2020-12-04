@@ -187,7 +187,7 @@ class UserController extends BaseApiController
             $user = $this->mainService->save($request->all());
 
             // ステータスOK
-            return $this->success(['name'    => $user->name]);
+            return $this->success(['name' => $user->name]);
 
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
@@ -282,7 +282,6 @@ class UserController extends BaseApiController
                 $limit_date = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $data['from_user_id'], 'charge_flg' => 2, 'used_flg' => 0])->first();
                 
                 return $this->success([
-                    'status' => 1,
                     'total_give_free_point' => $free_points,
                     'total_give_charge_point' => $points,
                     'free_limit_date' => $free_limit_date,
@@ -305,7 +304,6 @@ class UserController extends BaseApiController
                 $limit_date = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 2, 'used_flg' => 0])->first();
 
                 return $this->success([
-                    'status' => 1,
                     'total_give_free_point' => $free_points,
                     'total_give_charge_point' => $points,
                     'free_limit_date' => $free_limit_date,
@@ -332,7 +330,6 @@ class UserController extends BaseApiController
 
             // ステータスOK
             return $this->success([
-                'status' => 1,
                 'location_list' => $user_location,
             ]);
         } catch (\Exception $e) {
@@ -361,9 +358,7 @@ class UserController extends BaseApiController
             $location = $this->userLocationService->save($data);
             
             // ステータスOK
-            return $this->success([
-                'status' => 1,
-            ]);
+            return $this->success();
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
@@ -380,9 +375,7 @@ class UserController extends BaseApiController
             $this->userLocationService->remove($request->input('location_id'));
 
             // ステータスOK
-            return $this->success([
-                'status' => 1,
-            ]);
+            return $this->success();
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
@@ -397,12 +390,17 @@ class UserController extends BaseApiController
         try {
             // ユーザ情報の取得
             $user = $this->mainService->searchOne(['user_token' => $request->bearerToken()]);
+            // ソート条件
+            $order = [];
+            if(key_exists('order', $request->all())) {
+                $sort = $request->input('order'); 
+                $order[$sort] = $sort;
+            }
             // ユーザの登録場所とそれに紐づくマーカー情報を取得
-            $user_marker = $this->markerService->getUserMarkerQuery($user->id)->get();
+            $user_marker = $this->markerService->getUserMarkerQuery($user->id, $order)->get();
 
             // ステータスOK
             return $this->success([
-                'status' => 1,
                 'marker_list' => $user_marker,
             ]);
         } catch (\Exception $e) {

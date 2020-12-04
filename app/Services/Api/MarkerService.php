@@ -18,9 +18,9 @@ class MarkerService extends BaseService
 
     /**
      * ログインユーザが所有するデータリスト
-     * 引数：ユーザID
+     * 引数1：ユーザID, 引数2：ソート条件 
      */
-    public function getUserMarkerQuery($user_id) {
+    public function getUserMarkerQuery($user_id, $order=[]) {
         $query = $this->model()->query();
 
         $query->leftJoin('user_markers', 'markers.id', '=', 'user_markers.marker_id')
@@ -28,6 +28,24 @@ class MarkerService extends BaseService
                        'user_markers.marker_id', 'user_markers.updated_at as user_markers_updated_at')
               ->where('user_markers.user_id', '=', $user_id)
               ->where('user_markers.del_flg', '=', 0);
+
+        // ソート条件
+        foreach($order as $key => $value) {
+            switch ($value) {
+                // デフォルトはマーカー購入日を降順で設定
+                case 0:
+                    $query->orderBy('user_markers.created_at', 'desc');
+                break;
+                // マーカーの種別で昇順
+                case 1:
+                    $query->orderBy('markers.type', 'asc');
+                break;
+                // マーカーの名前で昇順
+                case 2:
+                    $query->orderBy('markers.name', 'asc');
+                break;
+            }
+        }
 
         return $query;
     }
