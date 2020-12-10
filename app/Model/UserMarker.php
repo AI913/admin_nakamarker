@@ -4,7 +4,7 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserMarker extends Model
+class UserMarker extends BaseModel
 {
     /**
      * 独自アクセサ(attribute)
