@@ -8,6 +8,7 @@ use App\Services\Api\UserService;
 use App\Services\Api\UserPointsHistoryService;
 use App\Services\Api\UserLocationService;
 use App\Services\Api\MarkerService;
+use App\Services\Api\CommunityService;
 use App\Services\Api\ConfigService;
 use Carbon\Carbon;
 
@@ -17,6 +18,7 @@ class UserController extends BaseApiController
     protected $userPointHistoryService;
     protected $userLocationService;
     protected $markerService;
+    protected $communityService;
     protected $configService;
     
 
@@ -30,13 +32,15 @@ class UserController extends BaseApiController
         ConfigService $configService, 
         UserPointsHistoryService $userPointHistoryService,
         UserLocationService $userLocationService,
-        MarkerService $markerService
+        MarkerService $markerService,
+        CommunityService $communityService
     ) {
         $this->mainService  = $mainService;
         $this->userPointHistoryService = $userPointHistoryService;
         $this->userLocationService = $userLocationService;
         $this->configService = $configService;
         $this->markerService = $markerService;
+        $this->communityService = $communityService;
     }
 
     /**
@@ -396,7 +400,7 @@ class UserController extends BaseApiController
                 $sort = $request->input('order'); 
                 $order[$sort] = $sort;
             }
-            // ユーザの登録場所とそれに紐づくマーカー情報を取得
+            // ユーザのマーカー情報を取得
             $user_marker = $this->markerService->getUserMarkerQuery($user->id, $order)->get();
 
             // ステータスOK
@@ -408,6 +412,34 @@ class UserController extends BaseApiController
         }
     }
     
+    /**
+     * コミュニティ情報の取得
+     * @param $id
+     * @throws \Exception
+     */
+    public function communityInfo(Request $request) {
+        try {
+            // ユーザ情報の取得
+            $user = $this->mainService->searchOne(['user_token' => $request->bearerToken()]);
+            // ソート条件
+            $order = [];
+            if(key_exists('order', $request->all())) {
+                $sort = $request->input('order'); 
+                $order[$sort] = $sort;
+            }
+            // ユーザのコミュニティ情報を取得
+            $user_community = $this->communityService->getUserCommunityQuery($user->id, $order)->get();
+
+            // ステータスOK
+            return $this->success([
+                'community_list' => $user_community,
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+
     /**
      * ユーザー情報取得
      * @return \Illuminate\Http\JsonResponse
