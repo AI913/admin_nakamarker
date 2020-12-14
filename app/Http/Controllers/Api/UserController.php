@@ -112,17 +112,19 @@ class UserController extends BaseApiController
      * Firebaseログイン処理
      */
     public function register(Request $request) {
-
         try {
+            \DB::beginTransaction();
             // データを配列化
             $data = $request->all();
 
             // データを保存
             $user = $this->mainService->save($data);
     
+            \DB::commit();
             // ステータスOK
             return $this->success(['uid' => $user->firebase_uid]);
         } catch (\Exception $e) {
+            \DB::rollback();
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
@@ -134,6 +136,7 @@ class UserController extends BaseApiController
     public function password(Request $request) {
 
         try {
+            \DB::beginTransaction();
             // パスワードをリターン
             $password = $this->mainService->issueOnetimePassword();
             
@@ -150,11 +153,13 @@ class UserController extends BaseApiController
             $confirmPassword = str_split($password, 4);
             $confirmPassword = $confirmPassword[0].'-'.$confirmPassword[1].'-'.$confirmPassword[2];
     
+            \DB::commit();
             // ステータスOK
             return $this->success([
                 'password' => $confirmPassword,
             ]);
         } catch (\Exception $e) {
+            \DB::rollback();
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
@@ -187,13 +192,16 @@ class UserController extends BaseApiController
      */
     public function update(Request $request) {
         try {
+            \DB::beginTransaction();
             // ユーザ名の更新
             $user = $this->mainService->save($request->all());
 
+            \DB::commit();
             // ステータスOK
             return $this->success(['name' => $user->name]);
 
         } catch (\Exception $e) {
+            \DB::rollback();
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
@@ -217,15 +225,15 @@ class UserController extends BaseApiController
             }
 
             // 有効期限の最も近いポイントをそれぞれ取得
-            $free_limit_date = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 1, 'used_flg' => 0])->first();
-            $limit_date = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 2, 'used_flg' => 0])->first();
+            $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 1, 'used_flg' => 0])->first();
+            $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 2, 'used_flg' => 0])->first();
 
             // ステータスOK
             return $this->success([
-                'total_give_free_points' => $free_points,
-                'total_give_charge_points' => $points,
-                'free_limit_date' => $free_limit_date,
-                'limit_date' => $limit_date
+                'total_give_free_point' => $free_points,
+                'total_give_charge_point' => $points,
+                'remaining_free_point' => $remaining_free_point,
+                'remaining_charge_point' => $remaining_charge_point
             ]);
 
         } catch (\Exception $e) {
@@ -242,6 +250,7 @@ class UserController extends BaseApiController
      */
     public function pointUpdate(Request $request) {
         try {
+            \DB::beginTransaction();
             // ポイントが増加する場合
             if($request->give_point) {
                 // ユーザ情報の取得
@@ -282,14 +291,15 @@ class UserController extends BaseApiController
                 $points = $this->mainService->getPointQuery(['user_points_histories.to_user_id' => $data['from_user_id']])->get();
 
                 // 有効期限の最も近いポイントをそれぞれ取得
-                $free_limit_date = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $data['from_user_id'], 'charge_flg' => 1, 'used_flg' => 0])->first();
-                $limit_date = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $data['from_user_id'], 'charge_flg' => 2, 'used_flg' => 0])->first();
+                $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $data['from_user_id'], 'charge_flg' => 1, 'used_flg' => 0])->first();
+                $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $data['from_user_id'], 'charge_flg' => 2, 'used_flg' => 0])->first();
                 
+                \DB::commit();
                 return $this->success([
-                    'total_give_free_points' => $free_points,
-                    'total_give_charge_points' => $points,
-                    'free_limit_date' => $free_limit_date,
-                    'limit_date' => $limit_date
+                    'total_give_free_point' => $free_points,
+                    'total_give_charge_point' => $points,
+                    'remaining_free_point' => $remaining_free_point,
+                    'remaining_charge_point' => $remaining_charge_point
                 ]);
 
             } else if ($request->pay_point) {
@@ -304,18 +314,20 @@ class UserController extends BaseApiController
                 $points = $this->mainService->getPointQuery(['user_points_histories.to_user_id' => $request->to_user_id])->get();
 
                 // 有効期限の最も近いポイントをそれぞれ取得
-                $free_limit_date = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 1, 'used_flg' => 0])->first();
-                $limit_date = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 2, 'used_flg' => 0])->first();
+                $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 1, 'used_flg' => 0])->first();
+                $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 2, 'used_flg' => 0])->first();
 
+                \DB::commit();
                 return $this->success([
-                    'total_give_free_points' => $free_points,
-                    'total_give_charge_points' => $points,
-                    'free_limit_date' => $free_limit_date,
-                    'limit_date' => $limit_date
+                    'total_give_free_point' => $free_points,
+                    'total_give_charge_point' => $points,
+                    'remaining_free_point' => $remaining_free_point,
+                    'remaining_charge_point' => $remaining_charge_point
                 ]);
             }
     
         } catch (\Exception $e) {
+            \DB::rollback();
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
@@ -348,6 +360,7 @@ class UserController extends BaseApiController
      */
     public function locationRegister(Request $request) {
         try {
+            \DB::beginTransaction();
             // ユーザ情報の取得
             $user = $this->mainService->searchOne(['user_token' => $request->bearerToken()]);
             // マーカー情報の取得
@@ -361,9 +374,11 @@ class UserController extends BaseApiController
             // 保存処理
             $location = $this->userLocationService->save($data);
             
+            \DB::commit();
             // ステータスOK
             return $this->success();
         } catch (\Exception $e) {
+            \DB::rollback();
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
@@ -375,12 +390,15 @@ class UserController extends BaseApiController
      */
     public function locationRemove(Request $request) {
         try {
+            \DB::beginTransaction();
             // ユーザの登録場所とそれに紐づくマーカー情報を取得
             $this->userLocationService->remove($request->input('location_id'));
 
             // ステータスOK
+            \DB::commit();
             return $this->success();
         } catch (\Exception $e) {
+            \DB::rollback();
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
@@ -419,6 +437,7 @@ class UserController extends BaseApiController
      */
     public function markerUpdate(Request $request) {
         try {
+            \DB::beginTransaction();
             // ユーザ情報の取得
             $user = $this->mainService->searchOne(['user_token' => $request->bearerToken()]);
             // マーカー情報の取得
@@ -446,17 +465,19 @@ class UserController extends BaseApiController
             }
 
             // 有効期限の最も近いポイントをそれぞれ取得
-            $free_limit_date = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 1, 'used_flg' => 0])->first();
-            $limit_date = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 2, 'used_flg' => 0])->first();
+            $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 1, 'used_flg' => 0])->first();
+            $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 2, 'used_flg' => 0])->first();
 
+            \DB::commit();
             // ステータスOK
             return $this->success([
-                'total_give_free_points' => $free_points,
-                'total_give_charge_points' => $points,
-                'free_limit_date' => $free_limit_date,
-                'limit_date' => $limit_date
+                'total_give_free_point' => $free_points,
+                'total_give_charge_point' => $points,
+                'remaining_free_point' => $remaining_free_point,
+                'remaining_charge_point' => $remaining_charge_point
             ]);
         } catch (\Exception $e) {
+            \DB::rollBack();
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
         
