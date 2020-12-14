@@ -117,7 +117,7 @@ class UserPointsHistoryService extends BaseService
             $loop_time++;
             // 現在のポイント履歴データ(1レコード)に残っているポイントを算出
             $current_points = $value->give_point - $value->pay_point;
-
+            
             // 消費ポイントの残量を算出(ループ処理が2回目以降)
             if (isset($current_pay_points)) {
                 // 計算結果を一時的に変数へ代入
@@ -223,9 +223,15 @@ class UserPointsHistoryService extends BaseService
         
         \DB::beginTransaction();
         try {
+            // リターン用の変数を宣言
+            $charge_points = 0; // 有料ポイント用
+            $free_points = 0;   // 無料ポイント用
+
             // ポイントの消費処理(有料ポイント)
             if($type == 2) {
                 $this->getPayAction($pay_points, $data, $type);
+                // 有料ポイント
+                $charge_points = $pay_points;
             }
 
             // ポイントの消費処理(無料ポイント)
@@ -235,10 +241,18 @@ class UserPointsHistoryService extends BaseService
                 if($current_points > 0 && !$this->searchExists(['charge_flg' => $type, 'used_flg' => 0, 'to_user_id' => $user_id])) {
                     // 消費ポイントの残量を渡して再度消費処理を実行
                     $this->getPayAction($current_points, $data, 2);
+                    $charge_points = $pay_points - $current_points;
+                    $free_points = $pay_points - $charge_points;
                 }
+                // 無料ポイント用の変数に値がなければ消費ポイントの値をセット
+                $free_points ? $free_points : $free_points = $pay_points;
             }
+
             \DB::commit();
-            return true;
+            return [
+                'charge_points' => $charge_points,
+                'free_points'   => $free_points
+            ];
         } catch(\Exception $e) {
             \DB::rollBack();
             
