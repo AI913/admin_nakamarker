@@ -32,9 +32,12 @@ class MarkerService extends BaseService
         // ソート条件
         foreach($order as $key => $value) {
             switch ($value) {
-                // デフォルトはマーカー購入日を降順で設定
-                case 0:
+                // デフォルト設定
+                case 99:
                     $query->orderBy('user_markers.created_at', 'desc');
+                break;
+                case -99:
+                    $query->orderBy('user_markers.created_at', 'asc');
                 break;
                 // マーカーの種別で昇順
                 case 1:
