@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Services\Api\UserService;
 use App\Services\Api\UserPointsHistoryService;
 use App\Services\Api\UserLocationService;
 use App\Services\Api\UserMarkerService;
 use App\Services\Api\MarkerService;
 use App\Services\Api\CommunityHistoryService;
+use App\Services\Api\CommunityService;
 use App\Services\Api\ConfigService;
 use Carbon\Carbon;
 
@@ -21,6 +23,7 @@ class UserController extends BaseApiController
     protected $userMarkerService;
     protected $markerService;
     protected $communityHistoryService;
+    protected $communityService;
     protected $configService;
     
 
@@ -36,6 +39,7 @@ class UserController extends BaseApiController
         UserLocationService $userLocationService,
         UserMarkerService $userMarkerService,
         MarkerService $markerService,
+        CommunityService $communityService,
         CommunityHistoryService $communityHistoryService
     ) {
         $this->mainService  = $mainService;
@@ -45,6 +49,7 @@ class UserController extends BaseApiController
         $this->configService = $configService;
         $this->markerService = $markerService;
         $this->communityHistoryService = $communityHistoryService;
+        $this->communityService = $communityService;
     }
 
     /**
@@ -63,16 +68,8 @@ class UserController extends BaseApiController
      */
     public function info(Request $request) {
         try {
-            // トークンチェック
-            $user = $this->mainService->searchOne(['user_token' => $request->user_token]);
-
-            if (!$user) {
-                // URL無効エラー
-                return $this->error(-2, ['message' => Message::ERROR_REGISTER_TOKEN]);
-            }
-
             // ステータスOK
-            return $this->success(['name' => $user->name]);
+            return $this->success(['name' => Auth::user()->name]);
 
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
@@ -146,7 +143,7 @@ class UserController extends BaseApiController
             
             // 発行したパスワードデータを保存(有効期限は共通設定テーブルから値を抽出)
             $data = [
-                'id'               => $request->input('id'), // ユーザID
+                'id'               => Auth::user()->id, // ユーザID
                 'onetime_password' => $password,
                 'limit_date'       => Carbon::now()->addWeek($this->configService->searchOne(['key' => 'password_limit_date'])->value),
             ];
@@ -197,8 +194,14 @@ class UserController extends BaseApiController
     public function update(Request $request) {
         try {
             \DB::beginTransaction();
+            // 保存するデータを配列に格納
+            $data = [
+                'id'   => Auth::user()->id,
+                'name' => $request->input('name'),
+                'device_token' => $request->input('device_token')
+            ];
             // ユーザ名の更新
-            $user = $this->mainService->save($request->all());
+            $user = $this->mainService->save($data);
 
             \DB::commit();
             // ステータスOK
@@ -217,16 +220,9 @@ class UserController extends BaseApiController
      */
     public function pointInfo(Request $request) {
         try {
-            // ユーザ情報の取得
-            $user = $this->mainService->searchOne(['user_token' => $request->bearerToken()]);
             // ポイント取得
-            $free_points = $this->mainService->getFreePointQuery(['user_points_histories.to_user_id' => $user->id])->get();
-            $points = $this->mainService->getPointQuery(['user_points_histories.to_user_id' => $user->id])->get();
-
-            if (!$points) {
-                // URL無効エラー
-                return $this->error(-2, ['message' => Message::ERROR_REGISTER_TOKEN]);
-            }
+            $free_points = $this->mainService->getFreePointQuery(['user_points_histories.to_user_id' => Auth::user()->id])->get();
+            $points = $this->mainService->getPointQuery(['user_points_histories.to_user_id' => Auth::user()->id])->get();
 
             // 有効期限の最も近いポイントをそれぞれ取得
             $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 1, 'used_flg' => 0])->first();
@@ -257,10 +253,8 @@ class UserController extends BaseApiController
             \DB::beginTransaction();
             // ポイントが増加する場合
             if($request->give_point) {
-                // ユーザ情報の取得
-                $user = $this->mainService->searchOne(['user_token' => $request->bearerToken()]);
                 // 選択したユーザの総ポイント数を取得
-                $points = $this->mainService->getUserPointQuery(['users.id' => $user->id])->first();
+                $points = $this->mainService->getUserPointQuery(['users.id' => Auth::user()->id])->first();
 
                 // ポイント付与の種別がギフトかつ無料の付与ポイントが無料の所持ポイントより多い場合
                 if($request->type == 2 && $request->charge_flg == 1 && $request->give_point > $points->free_total_points) {
@@ -277,9 +271,9 @@ class UserController extends BaseApiController
                     'give_point'        => $request->give_point,
                     'charge_flg'        => $request->charge_flg,
                     'to_user_id'        => $request->to_user_id,
-                    'from_user_id'      => $user->id,
+                    'from_user_id'      => Auth::user()->id,
                     'status'            => 2,
-                    'update_user_id'    => $user->id,
+                    'update_user_id'    => Auth::user()->id,
                 ];
 
                 // ポイント履歴の更新or作成
@@ -307,11 +301,8 @@ class UserController extends BaseApiController
                 ]);
 
             } else if ($request->pay_point) {
-                // ユーザ情報の取得
-                $user = $this->mainService->searchOne(['user_token' => $request->bearerToken()]);
-
                 // ポイント消費処理
-                $this->userPointHistoryService->getPayPointQuery($user->id, $request->pay_point, $request->charge_flg);
+                $this->userPointHistoryService->getPayPointQuery(Auth::user()->id, $request->pay_point, $request->charge_flg);
 
                 // ポイント取得
                 $free_points = $this->mainService->getFreePointQuery(['user_points_histories.to_user_id' => $request->to_user_id])->get();
@@ -365,14 +356,12 @@ class UserController extends BaseApiController
     public function locationRegister(Request $request) {
         try {
             \DB::beginTransaction();
-            // ユーザ情報の取得
-            $user = $this->mainService->searchOne(['user_token' => $request->bearerToken()]);
             // マーカー情報の取得
             $marker = $this->markerService->searchOne(['type' => $request->input('marker_type'), 'name' => $request->input('marker_name')]);
 
             // 保存データを配列に格納
             $data = $request->all();
-            $data['user_id'] = $user->id;
+            $data['user_id'] = Auth::user()->id;
             $data['marker_id'] = $marker->id;
 
             // 保存処理
@@ -414,16 +403,14 @@ class UserController extends BaseApiController
      */
     public function markerInfo(Request $request) {
         try {
-            // ユーザ情報の取得
-            $user = $this->mainService->searchOne(['user_token' => $request->bearerToken()]);
             // ソート条件
             $order = [];
             if(key_exists('order', $request->all())) {
                 $sort = $request->input('order'); 
                 $order[$sort] = $sort;
             }
-            // ユーザの登録場所とそれに紐づくマーカー情報を取得
-            $user_marker = $this->markerService->getUserMarkerQuery($user->id, $order)->get();
+            // ユーザのマーカー情報を取得
+            $user_marker = $this->markerService->getUserMarkerQuery(Auth::user()->id, $order)->get();
 
             // ステータスOK
             return $this->success([
@@ -442,26 +429,26 @@ class UserController extends BaseApiController
     public function markerUpdate(Request $request) {
         try {
             \DB::beginTransaction();
-            // ユーザ情報の取得
-            $user = $this->mainService->searchOne(['user_token' => $request->bearerToken()]);
             // マーカー情報の取得
             $marker = $this->markerService->searchOne(['id' => $request->input('marker_id')]);
             
             // ポイントの消費
-            $points = $this->userPointHistoryService->getPayPointQuery($user->id, $marker->price, $marker->charge_flg);
+            $points = $this->userPointHistoryService->getPayPointQuery(Auth::user()->id, $marker->price, $marker->charge_flg);
 
             // 保存データを配列に格納
-            $data['user_id'] = $user->id;
-            $data['marker_id'] = $request->input('marker_id');
-            $data['pay_free_point'] = $points['free_points'];
-            $data['pay_charge_point'] = $points['charge_points'];
+            $data = [
+                'user_id' => Auth::user()->id,
+                'marker_id' => $request->input('marker_id'),
+                'pay_free_point' => $points['free_points'],
+                'pay_charge_point' => $points['charge_points'],
+            ];
 
             // 保存処理
             $user_marker = $this->userMarkerService->save($data);
 
             // ポイント取得
-            $free_points = $this->mainService->getFreePointQuery(['user_points_histories.to_user_id' => $user->id])->get();
-            $points = $this->mainService->getPointQuery(['user_points_histories.to_user_id' => $user->id])->get();
+            $free_points = $this->mainService->getFreePointQuery(['user_points_histories.to_user_id' => Auth::user()->id])->get();
+            $points = $this->mainService->getPointQuery(['user_points_histories.to_user_id' => Auth::user()->id])->get();
 
             if (!$points) {
                 // URL無効エラー
@@ -469,8 +456,8 @@ class UserController extends BaseApiController
             }
 
             // 有効期限の最も近いポイントをそれぞれ取得
-            $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 1, 'used_flg' => 0])->first();
-            $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 2, 'used_flg' => 0])->first();
+            $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id, 'charge_flg' => 1, 'used_flg' => 0])->first();
+            $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id, 'charge_flg' => 2, 'used_flg' => 0])->first();
 
             \DB::commit();
             // ステータスOK
@@ -482,6 +469,32 @@ class UserController extends BaseApiController
             ]);
         } catch (\Exception $e) {
             \DB::rollBack();
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+    
+    /**
+     * コミュニティ情報の取得
+     * @param $id
+     * @throws \Exception
+     */
+    public function communityInfo(Request $request) {
+        try {
+            // ソート条件
+            $order = [];
+            if(key_exists('order', $request->all())) {
+                $sort = $request->input('order'); 
+                $order[$sort] = $sort;
+            }
+            // ユーザのコミュニティ情報を取得
+            $user_community = $this->communityService->getUserCommunityQuery(Auth::user()->id, $order)->get();
+
+            // ステータスOK
+            return $this->success([
+                'community_list' => $user_community,
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
@@ -508,7 +521,7 @@ class UserController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
-    
+
     /**
      * ユーザー情報取得
      * @return \Illuminate\Http\JsonResponse
