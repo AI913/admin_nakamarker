@@ -10,6 +10,7 @@ use App\Services\Api\UserPointsHistoryService;
 use App\Services\Api\UserLocationService;
 use App\Services\Api\UserMarkerService;
 use App\Services\Api\MarkerService;
+use App\Services\Api\CommunityHistoryService;
 use App\Services\Api\CommunityService;
 use App\Services\Api\ConfigService;
 use Carbon\Carbon;
@@ -21,6 +22,7 @@ class UserController extends BaseApiController
     protected $userLocationService;
     protected $userMarkerService;
     protected $markerService;
+    protected $communityHistoryService;
     protected $communityService;
     protected $configService;
     
@@ -35,9 +37,10 @@ class UserController extends BaseApiController
         ConfigService $configService, 
         UserPointsHistoryService $userPointHistoryService,
         UserLocationService $userLocationService,
+        UserMarkerService $userMarkerService,
         MarkerService $markerService,
         CommunityService $communityService,
-        UserMarkerService $userMarkerService
+        CommunityHistoryService $communityHistoryService
     ) {
         $this->mainService  = $mainService;
         $this->userPointHistoryService = $userPointHistoryService;
@@ -45,6 +48,7 @@ class UserController extends BaseApiController
         $this->userMarkerService = $userMarkerService;
         $this->configService = $configService;
         $this->markerService = $markerService;
+        $this->communityHistoryService = $communityHistoryService;
         $this->communityService = $communityService;
     }
 
@@ -467,7 +471,6 @@ class UserController extends BaseApiController
             \DB::rollBack();
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
-        
     }
     
     /**
@@ -492,6 +495,29 @@ class UserController extends BaseApiController
             ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+
+    /**
+     * コミュニティ参加情報を更新
+     */
+    public function communityUpdate(Request $request) {
+        try {
+            \DB::beginTransaction();
+
+            // 保存データを配列に格納
+            $data['user_id'] = Auth::user()->id;
+            $data['community_id'] = $request->input('community_id');
+            $data['status'] = config('const.community_history_apply'); // 申請中の値をセット
+            // 保存処理
+            $this->communityHistoryService->save($data);
+
+            \DB::commit();
+            // ステータスOK
+            return $this->success();
+        } catch (\Exception $e) {
+            \DB::rollBack();
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
