@@ -152,10 +152,10 @@ function setDetailView(data, button) {
                     data: function (p) {
                         // '参加ユーザリスト'の備考ボタンの設定(備考はlocation_historiesのmemoカラムにデータがあるときのみ表示)
                         if(p.entry_memo == null) {
-                            return ;
+                            return '';
                         }
                         return getListLink('user', p.id, '', 'list-button');
-                    }
+                    }, name: 'entry_memo'
                 },
             ],
             // 各列ごとの装飾
