@@ -17,6 +17,34 @@ class MarkerService extends BaseService
     }
 
     /**
+     * マーカーの一覧データを取得
+     * 引数：ソート条件 
+     */
+    public function getMarkerQuery($order=[]) {
+        $query = $this->model()->query();
+
+        $query->select('id as marker_id', 'type', 'name', 'description', 'image_file',
+                       'price', 'charge_flg', 'status')
+              ->where('del_flg', '=', 0);
+
+        // ソート条件
+        foreach($order as $key => $value) {
+            switch ($value) {
+                // 作成日時の昇順
+                case 99:
+                    $query->orderBy('created_at', 'asc');
+                break;
+                // 作成日時の降順
+                case -99:
+                    $query->orderBy('created_at', 'desc');
+                break;
+            }
+        }
+
+        return $query;
+    }
+
+    /**
      * ログインユーザが所有するデータリスト
      * 引数1：ユーザID, 引数2：ソート条件 
      */
