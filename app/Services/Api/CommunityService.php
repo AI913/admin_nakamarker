@@ -35,12 +35,13 @@ class CommunityService extends BaseService
         // ソート条件
         foreach($order as $key => $value) {
             switch ($value) {
-                // デフォルト設定
+                // 作成日時の昇順
                 case 99:
-                    $query->orderBy('community_histories.created_at', 'desc');
-                break;
-                case -99:
                     $query->orderBy('community_histories.created_at', 'asc');
+                break;
+                // 作成日時の降順
+                case -99:
+                    $query->orderBy('community_histories.created_at', 'desc');
                 break;
                 
             }
