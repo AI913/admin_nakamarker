@@ -28,6 +28,9 @@ Route::middleware('app.auth')->group(function(){
     /******************** ユーザマーカー管理(user_markers) ********************/
     Route::post('/user/marker',             'Api\UserController@markerInfo');
     Route::post('/user/marker/update',      'Api\UserController@markerUpdate');
+    /******************** ユーザコミュニティ管理(community_histories) ********************/
+    Route::post('/user/community',          'Api\UserController@communityInfo');
+    Route::post('/user/community/update',   'Api\UserController@communityUpdate');
 
     /******************** 共通設定管理(configs) ********************/
     Route::post('/config',                  'Api\ConfigController@index');
