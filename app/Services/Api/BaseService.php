@@ -164,13 +164,10 @@ abstract class BaseService{
      * 指定データ保存
      * @param $data
      * @param bool $common
-     * @param bool $transaction
      * @return Model|mixed
      * @throws \Exception
      */
-    public function save($data, $common=true, $transaction=true) {
-        if ($transaction) \DB::beginTransaction();
-
+    public function save($data, $common=true) {
         try {
             // 同じ日時変数を使用する
             $now = Carbon::now();
@@ -202,12 +199,9 @@ abstract class BaseService{
 
             $model->fill($data);
             $model->save();
-            if ($transaction) \DB::commit();
 
             return $model;
         } catch (\Exception $e) {
-            if ($transaction) \DB::rollBack();
-            
             \Log::error('database save error:'.$e->getMessage());
             throw new \Exception($e);
         }

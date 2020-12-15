@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use App\Model\User;
 
 class AppAuth
 {
@@ -20,7 +22,10 @@ class AppAuth
         $token = $request->bearerToken();
 
         // 認証
-        if (DB::table('users')->where('user_token', '=', $token)->first()) {
+        $user = User::where('user_token', '=', $token)->first();
+
+        if ($user) {
+            Auth::login($user);
             return $next($request);
         }
         // エラーをリターン
