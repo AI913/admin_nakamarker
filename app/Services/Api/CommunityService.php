@@ -16,6 +16,32 @@ class CommunityService extends BaseService
         $this->model = $model;
     }
 
+    /**
+     * 全コミュニティデータを取得
+     * 引数1：検索条件, 引数2: ソート条件
+     */
+    public function getCommunityQuery($conditions=[], $order=[]) {
+        // communitiesテーブルからデータを取得
+        $query = $this->searchQuery($conditions)->select('type', 'name', 'description', 'image_file');
+        
+        // ソート条件
+        foreach($order as $key => $value) {
+            switch ($value) {
+                // 作成日時の昇順
+                case 99:
+                    $query->orderBy('communities.created_at', 'asc');
+                break;
+                // 作成日時の降順
+                case -99:
+                    $query->orderBy('communities.created_at', 'desc');
+                break;
+                
+            }
+        }
+
+        return $query;
+    }
+
     
     /**
      * ログインユーザが加盟、もしくは加盟申請しているコミュニティデータを取得
