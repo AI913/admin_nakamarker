@@ -34,6 +34,9 @@ Route::middleware('app.auth')->group(function(){
 
     /******************** マーカー管理(markers) ********************/
     Route::post('/marker',                          'Api\MarkerController@index');
+    
+    /******************** コミュニティ管理(communities) ********************/
+    Route::post('/community',                       'Api\CommunityController@index');
 
     /******************** 共通設定管理(configs) ********************/
     Route::post('/config',                          'Api\ConfigController@index');
