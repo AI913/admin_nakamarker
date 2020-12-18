@@ -30,6 +30,7 @@ class CommunityController extends BaseApiController
         try {
             // 検索条件
             $conditions = [];
+            $conditions['status'] = config('const.open'); // "公開"で設定されているものだけに絞る
             if ($request->input('name')) { $conditions['communities.name@like'] = $request->input('name'); }
             if ($request->input('type') && is_numeric($request->input('type'))) { $conditions['communities.type'] = $request->input('type'); }
             // ソート条件
