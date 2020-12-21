@@ -51,4 +51,31 @@ class CommunityController extends BaseApiController
         }
     }
 
+    /**
+     * コミュニティ情報の登録
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function register(Request $request) {
+        try {
+            \DB::beginTransaction();
+
+            // データを配列化
+            $data = $request->all();
+
+            // コミュニティの種別を設定
+            $data['status'] ? $data['type'] = config('const.community_personal_open') : $data['type'] = config('const.community_personal');
+
+            // コミュニティ一覧データを取得
+            $this->mainService->save($data);
+
+            \DB::commit();
+            // ステータスOK
+            return $this->success();
+
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
 }
