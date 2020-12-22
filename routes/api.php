@@ -38,6 +38,8 @@ Route::middleware('app.auth')->group(function(){
     /******************** コミュニティ管理(communities) ********************/
     Route::post('/community',                       'Api\CommunityController@index');
     Route::post('/community/register',              'Api\CommunityController@register');
+    /******************** コミュニティマーカー管理(community_markers) ********************/
+    Route::post('/community/marker/register',       'Api\CommunityController@markerRegister');
 
     /******************** 共通設定管理(configs) ********************/
     Route::post('/config',                          'Api\ConfigController@index');
