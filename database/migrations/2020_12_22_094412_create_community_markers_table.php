@@ -22,16 +22,6 @@ class CreateCommunityMarkersTable extends Migration
 
             $table->timestamps();
 
-            // 外部キー制約
-            $table->foreign('marker_id')
-                  ->references('id')
-                  ->on('markers')
-                  ->onDelete('cascade');
-
-            $table->foreign('community_id')
-                  ->references('id')
-                  ->on('communities')
-                  ->onDelete('cascade');
         });
     }
 

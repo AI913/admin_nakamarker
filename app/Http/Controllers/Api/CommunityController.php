@@ -95,7 +95,7 @@ class CommunityController extends BaseApiController
             // データを配列化
             $data = $request->all();
 
-            // コミュニティ一覧データを取得
+            // コミュニティマーカーの保存
             $this->communityMarkerService->save($data);
 
             \DB::commit();
