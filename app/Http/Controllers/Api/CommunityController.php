@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\Api\CommunityService;
+use App\Services\Api\CommunityMarkerService;
 
 class CommunityController extends BaseApiController
 {
     protected $mainService;
+    protected $communityMarkerService;
 
     /**
      * コミュニティ管理コントローラー
@@ -16,9 +18,11 @@ class CommunityController extends BaseApiController
      * @package App\Http\Controllers
      */
     public function __construct(
-        CommunityService $mainService
+        CommunityService $mainService,
+        CommunityMarkerService $communityMarkerService
     ) {
         $this->mainService  = $mainService;
+        $this->communityMarkerService = $communityMarkerService;
     }
 
     /**
@@ -68,6 +72,31 @@ class CommunityController extends BaseApiController
 
             // コミュニティ一覧データを取得
             $this->mainService->save($data);
+
+            \DB::commit();
+            // ステータスOK
+            return $this->success();
+
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+
+    /**
+     * コミュニティマーカーの登録
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function markerRegister(Request $request) {
+        try {
+            \DB::beginTransaction();
+
+            // データを配列化
+            $data = $request->all();
+
+            // コミュニティマーカーの保存
+            $this->communityMarkerService->save($data);
 
             \DB::commit();
             // ステータスOK

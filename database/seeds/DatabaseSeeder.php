@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         $this->call(UserPointsHistoryTableSeeder::class);
         $this->call(CommunityHistoryTableSeeder::class);
         $this->call(CommunityLocationTableSeeder::class);
+        $this->call(CommunityMarkerTableSeeder::class);
     }
 }
