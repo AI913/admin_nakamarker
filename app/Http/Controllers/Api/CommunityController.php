@@ -23,6 +23,8 @@ class CommunityController extends BaseApiController
     ) {
         $this->mainService  = $mainService;
         $this->communityMarkerService = $communityMarkerService;
+        // テーブル名の設定
+        $this->table = 'communities';
     }
 
     /**
@@ -97,6 +99,49 @@ class CommunityController extends BaseApiController
 
             // コミュニティマーカーの保存
             $this->communityMarkerService->save($data);
+
+            \DB::commit();
+            // ステータスOK
+            return $this->success();
+
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+
+    /**
+     * コミュニティ情報の更新
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request) {
+        try {
+            \DB::beginTransaction();
+
+            // 修正対象のコミュニティデータを取得
+            $community = $this->mainService->searchOne(['id' => $request->input('community_id')]);
+
+            // ログインユーザにホスト権限があるかどうか確認
+            if($community->host_id !== \Auth::user()->id) {
+                // 無ければエラーを飛ばす
+                throw new \Exception("Not Authorized");
+            }
+
+            // データを配列化
+            $data = $request->all();
+            // コミュニティの種別を設定
+            $data['status'] ? $data['type'] = config('const.community_personal_open') : $data['type'] = config('const.community_personal');
+            // コミュニティIDを保存用に変換
+            $data['community_id'] ? $data['id'] = $data['community_id'] : '';
+
+            // 画像ありの場合は保存処理を実行
+            if($request->hasFile('image')) {
+                $data['image_file'] = $this->fileSave($request);
+            }
+
+            // コミュニティ一覧データを取得
+            $this->mainService->save($data);
 
             \DB::commit();
             // ステータスOK

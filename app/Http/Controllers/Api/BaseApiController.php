@@ -4,11 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Lib\Common;
 use App\Services\Model\ConfigService;
 
 class BaseApiController extends Controller
 {
     protected $configService;
+    // テーブル名の設定(画像の保存時に使用)
+    protected $table;
+
     /**
      * Create a new controller instance.
      *
@@ -56,5 +60,16 @@ class BaseApiController extends Controller
         }
         \Log::error('status:'.$status.", message:".json_encode($response));
         return response()->json($rtn);
+    }
+
+    /**
+     * ファイル保存処理
+     */
+    public function fileSave(Request $request) {
+
+        // 画像の新規保存
+        $filename = Common::saveImage($request->file('image'), $this->table);
+        
+        return $filename;
     }
 }
