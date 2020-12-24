@@ -23,8 +23,8 @@ class CommunityController extends BaseApiController
     ) {
         $this->mainService  = $mainService;
         $this->communityMarkerService = $communityMarkerService;
-        // テーブル名の設定
-        $this->table = 'communities';
+        // フォルダ名の設定
+        $this->folder = 'communities';
     }
 
     /**
@@ -132,7 +132,7 @@ class CommunityController extends BaseApiController
             $data = $request->all();
             // コミュニティの種別を設定
             $data['status'] ? $data['type'] = config('const.community_personal_open') : $data['type'] = config('const.community_personal');
-            // コミュニティIDを保存用に変換
+            // コミュニティIDを保存用のキーに変換
             $data['community_id'] ? $data['id'] = $data['community_id'] : '';
 
             // 画像ありの場合は保存処理を実行
@@ -140,7 +140,7 @@ class CommunityController extends BaseApiController
                 $data['image_file'] = $this->fileSave($request);
             }
 
-            // コミュニティ一覧データを取得
+            // コミュニティデータを保存
             $this->mainService->save($data);
 
             \DB::commit();

@@ -10,8 +10,8 @@ use App\Services\Model\ConfigService;
 class BaseApiController extends Controller
 {
     protected $configService;
-    // テーブル名の設定(画像の保存時に使用)
-    protected $table;
+    // フォルダ名の設定(画像の保存時に使用)
+    protected $folder;
 
     /**
      * Create a new controller instance.
@@ -68,8 +68,6 @@ class BaseApiController extends Controller
     public function fileSave(Request $request) {
 
         // 画像の新規保存
-        $filename = Common::saveImage($request->file('image'), $this->table);
-        
-        return $filename;
+        return Common::saveImage($request->file('image'), $this->folder);
     }
 }
