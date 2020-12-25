@@ -144,7 +144,7 @@ class CommunityController extends BaseApiController
     public function markerInfo(Request $request) {
         try {
             // コミュニティに加盟しているかどうか確認
-            if(!$this->communityHistoryService->isCommunityUser($request->input('community_id'))) {
+            if(!$this->communityHistoryService->isCommunityUser($request->input('community_id'), \Auth::user()->id)) {
                 return $this->error(-10, ["message" => 'コミュニティに加盟していないため、権限がありません']);
             }
 

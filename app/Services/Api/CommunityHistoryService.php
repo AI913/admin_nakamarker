@@ -18,12 +18,12 @@ class CommunityHistoryService extends BaseService
 
     /**
      * コミュニティにユーザが所属するか判定
-     * 引数：コミュニティID
+     * 引数1：コミュニティID, 引数2：ユーザID
      */
-    public function isCommunityUser($community_id) {
+    public function isCommunityUser($community_id, $user_id) {
         // 検索条件の設定
         $conditions = [];
-        $conditions['user_id'] = \Auth::user()->id;
+        $conditions['user_id'] = $user_id;
         $conditions['status'] = config('const.community_history_approval');
         $conditions['community_id'] = $community_id;
         
