@@ -161,21 +161,14 @@ class CommunityController extends BaseApiController
     public function markerUpdate(Request $request) {
         try {
             \DB::beginTransaction();
-
-            // 修正対象のコミュニティデータと履歴データを取得
-            $community = $this->mainService->searchOne(['id' => $request->input('community_id')]);
-            $history = $this->communityMarkerService->searchList(['community_id' => $request->input('community_id')]);
-
-            // ログインユーザにホスト権限があるかどうか確認
-            if($community->host_user_id !== \Auth::user()->id) {
-                // 無ければエラーを飛ばす
-                return $this->error(-10, ["message" => "ホスト権限がありません"]);
+            
+            // コミュニティのホストかどうかを確認
+            if(!$this->mainService->isHostUser($request->input('community_id'))) {
+                return $this->error(-10, ["message" => 'ホスト権限がありません']);
             }
             // マーカーの重複チェック
-            foreach($history as $key => $value) {
-                if($value->marker_id == $request->input('marker_id')) {
-                    return $this->error(-2, ["message" => "同じマーカーを複数個登録することは出来ません"]);
-                }
+            if($this->communityMarkerService->isDuplicateMarker($request->input('community_id'), $request->input('marker_id'))) {
+                return $this->error(-2, ["message" => "同じマーカーを複数個登録することは出来ません"]);
             }
 
             // データを配列化
