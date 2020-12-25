@@ -167,7 +167,7 @@ class CommunityController extends BaseApiController
             $history = $this->communityMarkerService->searchList(['community_id' => $request->input('community_id')]);
 
             // ログインユーザにホスト権限があるかどうか確認
-            if($community->host_id !== \Auth::user()->id) {
+            if($community->host_user_id !== \Auth::user()->id) {
                 // 無ければエラーを飛ばす
                 return $this->error(-10, ["message" => "ホスト権限がありません"]);
             }
