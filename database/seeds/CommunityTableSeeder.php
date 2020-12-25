@@ -21,7 +21,7 @@ class CommunityTableSeeder extends Seeder
                 'name' => 'community'.$i,
                 'status' => 1,
                 'del_flg' => 0,
-                'host_id' => $faker->numberBetween(1, 10),
+                'host_user_id' => $faker->numberBetween(1, 10),
                 'update_user_id' => $faker->numberBetween(1, 5),
             ]);
         }
@@ -31,7 +31,7 @@ class CommunityTableSeeder extends Seeder
             'status' => 1,
             'del_flg' => 0,
             'description' => 'これはみんなに使ってもらいたくて作成しました。使う場面は旅をしていてここがホットなスポットだ！インスタ映えするな！と思ったときに共有するために使っていただきたく思います。また、コミュニティでもどんどん活用してもらっても構いません。素敵なマーカーライフをエンジョイしましょう！',
-            'host_id' => 1,
+            'host_user_id' => 1,
             'update_user_id' => $faker->numberBetween(1, 5),
         ]);
     }

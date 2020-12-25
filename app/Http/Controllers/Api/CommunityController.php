@@ -137,6 +137,34 @@ class CommunityController extends BaseApiController
     }
 
     /**
+     * コミュニティマーカーの更新
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function markerUpdate(Request $request) {
+        try {
+            \DB::beginTransaction();
+            
+            // コミュニティのホストかどうかを確認
+            if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
+                return $this->error(-10, ["message" => 'ホスト権限がありません']);
+            }
+            // マーカーの重複チェック
+            if($this->communityMarkerService->isDuplicateMarker($request->input('community_id'), $request->input('marker_id'))) {
+                return $this->error(-2, ["message" => "同じマーカーを複数個登録することは出来ません"]);
+            }
+
+            // データを配列化
+            $data = $request->all();
+            // 履歴IDを保存用のキーに変換
+            $data['history_id'] ? $data['id'] = $data['history_id'] : '';
+
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+    /**
      * コミュニティマーカーのリストを取得
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -190,5 +218,4 @@ class CommunityController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
-    
 }
