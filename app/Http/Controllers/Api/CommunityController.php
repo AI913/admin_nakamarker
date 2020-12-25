@@ -152,4 +152,47 @@ class CommunityController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
+
+    /**
+     * コミュニティマーカーの更新
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function markerUpdate(Request $request) {
+        try {
+            \DB::beginTransaction();
+
+            // 修正対象のコミュニティデータと履歴データを取得
+            $community = $this->mainService->searchOne(['id' => $request->input('community_id')]);
+            $history = $this->communityMarkerService->searchList(['community_id' => $request->input('community_id')]);
+
+            // ログインユーザにホスト権限があるかどうか確認
+            if($community->host_id !== \Auth::user()->id) {
+                // 無ければエラーを飛ばす
+                return $this->error(-10, ["message" => "ホスト権限がありません"]);
+            }
+            // マーカーの重複チェック
+            foreach($history as $key => $value) {
+                if($value->marker_id == $request->input('marker_id')) {
+                    return $this->error(-2, ["message" => "同じマーカーを複数個登録することは出来ません"]);
+                }
+            }
+
+            // データを配列化
+            $data = $request->all();
+            // 履歴IDを保存用のキーに変換
+            $data['history_id'] ? $data['id'] = $data['history_id'] : '';
+
+            // コミュニティマーカーの保存
+            $this->communityMarkerService->save($data);
+
+            \DB::commit();
+            // ステータスOK
+            return $this->success();
+
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
 }
