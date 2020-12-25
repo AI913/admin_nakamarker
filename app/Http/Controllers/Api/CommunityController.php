@@ -163,7 +163,7 @@ class CommunityController extends BaseApiController
             \DB::beginTransaction();
             
             // コミュニティのホストかどうかを確認
-            if(!$this->mainService->isHostUser($request->input('community_id'))) {
+            if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
                 return $this->error(-10, ["message" => 'ホスト権限がありません']);
             }
             // マーカーの重複チェック
