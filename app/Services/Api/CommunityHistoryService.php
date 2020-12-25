@@ -18,20 +18,17 @@ class CommunityHistoryService extends BaseService
 
     /**
      * コミュニティにユーザが所属するか判定
-     * 引数：検索条件
+     * 引数：コミュニティID
      */
-    public function isCommunityUser($conditions) {
-        // 対象コミュニティの履歴データを取得
-        $community_histories = $this->searchList($conditions);
-
-        // ユーザが対象コミュニティに所属しているか確認
-        foreach($community_histories as $key => $value) {
-            // 所属 + 申請状況が"承認"であることが条件
-            if($value->user_id == \Auth::user()->id && $value->status == config('const.community_history_approval')) {
-                return true;
-            }
-        }
-        return false;
+    public function isCommunityUser($community_id) {
+        // 検索条件の設定
+        $conditions = [];
+        $conditions['user_id'] = \Auth::user()->id;
+        $conditions['status'] = config('const.community_history_approval');
+        $conditions['community_id'] = $community_id;
+        
+        // ユーザの所属有無を判定
+        return $this->searchExists($conditions);
     }
 
 }
