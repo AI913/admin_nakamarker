@@ -152,4 +152,39 @@ class CommunityController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
+
+    /**
+     * コミュニティへの加入を希望するユーザ一覧を取得
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function userInfo(Request $request) {
+        try {
+            // コミュニティのホストかどうかを確認
+            if(!$this->mainService->isHostUser($request->input('community_id'))) {
+                return $this->error(-10, ["message" => 'ホスト権限がありません']);
+            }
+            
+            // 検索条件
+            $conditions = [];
+            $conditions['status'] = config('const.community_history_apply'); // "申請中"の状態だけに絞る
+            if ($request->input('community_id')) { $conditions['community_id'] = $request->input('community_id'); }
+            
+            // ソート条件
+            $order = [];
+            if(key_exists('order', $request->all())) {
+                $sort = $request->input('order'); 
+                $order[$sort] = $sort;
+            }
+
+            // コミュニティ一覧データを取得
+            $communities = $this->communityHistoryService->getApplyListQuery($conditions, $order)->get();
+
+            // ステータスOK
+            return $this->success(['communities' => $communities]);
+
+        } catch (\Exception $e) {
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
 }
