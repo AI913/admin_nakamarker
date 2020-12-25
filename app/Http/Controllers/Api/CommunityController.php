@@ -218,4 +218,36 @@ class CommunityController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
+
+    /**
+     * コミュニティへの加入申請情報を更新
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function userUpdate(Request $request) {
+        try {
+            \DB::beginTransaction();
+
+            // コミュニティのホストかどうかを確認
+            if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
+                return $this->error(-10, ["message" => 'ホスト権限がありません']);
+            }
+
+            // データを配列にセット
+            $data = [];
+            if($request->input('history_id')) { $data['id'] = $request->input('history_id'); }
+            if($request->input('status')) { $data['status'] = $request->input('status'); }
+
+            // コミュニティデータを保存
+            $this->communityHistoryService->save($data);
+
+            \DB::commit();
+            // ステータスOK
+            return $this->success();
+
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
 }
