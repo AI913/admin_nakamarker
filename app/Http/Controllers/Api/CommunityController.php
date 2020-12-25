@@ -227,13 +227,13 @@ class CommunityController extends BaseApiController
     public function userInfo(Request $request) {
         try {
             // コミュニティのホストかどうかを確認
-            if(!$this->mainService->isHostUser($request->input('community_id'))) {
+            if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
                 return $this->error(-10, ["message" => 'ホスト権限がありません']);
             }
             
             // 検索条件
             $conditions = [];
-            $conditions['status'] = config('const.community_history_apply'); // "申請中"の状態だけに絞る
+            $conditions['community_histories.status'] = config('const.community_history_apply'); // "申請中"の状態だけに絞る
             if ($request->input('community_id')) { $conditions['community_id'] = $request->input('community_id'); }
             
             // ソート条件
