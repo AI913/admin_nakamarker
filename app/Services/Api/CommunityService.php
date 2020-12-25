@@ -111,4 +111,15 @@ class CommunityService extends BaseService
 
         return $query;
     }
+
+    /**
+     * コミュニティのホスト権限の有無を確認
+     * 引数1：コミュニティID, 引数2：ユーザID
+     */
+    public function isHostUser($community_id, $user_id) {
+
+        // 対象コミュニティのホストIDとログインユーザのIDが一致するか確認
+        return $this->searchExists(['id' => $community_id, 'host_user_id' => $user_id]);
+
+    }
 }

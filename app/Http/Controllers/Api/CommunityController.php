@@ -6,11 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\Api\CommunityService;
 use App\Services\Api\CommunityMarkerService;
+use App\Services\Api\CommunityHistoryService;
+use App\Services\Api\MarkerService;
 
 class CommunityController extends BaseApiController
 {
     protected $mainService;
     protected $communityMarkerService;
+    protected $communityHistoryService;
+    protected $markerService;
 
     /**
      * コミュニティ管理コントローラー
@@ -19,10 +23,14 @@ class CommunityController extends BaseApiController
      */
     public function __construct(
         CommunityService $mainService,
-        CommunityMarkerService $communityMarkerService
+        CommunityMarkerService $communityMarkerService,
+        CommunityHistoryService $communityHistoryService,
+        MarkerService $markerService
     ) {
         $this->mainService  = $mainService;
         $this->communityMarkerService = $communityMarkerService;
+        $this->communityHistoryService = $communityHistoryService;
+        $this->markerService = $markerService;
         // フォルダ名の設定
         $this->folder = 'communities';
     }
@@ -86,31 +94,6 @@ class CommunityController extends BaseApiController
     }
 
     /**
-     * コミュニティマーカーの登録
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function markerRegister(Request $request) {
-        try {
-            \DB::beginTransaction();
-
-            // データを配列化
-            $data = $request->all();
-
-            // コミュニティマーカーの保存
-            $this->communityMarkerService->save($data);
-
-            \DB::commit();
-            // ステータスOK
-            return $this->success();
-
-        } catch (\Exception $e) {
-            \DB::rollback();
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
-        }
-    }
-
-    /**
      * コミュニティ情報の更新
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -142,6 +125,89 @@ class CommunityController extends BaseApiController
 
             // コミュニティデータを保存
             $this->mainService->save($data);
+
+            \DB::commit();
+            // ステータスOK
+            return $this->success();
+
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+
+    /**
+     * コミュニティマーカーの更新
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function markerUpdate(Request $request) {
+        try {
+            \DB::beginTransaction();
+            
+            // コミュニティのホストかどうかを確認
+            if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
+                return $this->error(-10, ["message" => 'ホスト権限がありません']);
+            }
+            // マーカーの重複チェック
+            if($this->communityMarkerService->isDuplicateMarker($request->input('community_id'), $request->input('marker_id'))) {
+                return $this->error(-2, ["message" => "同じマーカーを複数個登録することは出来ません"]);
+            }
+
+            // データを配列化
+            $data = $request->all();
+            // 履歴IDを保存用のキーに変換
+            $data['history_id'] ? $data['id'] = $data['history_id'] : '';
+
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+    /**
+     * コミュニティマーカーのリストを取得
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function markerInfo(Request $request) {
+        try {
+            // コミュニティに加盟しているかどうか確認
+            if(!$this->communityHistoryService->isCommunityUser($request->input('community_id'), \Auth::user()->id)) {
+                return $this->error(-10, ["message" => 'コミュニティに加盟していないため、権限がありません']);
+            }
+
+            // ソート条件
+            $order = [];
+            if(key_exists('order', $request->all())) {
+                $sort = $request->input('order'); 
+                $order[$sort] = $sort;
+            }
+            // コミュニティのマーカー情報を取得
+            $community_marker = $this->markerService->getCommunityMarkerQuery($request->input('community_id'), $order)->get();
+
+            // ステータスOK
+            return $this->success([
+                'marker_list' => $community_marker,
+            ]);
+        } catch (\Exception $e) {
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+
+    /**
+     * コミュニティマーカーの登録
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function markerRegister(Request $request) {
+        try {
+            \DB::beginTransaction();
+
+            // データを配列化
+            $data = $request->all();
+
+            // コミュニティマーカーの保存
+            $this->communityMarkerService->save($data);
 
             \DB::commit();
             // ステータスOK
