@@ -9,6 +9,7 @@ use App\Services\Api\CommunityMarkerService;
 use App\Services\Api\CommunityHistoryService;
 use App\Services\Api\CommunityLocationService;
 use App\Services\Api\MarkerService;
+use App\Services\Api\UserService;
 
 class CommunityController extends BaseApiController
 {
@@ -17,6 +18,7 @@ class CommunityController extends BaseApiController
     protected $communityHistoryService;
     protected $communityLocationService;
     protected $markerService;
+    protected $userService;
 
     /**
      * コミュニティ管理コントローラー
@@ -28,13 +30,15 @@ class CommunityController extends BaseApiController
         CommunityMarkerService $communityMarkerService,
         CommunityHistoryService $communityHistoryService,
         CommunityLocationService $communityLocationService,
-        MarkerService $markerService
+        MarkerService $markerService,
+        UserService $userService
     ) {
         $this->mainService  = $mainService;
         $this->communityMarkerService = $communityMarkerService;
         $this->communityHistoryService = $communityHistoryService;
         $this->communityLocationService = $communityLocationService;
         $this->markerService = $markerService;
+        $this->userService = $userService;
         // フォルダ名の設定
         $this->folder = 'communities';
     }
@@ -268,6 +272,13 @@ class CommunityController extends BaseApiController
                 return $this->error(-10, ["message" => 'コミュニティに加盟していないため、権限がありません']);
             }
 
+            // 検索条件
+            $conditions = [];
+            $conditions['community_locations.community_id'] = $request->input('community_id');
+            if($request->input('location_id')) { $conditions['community_locations.id'] = $request->input('location_id'); }
+            if($request->input('user_id')) { $conditions['community_locations.user_id'] = $request->input('user_id'); }
+            if($request->input('marker_id')) { $conditions['community_locations.marker_id'] = $request->input('marker_id'); }
+
             // ソート条件
             $order = [];
             if(key_exists('order', $request->all())) {
@@ -275,7 +286,7 @@ class CommunityController extends BaseApiController
                 $order[$sort] = $sort;
             }
             // コミュニティのロケーション情報を取得
-            $community_location = $this->communityLocationService->getCommunityLocationQuery($request->input('community_id'), null, $order)->get();
+            $community_location = $this->communityLocationService->getCommunityLocationQuery($conditions, $order)->get();
 
             // ステータスOK
             return $this->success([

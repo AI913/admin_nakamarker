@@ -20,7 +20,7 @@ class CommunityLocationService extends BaseService
      * コミュニティマーカーで登録されたデータを取得
      * 引数1: コミュニティID, 引数2: ロケーションID(一覧を表示する場合は要省略), 引数3：ソート条件
      */
-    public function getCommunityLocationQuery($community_id, $location_id=null, $order=[]) {
+    public function getCommunityLocationQuery($conditions=[], $order=[]) {
         $query = $this->model()->query();
         
         $query->leftJoin('markers', 'community_locations.marker_id', 'markers.id')
@@ -28,11 +28,15 @@ class CommunityLocationService extends BaseService
               ->select( 'community_locations.id as location_id', 'community_locations.name as location_name', 
                         'community_locations.image_file', 'community_locations.created_at', 'community_locations.memo', 
                         'community_locations.latitude', 'community_locations.longitude',
-                        'markers.name as marker_name', 'markers.type as marker_type',
-                        'users.name as user_name'
+                        'markers.id as marker_id', 'markers.name as marker_name', 'markers.type as marker_type',
+                        'users.id as user_id', 'users.name as user_name'
                 )
-              ->where('community_locations.community_id', '=', $community_id)
               ->where('community_locations.del_flg', '=', 0);
+
+        // 検索条件がある場合は検索を実行
+        if($conditions) {
+            $query = $this->getConditions($query, $this->model()->getTable(), $conditions);
+        }
 
         // ソート条件
         foreach($order as $key => $value) {
@@ -49,10 +53,6 @@ class CommunityLocationService extends BaseService
             }
         }
 
-        // ロケーション情報の詳細を取得する際に設定
-        if(!is_null($location_id)) {
-            $query->where('community_locations.id', '=', $location_id);
-        }
         return $query;
     }
 }
