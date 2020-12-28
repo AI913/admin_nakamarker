@@ -14,12 +14,12 @@ class CreateConfigsTable extends Migration
     public function up()
     {
         Schema::create('configs', function (Blueprint $table) {
-            $table->increments('id')->comment('ID');                                // ID
-            $table->string('key')->comment('システム設定に利用出来る共通キー');        // システム設定に利用出来る共通キー 
-            $table->string('value')->comment('システム設定に利用出来る共通バリュー');  // システム設定に利用出来る共通バリュー
-            $table->text('memo')->nullable()->comment('備考');                      // 備考
-            $table->tinyInteger('del_flg')->default(0)->comment('削除フラグ');      // 削除フラグ
-            $table->integer('update_user_id')->comment('更新者ユーザID');           // 更新者ユーザID
+            $table->increments('id')->comment('ID');                                            // ID
+            $table->string('key')->nullable()->comment('システム設定に利用出来る共通キー');        // システム設定に利用出来る共通キー 
+            $table->string('value')->nullable()->comment('システム設定に利用出来る共通バリュー');  // システム設定に利用出来る共通バリュー
+            $table->text('memo')->nullable()->comment('備考');                                  // 備考
+            $table->tinyInteger('del_flg')->default(0)->comment('削除フラグ');                  // 削除フラグ
+            $table->integer('update_user_id')->comment('更新者ユーザID');                       // 更新者ユーザID
 
             $table->timestamps();
         });
