@@ -324,4 +324,42 @@ class CommunityController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
+
+    /**
+     * コミュニティロケーションの登録
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function locationRegister(Request $request) {
+        try {
+            \DB::beginTransaction();
+
+            // コミュニティに加盟しているかどうか確認
+            if(!$this->communityHistoryService->isCommunityUser($request->input('community_id'), \Auth::user()->id)) {
+                return $this->error(-10, ["message" => 'コミュニティに加盟していないため、権限がありません']);
+            }
+
+            // データを配列化
+            $data = $request->all();
+            // ロケーションIDを保存用のキーに変換
+            $request->input('location_id') ? $data['id'] = $data['location_id'] : '';
+            // ユーザIDのセット
+            $data['user_id'] = \Auth::user()->id;
+            // 画像ありの場合は保存処理を実行
+            if($request->hasFile('image')) {
+                $data['image_file'] = $this->fileSave($request);
+            }
+
+            // コミュニティマーカーの保存
+            $this->communityLocationService->save($data);
+
+            \DB::commit();
+            // ステータスOK
+            return $this->success();
+
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
 }
