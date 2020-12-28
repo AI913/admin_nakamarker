@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Services\Api\CommunityService;
 use App\Services\Api\CommunityMarkerService;
 use App\Services\Api\CommunityHistoryService;
+use App\Services\Api\CommunityLocationService;
 use App\Services\Api\MarkerService;
 
 class CommunityController extends BaseApiController
@@ -14,6 +15,7 @@ class CommunityController extends BaseApiController
     protected $mainService;
     protected $communityMarkerService;
     protected $communityHistoryService;
+    protected $communityLocationService;
     protected $markerService;
 
     /**
@@ -25,11 +27,13 @@ class CommunityController extends BaseApiController
         CommunityService $mainService,
         CommunityMarkerService $communityMarkerService,
         CommunityHistoryService $communityHistoryService,
+        CommunityLocationService $communityLocationService,
         MarkerService $markerService
     ) {
         $this->mainService  = $mainService;
         $this->communityMarkerService = $communityMarkerService;
         $this->communityHistoryService = $communityHistoryService;
+        $this->communityLocationService = $communityLocationService;
         $this->markerService = $markerService;
         // フォルダ名の設定
         $this->folder = 'communities';
@@ -164,6 +168,7 @@ class CommunityController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
+
     /**
      * コミュニティマーカーのリストを取得
      * @param Request $request
@@ -247,6 +252,36 @@ class CommunityController extends BaseApiController
 
         } catch (\Exception $e) {
             \DB::rollback();
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+
+    /**
+     * コミュニティロケーションのリストを取得
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function locationInfo(Request $request) {
+        try {
+            // コミュニティに加盟しているかどうか確認
+            if(!$this->communityHistoryService->isCommunityUser($request->input('community_id'), \Auth::user()->id)) {
+                return $this->error(-10, ["message" => 'コミュニティに加盟していないため、権限がありません']);
+            }
+
+            // ソート条件
+            $order = [];
+            if(key_exists('order', $request->all())) {
+                $sort = $request->input('order'); 
+                $order[$sort] = $sort;
+            }
+            // コミュニティのロケーション情報を取得
+            $community_location = $this->communityLocationService->getCommunityLocationQuery($request->input('community_id'), null, $order)->get();
+
+            // ステータスOK
+            return $this->success([
+                'location_list' => $community_location,
+            ]);
+        } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
