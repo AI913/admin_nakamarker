@@ -55,4 +55,13 @@ class CommunityLocationService extends BaseService
 
         return $query;
     }
+    
+    /**
+     * ロケーション登録の本人確認
+     * 引数1: ロケーションID, 引数2: ユーザID
+     */
+    public function isRegisterUser($location_id, $user_id) {
+        // 対象ロケーションのユーザIDとログインユーザのIDが一致するか確認
+        return $this->searchExists(['id' => $location_id, 'user_id' => $user_id]);
+    }
 }

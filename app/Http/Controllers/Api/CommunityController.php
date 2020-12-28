@@ -324,4 +324,35 @@ class CommunityController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
+
+    /**
+     * 登録場所情報の削除
+     * @param $id
+     * @throws \Exception
+     */
+    public function locationRemove(Request $request) {
+        try {
+            \DB::beginTransaction();
+            
+            // ロケーションを登録した本人では無い場合
+            if(!$this->communityLocationService->isRegisterUser($request->input('location_id'), \Auth::user()->id)) {
+                // 削除対象のロケーションに紐づくコミュニティIDを取得
+                $community_id = $this->mainService->searchOne(['id' => $request->input('location_id')])->id;
+                // コミュニティのホストかどうかを確認
+                if(!$this->mainService->isHostUser($community_id, \Auth::user()->id)) {
+                    return $this->error(-10, ["message" => '削除する権限がありません']);
+                }
+            }
+
+            // コミュニティの登録場所を削除
+            $this->communityLocationService->remove($request->input('location_id'));
+
+            // ステータスOK
+            \DB::commit();
+            return $this->success();
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
 }
