@@ -31,16 +31,13 @@ class NewsController extends BaseApiController
         try {
             // ソート条件
             $order = [];
-            if(key_exists('order', $request->all())) {
-                $sort = $request->input('order'); 
-                $order[$sort] = $sort;
-            }
+            $order = $this->setSort($request);
 
             // 取得件数の設定(configsテーブルのnews_listというkeyカラムで件数を設定する)
             $limit = 0;
-            $config = $this->configService->searchOne(['key' => 'news_list']);
+            $config = $this->configService->searchOne(['key' => config('const.CONFIG_KEY_NEWS_LIST')]);
             $config->value ? $limit = $config->value : '';
-
+            
             // ニュース一覧データを取得
             $news = $this->mainService->getNewsQuery($order, $limit)->get();
 
