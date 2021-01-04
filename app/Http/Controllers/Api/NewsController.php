@@ -35,7 +35,7 @@ class NewsController extends BaseApiController
 
             // 取得件数の設定(configsテーブルのnews_listというkeyカラムで件数を設定する)
             $limit = 0;
-            $config = $this->configService->searchOne(['key' => config('const.CONFIG_KEY_NEWS_LIST')]);
+            $config = $this->configService->searchOne(['key' => 'news_list']);
             $config->value ? $limit = $config->value : '';
             
             // ニュース一覧データを取得

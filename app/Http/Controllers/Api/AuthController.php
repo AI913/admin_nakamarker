@@ -85,11 +85,11 @@ class AuthController extends BaseApiController
     }
 
     /**
-     * Firebaseログイン処理
+     * Firebaseログイン処理(電話番号認証)
      * ※アプリ側からfirebase_uidを送信するため、
      * 　ここではユーザデータの更新処理の記載のみとなる
      */
-    public function register(Request $request) {
+    public function phoneRegister(Request $request) {
         try {
             \DB::beginTransaction();
             // データを配列化

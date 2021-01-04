@@ -18,7 +18,7 @@ Route::middleware('app.auth')->group(function(){
     /******************** 認証管理 ********************/
     // Route::post('/logout',      'Api\AuthController@logout');
     Route::post('/password',        'Api\AuthController@password');
-    Route::post('/register',        'Api\AuthController@register');
+    Route::post('/phone_register',  'Api\AuthController@phoneRegister');
 
     /******************** ユーザ管理(users) ********************/
     Route::post('/user',                            'Api\UserController@info');
