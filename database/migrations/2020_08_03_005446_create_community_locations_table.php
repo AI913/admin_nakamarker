@@ -27,22 +27,6 @@ class CreateCommunityLocationsTable extends Migration
             $table->integer('update_user_id')->comment('更新者ユーザID');             // 更新者ユーザID
 
             $table->timestamps();
-
-            // 外部キー制約
-            $table->foreign('user_id')
-                  ->references('id')
-                  ->on('users')
-                  ->onDelete('cascade');
-
-            $table->foreign('marker_id')
-                  ->references('id')
-                  ->on('markers')
-                  ->onDelete('cascade');
-
-            $table->foreign('community_id')
-                  ->references('id')
-                  ->on('communities')
-                  ->onDelete('cascade');
         });
     }
 
