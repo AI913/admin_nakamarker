@@ -60,7 +60,7 @@
 
                 // UIDをユーザに紐づけ
                 $.ajax({
-                    url:    '/api/user/register',
+                    url:    '/api/register',
                     type:   'POST',
                     dataType: 'json',
                     headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
