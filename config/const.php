@@ -108,7 +108,4 @@ return [
 
     // BingMapのURL
     'bing_url'              => 'https://www.bing.com/maps',
-
-    // ニュースデータの件数を設定するkeyカラム値
-    'CONFIG_KEY_NEWS_LIST' => "news_list",
 ];
