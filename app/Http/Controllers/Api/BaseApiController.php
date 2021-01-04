@@ -70,4 +70,18 @@ class BaseApiController extends Controller
         // 画像の新規保存
         return Common::saveImage($request->file('image'), $this->folder);
     }
+
+    /**
+     * ソート用の値を設定
+     * 引数：パラメタ
+     */
+    public function setSort($param) {
+        // ソート条件を設定
+        if(key_exists('order', $param->all())) {
+            $sort = $param->input('order'); 
+            $order[$sort] = $sort;
+            return $order;
+        }
+        return [];
+    }
 }
