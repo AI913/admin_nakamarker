@@ -23,17 +23,6 @@ class CreateCommunityHistoriesTable extends Migration
             $table->integer('update_user_id')->comment('更新者ユーザID');                           // 更新者ユーザID
 
             $table->timestamps();
-
-            // 外部キー制約
-            $table->foreign('community_id')
-            ->references('id')
-            ->on('communities')
-            ->onDelete('cascade');
-
-            $table->foreign('user_id')
-                  ->references('id')
-                  ->on('users')
-                  ->onDelete('cascade');
         });
     }
 
