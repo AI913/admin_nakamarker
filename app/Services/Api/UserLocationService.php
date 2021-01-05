@@ -18,24 +18,53 @@ class UserLocationService extends BaseService
 
     /**
      * ユーザ一覧ページに表示する登録場所データを取得
-     * 引数1: ユーザID, 引数2: ロケーションID(一覧を表示する場合は要省略)
+     * 引数1: 検索条件, 引数2: ソート条件
      */
-    public function getUserLocationQuery($user_id, $location_id=null) {
-        $query = $this->model()->query();
+    public function getUserLocationQuery($conditions=[], $order=[]) {
+        // 削除フラグ排除のため、searchQuery()を実行
+        $query = $this->searchQuery($conditions)
+                      ->select('id as location_id', 'name as location_name', 'latitude', 'longitude', 'image_file', 'memo', 'marker_id')
+                      ->with('marker:id,name as marker_name,type as marker_type')
+                      ->get();
         
-        $query->leftJoin('markers', 'user_locations.marker_id', 'markers.id')
-              ->select( 'user_locations.id as location_id', 'user_locations.name as location_name', 
-                        'user_locations.image_file', 'user_locations.created_at', 'user_locations.memo', 
-                        'user_locations.latitude', 'user_locations.longitude',
-                        'markers.name as marker_name', 'markers.type as marker_type'
-                )
-              ->where('user_locations.user_id', '=', $user_id)
-              ->where('user_locations.del_flg', '=', 0);
-
-        // ロケーション情報の詳細を取得する際に設定
-        if(!is_null($location_id)) {
-            $query->where('user_locations.id', '=', $location_id);
+        // ソート条件
+        foreach($order as $key => $value) {
+            switch ($key) {
+                // 作成日時の昇順
+                case 99:
+                    $query = $query->sortBy('created_at');
+                break;
+                // 作成日時の降順
+                case -99:
+                    $query = $query->sortByDesc('created_at');
+                break;
+                // ロケーション名で昇順
+                case 1:
+                    $query = $query->sortBy('location_name');
+                break;
+                // ロケーション名で降順
+                case -1:
+                    $query = $query->sortByDesc('location_name');
+                break;
+                // マーカーの種別で昇順
+                case 2:
+                    $query = $query->sortBy('marker.marker_type');
+                break;
+                // マーカーの種別で降順
+                case -2:
+                    $query = $query->sortByDesc('marker.marker_type');
+                break;
+                // マーカーの名前で昇順
+                case 3:
+                    $query = $query->sortBy('marker.marker_name');
+                break;
+                // マーカーの名前で降順
+                case -3:
+                    $query = $query->sortByDesc('marker.marker_name');
+                break;
+            }
         }
+
         return $query;
     }
 }
