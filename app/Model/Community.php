@@ -58,17 +58,23 @@ class Community extends BaseModel
         if ($this->type == config('const.community_personal_open'))   return config('const.community_personal_open_name');
     }
 
-    // usersテーブルと多対多のリレーション構築
+    /**
+     * usersテーブルと多対多のリレーション構築
+     */
     public function community()
     {
         return $this->belongsToMany('App\Model\User');
     }
-    // user_locationsテーブルと1対1のリレーション構築
+    /**
+     * user_locationsテーブルと1対1のリレーション構築
+     */
     public function userLocation()
     {
         return $this->hasOne('App\Model\UserLocation');
     }
-    // community_locationsテーブルと1対1のリレーション構築
+    /**
+     * community_locationsテーブルと1対1のリレーション構築
+     */
     public function communityLocation()
     {
         return $this->hasOne('App\Model\CommunityLocation');
