@@ -30,10 +30,7 @@ class MarkerController extends BaseApiController
         try {
             // ソート条件
             $order = [];
-            if(key_exists('order', $request->all())) {
-                $sort = $request->input('order'); 
-                $order[$sort] = $sort;
-            }
+            $order = $this->setSort($request);
 
             // マーカー一覧データを取得
             $markers = $this->mainService->getMarkerQuery($order)->get();

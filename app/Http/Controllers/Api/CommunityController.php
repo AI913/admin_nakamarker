@@ -247,10 +247,7 @@ class CommunityController extends BaseApiController
             
             // ソート条件
             $order = [];
-            if(key_exists('order', $request->all())) {
-                $sort = $request->input('order'); 
-                $order[$sort] = $sort;
-            }
+            $order = $this->setSort($request);
 
             // コミュニティ一覧データを取得
             $communities = $this->communityHistoryService->getApplyListQuery($conditions, $order)->get();
@@ -309,10 +306,7 @@ class CommunityController extends BaseApiController
 
             // ソート条件
             $order = [];
-            if(key_exists('order', $request->all())) {
-                $sort = $request->input('order'); 
-                $order[$sort] = $sort;
-            }
+            $order = $this->setSort($request);
             // コミュニティのロケーション情報を取得
             $community_location = $this->communityLocationService->getCommunityLocationQuery($conditions, $order)->get();
 
