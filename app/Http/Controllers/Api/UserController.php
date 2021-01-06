@@ -253,7 +253,6 @@ class UserController extends BaseApiController
             // ロケーション情報の詳細を取得する際に設定
             if ($request->input('location_id')) { $conditions['id'] = $request->input('location_id'); }
             // ソート条件
-            $order = [];
             $order = $this->setSort($request);
             // ユーザの登録場所とそれに紐づくマーカー情報を取得
             $user_location = $this->userLocationService->getUserLocationQuery($conditions, $order);
@@ -326,7 +325,6 @@ class UserController extends BaseApiController
             $conditions = [];
             $conditions['id'] = Auth::user()->id;
             // ソート条件
-            $order = [];
             $order = $this->setSort($request);
             // ユーザのマーカー情報を取得
             $user_marker = $this->mainService->getUserMarkerQuery($conditions, $order);
@@ -404,7 +402,6 @@ class UserController extends BaseApiController
             $conditions = [];
             $conditions['id'] = Auth::user()->id;
             // ソート条件
-            $order = [];
             $order = $this->setSort($request);
             // ユーザのコミュニティ情報を取得
             // $user_community = $this->communityService->getUserCommunityQuery(Auth::user()->id, $order)->get();
