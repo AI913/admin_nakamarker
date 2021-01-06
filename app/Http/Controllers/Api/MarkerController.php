@@ -35,7 +35,6 @@ class MarkerController extends BaseApiController
             if($request->input('type')) { $conditions['type'] = $request->input('type'); }
             if($request->input('charge_flg')) { $conditions['charge_flg'] = $request->input('charge_flg'); }
             // ソート条件
-            $order = [];
             $order = $this->setSort($request);
 
             // マーカー一覧データを取得
