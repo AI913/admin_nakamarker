@@ -28,12 +28,18 @@ class MarkerController extends BaseApiController
      */
     public function index(Request $request) {
         try {
+            // 検索条件
+            $conditions = [];
+            $conditions['status'] = config('const.open');  // 公開フラグの値が"公開"のみに限定
+            if($request->input('name')) { $conditions['name@like'] = $request->input('name'); }
+            if($request->input('type')) { $conditions['type'] = $request->input('type'); }
+            if($request->input('charge_flg')) { $conditions['charge_flg'] = $request->input('charge_flg'); }
             // ソート条件
             $order = [];
             $order = $this->setSort($request);
 
             // マーカー一覧データを取得
-            $markers = $this->mainService->getMarkerQuery($order)->get();
+            $markers = $this->mainService->getMarkerQuery($conditions, $order)->get();
             // ステータスOK
             return $this->success(['markers' => $markers]);
 
