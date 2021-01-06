@@ -51,8 +51,10 @@ class UserPointsHistory extends BaseModel
         if ($this->charge_flg == config('const.charge_flg_off'))  return config('const.charge_flg_off_name');
         if ($this->charge_flg == config('const.charge_flg_on'))     return config('const.charge_flg_on_name');
     }
-
-    // usersテーブルと1対多のリレーション構築
+ 
+    /**
+     * usersテーブルと1対多のリレーション構築
+     */
     public function user()
     {
         return $this->belongsTo('App\Model\User', 'user_id', 'id');

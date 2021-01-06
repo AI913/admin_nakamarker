@@ -25,12 +25,16 @@ class CommunityHistory extends BaseModel
         if ($this->status == config('const.community_history_reject'))   return config('const.community_history_reject_name');
     }
 
-    // usersテーブルと1対多のリレーション構築(多側)
+    /**
+     * usersテーブルと1対多のリレーション構築(多側)
+     */
     public function user()
     {
         return $this->belongsTo('App\Model\User', 'user_id', 'id');
     }
-    // communitiesテーブルと1対多のリレーション構築(多側)
+    /**
+     * communitiesテーブルと1対多のリレーション構築(多側)
+     */
     public function community() {
         return $this->belongsTo('App\Model\Community', 'community_id', 'id');
     }

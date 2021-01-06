@@ -247,10 +247,15 @@ class UserController extends BaseApiController
      */
     public function locationInfo(Request $request) {
         try {
-            // ユーザ情報の取得
-            $user = $this->mainService->searchOne(['user_token' => $request->bearerToken()]);
+            // 検索条件
+            $conditions = [];
+            $conditions['user_id'] = \Auth::user()->id;
+            // ロケーション情報の詳細を取得する際に設定
+            if ($request->input('location_id')) { $conditions['id'] = $request->input('location_id'); }
+            // ソート条件
+            $order = $this->setSort($request);
             // ユーザの登録場所とそれに紐づくマーカー情報を取得
-            $user_location = $this->userLocationService->getUserLocationQuery($user->id)->get();
+            $user_location = $this->userLocationService->getUserLocationQuery($conditions, $order);
 
             // ステータスOK
             return $this->success([
@@ -316,14 +321,14 @@ class UserController extends BaseApiController
      */
     public function markerInfo(Request $request) {
         try {
+            // 検索条件
+            $conditions = [];
+            $conditions['id'] = Auth::user()->id;
             // ソート条件
-            $order = [];
-            if(key_exists('order', $request->all())) {
-                $sort = $request->input('order'); 
-                $order[$sort] = $sort;
-            }
+            $order = $this->setSort($request);
             // ユーザのマーカー情報を取得
-            $user_marker = $this->markerService->getUserMarkerQuery(Auth::user()->id, $order)->get();
+            $user_marker = $this->mainService->getUserMarkerQuery($conditions, $order);
+            // $user_marker = $this->markerService->getUserMarkerQuery(Auth::user()->id, $order)->get();
 
             // ステータスOK
             return $this->success([
@@ -393,14 +398,14 @@ class UserController extends BaseApiController
      */
     public function communityInfo(Request $request) {
         try {
+            // 検索条件
+            $conditions = [];
+            $conditions['id'] = Auth::user()->id;
             // ソート条件
-            $order = [];
-            if(key_exists('order', $request->all())) {
-                $sort = $request->input('order'); 
-                $order[$sort] = $sort;
-            }
+            $order = $this->setSort($request);
             // ユーザのコミュニティ情報を取得
-            $user_community = $this->communityService->getUserCommunityQuery(Auth::user()->id, $order)->get();
+            // $user_community = $this->communityService->getUserCommunityQuery(Auth::user()->id, $order)->get();
+            $user_community = $this->mainService->getUserCommunityQuery($conditions, $order);
 
             // ステータスOK
             return $this->success([
@@ -434,20 +439,5 @@ class UserController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
-
-    /**
-     * ユーザー情報取得
-     * @return \Illuminate\Http\JsonResponse
-     */
-    // public function user(Request $request) {
-    //     try {
-    //         // デバイストークン更新
-    //         $this->loginService->updateDeviceToken($request->user()->email, $request->device_token);
-
-    //         return $this->success(['user' => $this->userService->find($request->user()->id)]);
-    //     } catch (\Exception $e) {
-    //         return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
-    //     }
-    // }
 
 }

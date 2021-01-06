@@ -21,35 +21,57 @@ class CommunityLocationService extends BaseService
      * 引数1: コミュニティID, 引数2: ロケーションID(一覧を表示する場合は要省略), 引数3：ソート条件
      */
     public function getCommunityLocationQuery($conditions=[], $order=[]) {
-        $query = $this->model()->query();
-        
-        $query->leftJoin('markers', 'community_locations.marker_id', 'markers.id')
-              ->leftJoin('users', 'community_locations.user_id', 'users.id')
-              ->select( 'community_locations.id as location_id', 'community_locations.name as location_name', 
-                        'community_locations.image_file', 'community_locations.created_at', 'community_locations.memo', 
-                        'community_locations.latitude', 'community_locations.longitude',
-                        'markers.id as marker_id', 'markers.name as marker_name', 'markers.type as marker_type',
-                        'users.id as user_id', 'users.name as user_name'
-                )
-              ->where('community_locations.del_flg', '=', 0);
-
-        // 検索条件がある場合は検索を実行
-        if($conditions) {
-            $query = $this->getConditions($query, $this->model()->getTable(), $conditions);
-        }
+        // 削除フラグ排除のため、searchQuery()を実行
+        $query = $this->searchQuery($conditions)
+                      ->select('id as location_id', 'name as location_name', 'latitude', 'longitude', 
+                               'image_file', 'memo', 'marker_id', 'user_id', 'created_at')
+                      ->with('marker:id,name as marker_name,type as marker_type', 
+                             'user:id,name as user_name')
+                      ->get();
 
         // ソート条件
         foreach($order as $key => $value) {
-            switch ($value) {
+            switch ($key) {
                 // 作成日時の昇順
                 case 99:
-                    $query->orderBy('community_locations.created_at', 'asc');
+                    $query = $query->sortBy('created_at');
                 break;
                 // 作成日時の降順
                 case -99:
-                    $query->orderBy('community_locations.created_at', 'desc');
+                    $query = $query->sortByDesc('created_at');
                 break;
-                
+                // ロケーション名で昇順
+                case 1:
+                    $query = $query->sortBy('location_name');
+                break;
+                // ロケーション名で降順
+                case -1:
+                    $query = $query->sortByDesc('location_name');
+                break;
+                // マーカーの種別で昇順
+                case 2:
+                    $query = $query->sortBy('marker.marker_type');
+                break;
+                // マーカーの種別で降順
+                case -2:
+                    $query = $query->sortByDesc('marker.marker_type');
+                break;
+                // マーカーの名前で昇順
+                case 3:
+                    $query = $query->sortBy('marker.marker_name');
+                break;
+                // マーカーの名前で降順
+                case -3:
+                    $query = $query->sortByDesc('marker.marker_name');
+                break;
+                // ユーザの名前で昇順
+                case 4:
+                    $query = $query->sortBy('user.user_name');
+                break;
+                // ユーザの名前で降順
+                case -4:
+                    $query = $query->sortByDesc('user.user_name');
+                break;
             }
         }
 

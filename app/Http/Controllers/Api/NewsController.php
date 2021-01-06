@@ -30,9 +30,7 @@ class NewsController extends BaseApiController
     public function index(Request $request) {
         try {
             // ソート条件
-            $order = [];
             $order = $this->setSort($request);
-
             // 取得件数の設定(configsテーブルのnews_listというkeyカラムで件数を設定する)
             $limit = 0;
             $config = $this->configService->searchOne(['key' => 'news_list']);

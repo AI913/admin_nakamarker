@@ -35,7 +35,9 @@ class News extends BaseModel
         return $this->table = 'news';
     }
 
-    // usersテーブルと1対多のリレーション構築(1側)
+    /**
+     * usersテーブルと1対多のリレーション構築(1側)
+     */
     public function user()
     {
         return $this->belongsTo('App\Model\User', 'update_user_id', 'id');

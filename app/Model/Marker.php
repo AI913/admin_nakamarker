@@ -58,12 +58,41 @@ class Marker extends BaseModel
         if ($this->charge_flg == config('const.charge_flg_default'))     return config('const.charge_flg_default_name');
     }
 
-    // user_locationsテーブルと1対1のリレーション構築
+    /**
+     * usersテーブルと多対多のリレーション構築(中間テーブル:user_markers)
+     */
+    public function user()
+    {
+        return $this->belongsToMany(
+            'App\Model\User',               // 結合先テーブル
+            'user_markers',                 // 中間テーブル名
+            'marker_id',                    // 中間テーブルにあるFK
+            'user_id'                       // リレーション先モデルのFK
+        );
+    }
+    /**
+     * user_locationsテーブルと1対1のリレーション構築
+     */
     public function userLocation()
     {
         return $this->hasOne('App\Model\UserLocation', 'id', 'marker_id');
     }
-    // community_locationsテーブルと1対1のリレーション構築
+
+    /**
+     * communitiesテーブルと多対多のリレーション構築(中間テーブル:community_markers)
+     */
+    public function community()
+    {
+        return $this->belongsToMany(
+            'App\Model\Community',          // 結合先テーブル
+            'community_markers',            // 中間テーブル名
+            'marker_id',                    // 中間テーブルにあるFK
+            'community_id'                  // リレーション先モデルのFK
+        );
+    }
+    /**
+     * community_locationsテーブルと1対1のリレーション構築
+     */
     public function communityLocation()
     {
         return $this->hasOne('App\Model\CommunityLocation', 'id', 'marker_id');
