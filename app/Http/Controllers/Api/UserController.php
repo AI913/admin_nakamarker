@@ -274,13 +274,14 @@ class UserController extends BaseApiController
     public function locationRegister(Request $request) {
         try {
             \DB::beginTransaction();
-            // マーカー情報の取得
-            $marker = $this->markerService->searchOne(['type' => $request->input('marker_type'), 'name' => $request->input('marker_name')]);
-
+            
             // 保存データを配列に格納
             $data = $request->all();
             $data['user_id'] = Auth::user()->id;
-            $data['marker_id'] = $marker->id;
+            // 画像ありの場合は保存処理を実行
+            if($request->hasFile('image')) {
+                $data['image_file'] = $this->fileSave($request, config('const.user_locations'));
+            }
 
             // 保存処理
             $location = $this->userLocationService->save($data);

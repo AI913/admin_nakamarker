@@ -108,4 +108,8 @@ return [
 
     // BingMapのURL
     'bing_url'              => 'https://www.bing.com/maps',
+
+    // 画像のフォルダ名
+    'user_locations'        => 'user_locations',
+    'community_locations'   => 'community_locations',
 ];
