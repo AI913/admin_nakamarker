@@ -361,7 +361,7 @@ class CommunityController extends BaseApiController
             $data['user_id'] = \Auth::user()->id;
             // 画像ありの場合は保存処理を実行
             if($request->hasFile('image')) {
-                $data['image_file'] = $this->fileSave($request);
+                $data['image_file'] = $this->fileSave($request, config('const.community_locations'));
             }
 
             // コミュニティマーカーの保存
