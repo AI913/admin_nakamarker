@@ -122,4 +122,104 @@ class UserService extends BaseService
         }
         return $query;
     }
+
+    /**
+     * ログインユーザが所有するマーカーリスト
+     * 引数1：検索条件, 引数2：ソート条件 
+     */
+    public function getUserMarkerQuery($conditions=[], $order=[]) {
+        // 削除フラグ排除のため、searchQuery()を実行
+        $query = $this->searchQuery($conditions)
+                      ->select('id')
+                      ->with(['marker' => function ($query) {
+                          // user_markersテーブルとmarkersテーブルの値をクエリすることが可能
+                          $query->select('user_markers.marker_id', 'user_markers.updated_at', 
+                                         'markers.type', 'markers.name', 'markers.image_file', 'markers.description');
+                      }])
+                      ->get();
+        // 結合したmarkersテーブルと中間テーブルの値に絞り込み
+        $query = $query[0]->marker;
+        
+        // ソート条件
+        foreach($order as $key => $value) {
+            switch ($key) {
+                // 作成日時の昇順
+                case 99:
+                    $query = $query->sortBy('created_at');
+                break;
+                // 作成日時の降順
+                case -99:
+                    $query = $query->sortByDesc('created_at');
+                break;
+                // マーカーの種別で昇順
+                case 1:
+                    $query = $query->sortBy('type');
+                break;
+                // マーカーの種別で降順
+                case -1:
+                    $query = $query->sortByDesc('type');
+                break;
+            }
+        }
+        return $query;
+    }
+
+    /**
+     * ログインユーザが所属するコミュニティリスト
+     * 引数1：検索条件, 引数2：ソート条件 
+     */
+    public function getUserCommunityQuery($conditions=[], $order=[]) {
+        // 削除フラグ排除のため、searchQuery()を実行
+        $query = $this->searchQuery($conditions)
+                      ->select('id')
+                      ->with(['community' => function ($query) {
+                          // community_historiesテーブルとcommunitiesテーブルの値をクエリすることが可能
+                          $query->select('communities.id as community_id', 'communities.type', 'communities.name', 
+                                         'communities.description', 'communities.image_file', 
+                                         'communities.status as community_status', 'community_histories.status as entry_status');
+                      }])
+                      ->get();
+
+        // 結合したcommunitiesテーブルと中間テーブルの値に絞り込み
+        $query = $query[0]->community;
+        
+        // ソート条件
+        foreach($order as $key => $value) {
+            switch ($key) {
+                // 作成日時の昇順
+                case 99:
+                    $query = $query->sortBy('created_at');
+                break;
+                // 作成日時の降順
+                case -99:
+                    $query = $query->sortByDesc('created_at');
+                break;
+                // コミュニティの種別で昇順
+                case 1:
+                    $query = $query->sortBy('type');
+                break;
+                // コミュニティの種別で降順
+                case -1:
+                    $query = $query->sortByDesc('type');
+                break;
+                // コミュニティの公開フラグで昇順
+                case 2:
+                    $query = $query->sortBy('community_status');
+                break;
+                // コミュニティの公開フラグで降順
+                case -2:
+                    $query = $query->sortByDesc('community_status');
+                break;
+                // コミュニティの申請ステータスで昇順
+                case 3:
+                    $query = $query->sortBy('entry_status');
+                break;
+                // コミュニティの申請ステータスで降順
+                case -3:
+                    $query = $query->sortByDesc('entry_status');
+                break;
+            }
+        }
+        return $query;
+    }
 }

@@ -322,11 +322,15 @@ class UserController extends BaseApiController
      */
     public function markerInfo(Request $request) {
         try {
+            // 検索条件
+            $conditions = [];
+            $conditions['id'] = Auth::user()->id;
             // ソート条件
             $order = [];
             $order = $this->setSort($request);
             // ユーザのマーカー情報を取得
-            $user_marker = $this->markerService->getUserMarkerQuery(Auth::user()->id, $order)->get();
+            $user_marker = $this->mainService->getUserMarkerQuery($conditions, $order);
+            // $user_marker = $this->markerService->getUserMarkerQuery(Auth::user()->id, $order)->get();
 
             // ステータスOK
             return $this->success([
@@ -396,11 +400,15 @@ class UserController extends BaseApiController
      */
     public function communityInfo(Request $request) {
         try {
+            // 検索条件
+            $conditions = [];
+            $conditions['id'] = Auth::user()->id;
             // ソート条件
             $order = [];
             $order = $this->setSort($request);
             // ユーザのコミュニティ情報を取得
-            $user_community = $this->communityService->getUserCommunityQuery(Auth::user()->id, $order)->get();
+            // $user_community = $this->communityService->getUserCommunityQuery(Auth::user()->id, $order)->get();
+            $user_community = $this->mainService->getUserCommunityQuery($conditions, $order);
 
             // ステータスOK
             return $this->success([

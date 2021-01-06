@@ -42,40 +42,6 @@ class CommunityService extends BaseService
         return $query;
     }
 
-    
-    /**
-     * ログインユーザが加盟、もしくは加盟申請しているコミュニティデータを取得
-     * 引数:ユーザID,  引数2：ソート条件 
-     */
-    public function getUserCommunityQuery($user_id, $order=[]) {
-        $query = $this->model()->query();
-    
-        $query->leftJoin('community_histories', 'communities.id', 'community_histories.community_id')
-              ->select('communities.id as community_id', 'communities.type', 'communities.name', 
-                       'communities.description', 'communities.image_file',
-                       'communities.status as community_status', 'community_histories.status as entry_status',
-                )
-              ->where('community_histories.user_id', '=', $user_id)
-              ->where('community_histories.del_flg', '=', 0);
-        
-        // ソート条件
-        foreach($order as $key => $value) {
-            switch ($value) {
-                // 作成日時の昇順
-                case 99:
-                    $query->orderBy('community_histories.created_at', 'asc');
-                break;
-                // 作成日時の降順
-                case -99:
-                    $query->orderBy('community_histories.created_at', 'desc');
-                break;
-                
-            }
-        }
-
-        return $query;
-    }
-
     /**
      * コミュニティの参加人数を取得
      * 

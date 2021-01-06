@@ -111,27 +111,54 @@ class User extends Authenticatable
         }
     }
 
-    // communitiesテーブルと多対多のリレーション構築
+    /**
+     * communitiesテーブルと多対多のリレーション構築
+     */
     public function community()
     {
-        return $this->belongsToMany('App\Model\Community');
+        return $this->belongsToMany(
+            'App\Model\Community',          // 結合先テーブル
+            'community_histories',          // 中間テーブル名
+            'user_id',                      // 中間テーブルにあるFK
+            'community_id'                  // リレーション先モデルのFK
+        );
     }
-    // user_locationsテーブルと1対1のリレーション構築
+    /**
+     * user_locationsテーブルと1対多のリレーション構築
+     */
     public function userLocation()
     {
-        return $this->hasOne('App\Model\UserLocation', 'id', 'user_id');
+        return $this->hasMany('App\Model\UserLocation', 'id', 'user_id');
     }
-    // community_locationsテーブルと1対1のリレーション構築
+    /**
+     * markersテーブルと多対多のリレーション構築(中間テーブル:user_markers)
+     */
+    public function marker()
+    {
+        return $this->belongsToMany(
+            'App\Model\Marker',             // 結合先テーブル
+            'user_markers',                 // 中間テーブル名
+            'user_id',                      // 中間テーブルにあるFK
+            'marker_id'                     // リレーション先モデルのFK
+        );
+    }
+    /**
+     * community_locationsテーブルと1対1のリレーション構築
+     */
     public function communityLocation()
     {
         return $this->hasOne('App\Model\CommunityLocation', 'id', 'user_id');
     }
-    // user_points_historyテーブルと1対多のリレーション構築
+    /**
+     * user_points_historyテーブルと1対多のリレーション構築
+     */
     public function user_point_history()
     {
         return $this->hasMany('App\Model\UserPointsHistory', 'id', 'user_id');
     }
-    // newsテーブルと1対多のリレーション構築
+    /**
+     * newsテーブルと1対多のリレーション構築
+     */
     public function news()
     {
         return $this->hasMany('App\Model\News', 'id', 'update_user_id');

@@ -61,9 +61,14 @@ class Community extends BaseModel
     /**
      * usersテーブルと多対多のリレーション構築
      */
-    public function community()
+    public function user()
     {
-        return $this->belongsToMany('App\Model\User');
+        return $this->belongsToMany(
+            'App\Model\User',               // 結合先テーブル
+            'community_histories',          // 中間テーブル名
+            'community_id',                 // 中間テーブルにあるFK
+            'user_id'                       // リレーション先モデルのFK
+        );
     }
     /**
      * user_locationsテーブルと1対1のリレーション構築
