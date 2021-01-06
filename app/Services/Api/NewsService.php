@@ -29,13 +29,36 @@ class NewsService extends BaseService
             switch ($value) {
                 // 作成日時の昇順
                 case 99:
-                    $query->orderBy('news.created_at', 'asc');
+                    $query->orderBy('created_at', 'asc');
                 break;
                 // 作成日時の降順
                 case -99:
-                    $query->orderBy('news.created_at', 'desc');
+                    $query->orderBy('created_at', 'desc');
                 break;
-                
+                // タイトルで昇順
+                case 1:
+                    $query->orderBy('title', 'asc');
+                break;
+                // タイトルで降順
+                case -1:
+                    $query->orderBy('title', 'desc');
+                break;
+                // 公開開始日時で昇順
+                case 2:
+                    $query->orderBy('condition_start_time', 'asc');
+                break;
+                // 公開開始日時で降順
+                case -2:
+                    $query->orderBy('condition_start_time', 'desc');
+                break;
+                // 公開終了日時で昇順
+                case 3:
+                    $query->orderBy('condition_end_time', 'asc');
+                break;
+                // 公開終了日時で降順
+                case -3:
+                    $query->orderBy('condition_end_time', 'desc');
+                break;
             }
         }
 
