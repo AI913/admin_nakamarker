@@ -56,11 +56,7 @@ class CommunityController extends BaseApiController
             if ($request->input('name')) { $conditions['communities.name@like'] = $request->input('name'); }
             if ($request->input('type') && is_numeric($request->input('type'))) { $conditions['communities.type'] = $request->input('type'); }
             // ソート条件
-            $order = [];
-            if(key_exists('order', $request->all())) {
-                $sort = $request->input('order'); 
-                $order[$sort] = $sort;
-            }
+            $order = $this->setSort($request);
 
             // コミュニティ一覧データを取得
             $communities = $this->mainService->getCommunityQuery($conditions, $order)->get();
@@ -145,35 +141,6 @@ class CommunityController extends BaseApiController
     }
 
     /**
-     * コミュニティマーカーの更新
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function markerUpdate(Request $request) {
-        try {
-            \DB::beginTransaction();
-            
-            // コミュニティのホストかどうかを確認
-            if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
-                return $this->error(-10, ["message" => 'ホスト権限がありません']);
-            }
-            // マーカーの重複チェック
-            if($this->communityMarkerService->isDuplicateMarker($request->input('community_id'), $request->input('marker_id'))) {
-                return $this->error(-2, ["message" => "同じマーカーを複数個登録することは出来ません"]);
-            }
-
-            // データを配列化
-            $data = $request->all();
-            // 履歴IDを保存用のキーに変換
-            $data['history_id'] ? $data['id'] = $data['history_id'] : '';
-
-        } catch (\Exception $e) {
-            \DB::rollback();
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
-        }
-    }
-
-    /**
      * コミュニティマーカーのリストを取得
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -185,14 +152,13 @@ class CommunityController extends BaseApiController
                 return $this->error(-10, ["message" => 'コミュニティに加盟していないため、権限がありません']);
             }
 
+            // 検索条件
+            $conditions = [];
+            $conditions['id'] = $request->input('community_id');
             // ソート条件
-            $order = [];
-            if(key_exists('order', $request->all())) {
-                $sort = $request->input('order'); 
-                $order[$sort] = $sort;
-            }
+            $order = $this->setSort($request);
             // コミュニティのマーカー情報を取得
-            $community_marker = $this->markerService->getCommunityMarkerQuery($request->input('community_id'), $order)->get();
+            $community_marker = $this->mainService->getCommunityMarkerQuery($conditions, $order);
 
             // ステータスOK
             return $this->success([
@@ -229,6 +195,35 @@ class CommunityController extends BaseApiController
     }
 
     /**
+     * コミュニティマーカーの更新
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function markerUpdate(Request $request) {
+        try {
+            \DB::beginTransaction();
+            
+            // コミュニティのホストかどうかを確認
+            if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
+                return $this->error(-10, ["message" => 'ホスト権限がありません']);
+            }
+            // マーカーの重複チェック
+            if($this->communityMarkerService->isDuplicateMarker($request->input('community_id'), $request->input('marker_id'))) {
+                return $this->error(-2, ["message" => "同じマーカーを複数個登録することは出来ません"]);
+            }
+
+            // データを配列化
+            $data = $request->all();
+            // 履歴IDを保存用のキーに変換
+            $data['history_id'] ? $data['id'] = $data['history_id'] : '';
+
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+
+    /**
      * コミュニティへの加入を希望するユーザ一覧を取得
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -242,15 +237,12 @@ class CommunityController extends BaseApiController
             
             // 検索条件
             $conditions = [];
-            $conditions['community_histories.status'] = config('const.community_history_apply'); // "申請中"の状態だけに絞る
-            if ($request->input('community_id')) { $conditions['community_id'] = $request->input('community_id'); }
-            
+            if ($request->input('community_id')) { $conditions['id'] = $request->input('community_id'); }
             // ソート条件
-            $order = [];
             $order = $this->setSort($request);
 
             // コミュニティ一覧データを取得
-            $communities = $this->communityHistoryService->getApplyListQuery($conditions, $order)->get();
+            $communities = $this->mainService->getApplyListQuery(config('const.community_history_apply'), $conditions, $order);
 
             // ステータスOK
             return $this->success(['communities' => $communities]);
@@ -303,12 +295,10 @@ class CommunityController extends BaseApiController
             if($request->input('location_id')) { $conditions['community_locations.id'] = $request->input('location_id'); }
             if($request->input('user_id')) { $conditions['community_locations.user_id'] = $request->input('user_id'); }
             if($request->input('marker_id')) { $conditions['community_locations.marker_id'] = $request->input('marker_id'); }
-
             // ソート条件
-            $order = [];
             $order = $this->setSort($request);
             // コミュニティのロケーション情報を取得
-            $community_location = $this->communityLocationService->getCommunityLocationQuery($conditions, $order)->get();
+            $community_location = $this->communityLocationService->getCommunityLocationQuery($conditions, $order);
 
             // ステータスOK
             return $this->success([

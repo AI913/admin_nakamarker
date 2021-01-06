@@ -78,6 +78,18 @@ class Community extends BaseModel
         return $this->hasOne('App\Model\UserLocation');
     }
     /**
+     * markersテーブルと多対多のリレーション構築(中間テーブル:community_markers)
+     */
+    public function marker()
+    {
+        return $this->belongsToMany(
+            'App\Model\Marker',          // 結合先テーブル
+            'community_markers',         // 中間テーブル名
+            'community_id',              // 中間テーブルにあるFK
+            'marker_id'                  // リレーション先モデルのFK
+        );
+    }
+    /**
      * community_locationsテーブルと1対1のリレーション構築
      */
     public function communityLocation()
