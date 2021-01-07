@@ -16,7 +16,7 @@ class Community extends BaseModel
      * 保存対象(attribute)
      * @var array
      */
-    protected $fillable = ['type', 'name', 'description', 'member', 'status', 'image_file', 'del_flg'];
+    protected $fillable = ['type', 'name', 'description', 'member', 'status', 'image_file', 'host_user_id', 'del_flg'];
 
     /**
      * コンストラクタ
