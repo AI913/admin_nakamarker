@@ -44,7 +44,7 @@ class ImageDelete extends Command
             $storage_markers = Storage::files('public/images/markers');
             $storage_communities = Storage::files('public/images/communities');
             $storage_community_locations = Storage::files('public/images/community_locations');
-            // $storage_user_locations = Storage::files('public/images/user_locations');
+            $storage_user_locations = Storage::files('public/images/user_locations');
             $storage_news = Storage::files('public/images/news');
 
             // DBに存在しないファイル名のファイルがストレージにある場合は削除
@@ -63,15 +63,26 @@ class ImageDelete extends Command
                     Storage::delete("public/images/community_locations/".basename($value));
                 }
             }
+            foreach($storage_user_locations as $value) {
+                if(!DB::table('user_locations')->where('image_file', basename($value))->exists()) {
+                    Storage::delete("public/images/user_locations/".basename($value));
+                }
+            }
             foreach($storage_news as $value) {
                 if(!DB::table('news')->where('image_file', basename($value))->exists()) {
                     Storage::delete("public/images/news/".basename($value));
                 }
             }
-            logger()->info('All images delete Completed! .');
+            // Logにメッセージを出力
+            logger()->info('All images delete Completed!');
+            // ターミナルにメッセージを出力
+            $this->info('All images delete Completed!');
 
         } catch(\Exception $e) {
+            // Logにエラーメッセージを出力
             logger()->error($e->getMessage());
+            // ターミナルにエラーメッセージを出力
+            $this->error('Images delete Failed!');
         }
     }
 }

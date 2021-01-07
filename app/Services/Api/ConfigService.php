@@ -21,18 +21,11 @@ class ConfigService extends BaseService
 
     /**
      * 共通設定データのキーと値のみをリターン
-     * 引数：検索条件
      */
-    public function getConfigDataQuery($conditions=null) {
-        $query = $this->model::query();
-        
-        $query->select('key', 'value')
-              ->where('del_flg', '=', 0);
-
-        // 検索条件がある場合は検索を実行
-        if ($conditions) {
-            $query = $query->getConditions($query, $this->model->getTable(), $conditions);
-        }
+    public function getConfigDataQuery() {
+        // 削除フラグ排除のため、searchQuery()を実行
+        $query = $this->searchQuery()
+                      ->select('key', 'value');
 
         return $query;
     }
