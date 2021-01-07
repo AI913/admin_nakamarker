@@ -80,10 +80,15 @@ class CommunityController extends BaseApiController
 
             // データを配列化
             $data = $request->all();
-
             // コミュニティの種別を設定
             $data['status'] ? $data['type'] = config('const.community_personal_open') : $data['type'] = config('const.community_personal');
-
+            // ホストユーザの設定
+            $data['host_user_id'] = \Auth::user()->id;
+            // 画像ありの場合は保存処理を実行
+            if($request->hasFile('image')) {
+                $data['image_file'] = $this->fileSave($request);
+            }
+            
             // コミュニティ一覧データを取得
             $this->mainService->save($data);
 
