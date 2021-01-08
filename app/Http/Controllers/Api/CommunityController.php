@@ -111,19 +111,15 @@ class CommunityController extends BaseApiController
         try {
             \DB::beginTransaction();
 
-            // 修正対象のコミュニティデータを取得
-            $community = $this->mainService->searchOne(['id' => $request->input('community_id')]);
-
-            // ログインユーザにホスト権限があるかどうか確認
-            if($community->host_id !== \Auth::user()->id) {
-                // 無ければエラーを飛ばす
-                throw new \Exception("Not Authorized");
+            // コミュニティのホストかどうかを確認
+            if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
+                return $this->error(-10, ["message" => 'ホスト権限がありません']);
             }
-
+            
             // データを配列化
             $data = $request->all();
             // コミュニティの種別を設定
-            $data['status'] ? $data['type'] = config('const.community_personal_open') : $data['type'] = config('const.community_personal');
+            key_exists('status', $data) && $data['status'] ? $data['type'] = config('const.community_personal_open') : $data['type'] = config('const.community_personal');
             // コミュニティIDを保存用のキーに変換
             $data['community_id'] ? $data['id'] = $data['community_id'] : '';
 
