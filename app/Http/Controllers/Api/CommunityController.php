@@ -10,6 +10,7 @@ use App\Services\Api\CommunityHistoryService;
 use App\Services\Api\CommunityLocationService;
 use App\Services\Api\MarkerService;
 use App\Services\Api\UserService;
+use App\Lib\Message;
 
 class CommunityController extends BaseApiController
 {
@@ -113,7 +114,7 @@ class CommunityController extends BaseApiController
 
             // コミュニティのホストかどうかを確認
             if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
-                return $this->error(-10, ["message" => 'ホスト権限がありません']);
+                return $this->error(-10, ["message" => Message::ERROR_NOT_HOST]);
             }
             
             // データを配列化
@@ -150,7 +151,7 @@ class CommunityController extends BaseApiController
         try {
             // コミュニティに加盟しているかどうか確認
             if(!$this->communityHistoryService->isCommunityUser($request->input('community_id'), \Auth::user()->id)) {
-                return $this->error(-10, ["message" => 'コミュニティに加盟していないため、権限がありません']);
+                return $this->error(-10, ["message" => Message::ERROR_NOT_COMMUNIRY_MEMBER]);
             }
 
             // 検索条件
@@ -181,11 +182,11 @@ class CommunityController extends BaseApiController
 
             // コミュニティのホストかどうかを確認
             if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
-                return $this->error(-10, ["message" => 'ホスト権限がありません']);
+                return $this->error(-10, ["message" => Message::ERROR_NOT_HOST]);
             }
             // マーカーの重複チェック
             if($this->communityMarkerService->isDuplicateMarker($request->input('community_id'), $request->input('marker_id'))) {
-                return $this->error(-2, ["message" => "同じマーカーを複数個登録することは出来ません"]);
+                return $this->error(-2, ["message" => Message::ERROR_NOT_MARKER_DUPLICATE]);
             }
 
             // データを配列化
@@ -215,11 +216,11 @@ class CommunityController extends BaseApiController
             
             // コミュニティのホストかどうかを確認
             if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
-                return $this->error(-10, ["message" => 'ホスト権限がありません']);
+                return $this->error(-10, ["message" => Message::ERROR_NOT_HOST]);
             }
             // マーカーの重複チェック
             if($this->communityMarkerService->isDuplicateMarker($request->input('community_id'), $request->input('marker_id'))) {
-                return $this->error(-2, ["message" => "同じマーカーを複数個登録することは出来ません"]);
+                return $this->error(-2, ["message" => Message::ERROR_NOT_MARKER_DUPLICATE]);
             }
 
             // データを配列化
@@ -242,7 +243,7 @@ class CommunityController extends BaseApiController
         try {
             // コミュニティのホストかどうかを確認
             if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
-                return $this->error(-10, ["message" => 'ホスト権限がありません']);
+                return $this->error(-10, ["message" => Message::ERROR_NOT_HOST]);
             }
             
             // 検索条件
@@ -296,7 +297,7 @@ class CommunityController extends BaseApiController
         try {
             // コミュニティに加盟しているかどうか確認
             if(!$this->communityHistoryService->isCommunityUser($request->input('community_id'), \Auth::user()->id)) {
-                return $this->error(-10, ["message" => 'コミュニティに加盟していないため、権限がありません']);
+                return $this->error(-10, ["message" => Message::ERROR_NOT_COMMUNIRY_MEMBER]);
             }
 
             // 検索条件
@@ -334,7 +335,7 @@ class CommunityController extends BaseApiController
                 $community_id = $this->mainService->searchOne(['id' => $request->input('location_id')])->id;
                 // コミュニティのホストかどうかを確認
                 if(!$this->mainService->isHostUser($community_id, \Auth::user()->id)) {
-                    return $this->error(-10, ["message" => '削除する権限がありません']);
+                    return $this->error(-10, ["message" => Message::ERROR_NOT_HOST]);
                 }
             }
 
@@ -360,7 +361,7 @@ class CommunityController extends BaseApiController
 
             // コミュニティに加盟しているかどうか確認
             if(!$this->communityHistoryService->isCommunityUser($request->input('community_id'), \Auth::user()->id)) {
-                return $this->error(-10, ["message" => 'コミュニティに加盟していないため、権限がありません']);
+                return $this->error(-10, ["message" => Message::ERROR_NOT_COMMUNIRY_MEMBER]);
             }
 
             // データを配列化
