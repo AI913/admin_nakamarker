@@ -13,6 +13,7 @@ use App\Services\Api\MarkerService;
 use App\Services\Api\CommunityHistoryService;
 use App\Services\Api\CommunityService;
 use App\Services\Api\ConfigService;
+use App\Lib\Message;
 
 class UserController extends BaseApiController
 {
