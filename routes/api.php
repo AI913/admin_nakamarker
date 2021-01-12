@@ -6,8 +6,6 @@ use Illuminate\Http\Request;
  *  アプリ側ルーティング(非ログイン)
  ************************************************/
 Route::post('/user/create', 'Api\UserController@create');
-// Route::post('/login',       'Api\UserController@login'); // 後ほど削除予定
-
 Route::post('/login',       'Api\AuthController@login');
 
 /************************************************
@@ -16,15 +14,12 @@ Route::post('/login',       'Api\AuthController@login');
 Route::middleware('app.auth')->group(function(){
 
     /******************** 認証管理 ********************/
-    // Route::post('/logout',      'Api\AuthController@logout');
     Route::post('/password',        'Api\AuthController@password');
     Route::post('/phone_register',  'Api\AuthController@phoneRegister');
-
+    Route::post('/unsubscribe',     'Api\AuthController@unsubscribe');
     /******************** ユーザ管理(users) ********************/
     Route::post('/user',                            'Api\UserController@info');
     Route::post('/user/update',                     'Api\UserController@update');
-    // Route::post('/user/register',                   'Api\UserController@register');
-    // Route::post('/password',                        'Api\UserController@password'); // 後ほど削除予定
     /******************** ユーザポイント管理(user_points_histories) ********************/
     Route::post('/user/point',                      'Api\UserController@pointInfo');
     Route::post('/user/point/update',               'Api\UserController@pointUpdate');

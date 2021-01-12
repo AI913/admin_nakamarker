@@ -101,9 +101,28 @@ class AuthController extends BaseApiController
     
             \DB::commit();
             // ステータスOK
-            return $this->success([]);
+            return $this->success();
         } catch (\Exception $e) {
             \DB::rollback();
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
+
+    /**
+     * ユーザの退会処理
+     */
+    public function unsubscribe() {
+        try {
+            // statusを退会済みアカウントの値にセット
+            $data['status'] = config('const.user_app_unsubscribe');
+            $data['id'] = Auth::user()->id;
+
+            // データを保存
+            $this->mainService->save($data);
+            // ステータスOK
+            return $this->success(["message" => Message::SUCCESS_UNSUBSCRIBE]);
+            
+        } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }

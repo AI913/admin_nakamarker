@@ -8,6 +8,8 @@ namespace App\Lib;
  */
 class Message {
 
+    const SUCCESS_UNSUBSCRIBE       = "退会処理が完了しました";
+  
     const ERROR_NO_LOGIN                = "ユーザ情報が認識できません";
     const ERROR_LOGIN_FAILURE           = "ユーザ名もしくはパスワードが違います";
     const ERROR_REGISTER_TOKEN          = "トークンが無効です";
