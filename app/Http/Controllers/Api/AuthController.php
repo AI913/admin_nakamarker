@@ -45,7 +45,7 @@ class AuthController extends BaseApiController
                 // ステータスOK
                 return $this->success(['user_token' => $user->user_token]);
             }
-            return $this->error(-9, ["message" => __FUNCTION__.":ユーザ名もしくはパスワードが違います"]);
+            return $this->error(-9, ["message" => __FUNCTION__.":".Message::ERROR_LOGIN_FAILURE]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
