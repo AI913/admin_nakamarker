@@ -97,7 +97,7 @@ class AuthController extends BaseApiController
             $data = $request->all();
 
             // データを保存
-            $user = $this->mainService->save($data);
+           $this->mainService->save($data);
     
             \DB::commit();
             // ステータスOK
