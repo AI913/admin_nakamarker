@@ -85,7 +85,8 @@ class UserController extends BaseApiController
             // ユーザ情報更新
             $data = [
                 'id'            => $user->id,
-                'user_token'    => $token
+                'user_token'    => $token,
+                'device_token'  => $request->input('device_token')
             ];
             $user = $this->mainService->save($data, false, false);
 
