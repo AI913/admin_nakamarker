@@ -50,6 +50,9 @@ class UserController extends BaseApiController
         $this->markerService = $markerService;
         $this->communityHistoryService = $communityHistoryService;
         $this->communityService = $communityService;
+
+        // フォルダ名の設定
+        $this->folder = 'users';
     }
 
     /**
@@ -88,6 +91,10 @@ class UserController extends BaseApiController
                 'user_token'    => $token,
                 'device_token'  => $request->input('device_token')
             ];
+            // 画像ありの場合は保存処理を実行
+            if($request->hasFile('image')) {
+                $data['image_file'] = $this->fileSave($request);
+            }
             $user = $this->mainService->save($data, false, false);
 
             \DB::commit();
@@ -115,6 +122,10 @@ class UserController extends BaseApiController
                 'name' => $request->input('name'),
                 'device_token' => $request->input('device_token')
             ];
+            // 画像ありの場合は保存処理を実行
+            if($request->hasFile('image')) {
+                $data['image_file'] = $this->fileSave($request);
+            }
             // ユーザ名の更新
             $user = $this->mainService->save($data);
 
