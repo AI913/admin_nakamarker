@@ -22,7 +22,9 @@ class CommunityService extends BaseService
      */
     public function getCommunityQuery($conditions=[], $order=[]) {
         // communitiesテーブルからデータを取得
-        $query = $this->searchQuery($conditions)->select('id as community_id', 'type', 'name', 'description', 'image_file');
+        $query = $this->searchQuery($conditions)
+                      ->select('id as community_id', 'type', 'name', 'description', 'image_file', 'host_user_id')
+                      ->with('hostUser:id,name as host_user_name,image_file');
         
         // ソート条件
         foreach($order as $key => $value) {

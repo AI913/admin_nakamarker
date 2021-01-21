@@ -2,7 +2,7 @@
 
 namespace App\Model;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Lib\Common;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -15,7 +15,7 @@ class User extends Authenticatable
      * 独自アクセサ(attribute)
      * @var array
      */
-    protected $appends = ['status_name', 'entry_status_name', 'created_at_style', 'updated_at_style', 'login_time_style'];
+    protected $appends = ['image_url', 'status_name', 'entry_status_name', 'created_at_style', 'updated_at_style', 'login_time_style'];
 
 
     /**
@@ -63,6 +63,14 @@ class User extends Authenticatable
             return true;
         }
         return false;
+    }
+
+    /**
+     * 画像URL取得
+     * @return string
+     */
+    public function getImageUrlAttribute() {
+        return Common::getImageUrl($this->image_file, $this->table);
     }
 
     /**

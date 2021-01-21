@@ -71,6 +71,17 @@ class Community extends BaseModel
         );
     }
     /**
+     * usersテーブルと1対多のリレーション構築(多側)
+     */
+    public function hostUser()
+    {
+        return $this->belongsTo(
+            'App\Model\User',               // 結合先テーブル
+            'host_user_id',                 // FK
+            'id'                            // リレーション先モデルのFK
+        );
+    }
+    /**
      * user_locationsテーブルと1対1のリレーション構築
      */
     public function userLocation()
