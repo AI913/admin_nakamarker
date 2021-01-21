@@ -41,6 +41,7 @@ class ImageDelete extends Command
     {
         try {
             // 各フォルダに保管しているイメージ名を取得
+            $storage_users = Storage::files('public/images/users');
             $storage_markers = Storage::files('public/images/markers');
             $storage_communities = Storage::files('public/images/communities');
             $storage_community_locations = Storage::files('public/images/community_locations');
@@ -48,6 +49,11 @@ class ImageDelete extends Command
             $storage_news = Storage::files('public/images/news');
 
             // DBに存在しないファイル名のファイルがストレージにある場合は削除
+            foreach($storage_users as $value) {
+                if(!DB::table('users')->where('image_file', basename($value))->exists()) {
+                    Storage::delete("public/images/users/".basename($value));
+                }
+            }
             foreach($storage_markers as $value) {
                 if(!DB::table('markers')->where('image_file', basename($value))->exists()) {
                     Storage::delete("public/images/markers/".basename($value));
