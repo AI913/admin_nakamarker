@@ -44,7 +44,7 @@ class UserService extends BaseService
               ->selectRaw('sum(user_points_histories.give_point) - sum(user_points_histories.pay_point) as free_total_points')
               ->addselect('user_points_histories.to_user_id')
               ->groupByRaw('user_points_histories.to_user_id')
-              ->where('user_points_histories.charge_flg', '=', 1)
+              ->where('user_points_histories.charge_flg', '=', config('const.charge_flg_off'))
               ->where('user_points_histories.del_flg', '=', 0);
 
         return $query;
@@ -60,7 +60,7 @@ class UserService extends BaseService
               ->selectRaw('sum(user_points_histories.give_point) - sum(user_points_histories.pay_point) as total_points')
               ->addselect('user_points_histories.to_user_id')
               ->groupByRaw('user_points_histories.to_user_id')
-              ->where('user_points_histories.charge_flg', '=', 2)
+              ->where('user_points_histories.charge_flg', '=', config('const.charge_flg_on'))
               ->where('user_points_histories.del_flg', '=', 0);
 
         return $query;
