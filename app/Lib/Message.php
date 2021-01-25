@@ -16,5 +16,6 @@ class Message {
     const ERROR_NOT_HOST                = "ホスト権限がありません";
     const ERROR_NOT_COMMUNIRY_MEMBER    = "コミュニティに加盟していないため、権限がありません";
     const ERROR_NOT_MARKER_DUPLICATE    = "同じマーカーを複数個登録することは出来ません";
-
+    const ERROR_NOT_OVER_FREE_POINT     = "無料ポイントが不足しています";
+    const ERROR_NOT_OVER_CHARGE_POINT     = "有料ポイントが不足しています";
 }
