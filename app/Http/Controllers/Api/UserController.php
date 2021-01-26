@@ -14,6 +14,7 @@ use App\Services\Api\CommunityHistoryService;
 use App\Services\Api\CommunityService;
 use App\Services\Api\ConfigService;
 use App\Lib\Message;
+use Carbon\Carbon;
 
 class UserController extends BaseApiController
 {
@@ -85,7 +86,8 @@ class UserController extends BaseApiController
             // ユーザ情報更新
             $data = [
                 'id'            => $user->id,
-                'user_token'    => $token
+                'user_token'    => $token,
+                'login_time'    => Carbon::now(),
             ];
             $user = $this->mainService->save($data, false, false);
 
