@@ -23,7 +23,7 @@ class MarkerTableSeeder extends Seeder
                 'type' => $faker->numberBetween(1, 3), // 1~3の間で乱数
                 'name' => 'marker'.$i,
                 'price' => $price[array_rand($price , 1 )],   // 購入価格ポイントの値をランダムに抽出
-                'charge_flg' => $faker->numberBetween(1, 3), // 1~3の間で乱数
+                'charge_type' => $faker->numberBetween(1, 3), // 1~3の間で乱数
                 'status' => 1,
                 'del_flg' => 0,
                 'update_user_id' => $faker->numberBetween(1, 5),
