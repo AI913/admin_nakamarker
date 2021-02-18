@@ -23,7 +23,7 @@ $(function(){
     $(document).on('click', '.point_modal', function(){
         $('#create_point').val('');
         $('#select_point_type').val(null);
-        $('#select_charge_flg').val(null);
+        $('#select_charge_type').val(null);
         $('input[name="id"]').val('');
         $('.edit_point_label').text('ポイントの付与（新規）');
         $('#detail_point_submit').text('付与');
@@ -32,7 +32,7 @@ $(function(){
     $(document).on('click', '#detail_point_reset', function(){
         $('#create_point').val('');
         $('#select_point_type').val(null);
-        $('#select_charge_flg').val(null);
+        $('#select_charge_type').val(null);
         $('input[name="id"]').val('');
         $('.edit_point_label').text('ポイントの付与（新規）');
         $('#detail_point_submit').text('付与');
@@ -51,7 +51,7 @@ function setDetailView(data, button) {
     $('#detail_give_points').html(data.give_point);
     $('#detail_pay_points').html(data.pay_point);
     $('#detail_created_at').html(data.created_at);
-    $('#detail_charge_flg').html(data.charge_name);
+    $('#detail_charge_type').html(data.charge_name);
     $('#detail_memo').html(data.memo);
     $('#detail_point_submit').attr('data-id', data.user_id); // ポイント付与フォームで利用
 
@@ -87,7 +87,7 @@ function setPointTable(id) {
             {
                 data: function(p) {
                     // 有料フラグが"有料"の場合は赤色で表示
-                    if(p.charge_flg === 2) {
+                    if(p.charge_type === 2) {
                         return ('<span style="color: red">'+ p.charge_name +'</span>');
                     }
                     // それ以外は普通に表示
@@ -131,7 +131,7 @@ $(function(){
             return false;
         }
         // nullチェック
-        if ($('#select_charge_flg').val() == null) {
+        if ($('#select_charge_type').val() == null) {
             alert('有料フラグが正しくありません');
             $('#select_point_type').focus();
             return false;
@@ -155,7 +155,7 @@ function initList(search) {
         {
             'id':          $('#id').val(),
             'type':        $('#type').val(),
-            'charge_flg':  $('#charge_flg').val(),
+            'charge_type':  $('#charge_type').val(),
             'name':        $('#name').val(),
         },
         // 各列ごとの表示定義
@@ -169,7 +169,7 @@ function initList(search) {
             {
                 data: function(p) {
                     // 有料フラグが"有料"の場合は赤色で表示
-                    if(p.charge_flg === 2) {
+                    if(p.charge_type === 2) {
                         return ('<span style="color: red">'+ p.charge_name +'</span>');
                     }
                     // それ以外は普通に表示

@@ -47,7 +47,7 @@
                                 </dl>
                                 <dl class="row">
                                     <dt class="col-4 text-right">ポイント区分</dt>
-                                    <dd class="col-8"><span id="detail_charge_flg" class="detail-view"></span></dd>
+                                    <dd class="col-8"><span id="detail_charge_type" class="detail-view"></span></dd>
                                 </dl>
                                 <dl class="row">
                                     <dt class="col-4 text-right">概要</dt>

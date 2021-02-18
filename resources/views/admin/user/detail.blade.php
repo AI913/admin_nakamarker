@@ -164,10 +164,10 @@
                                     </select>
                                 </div>
                                 <div class="col-2">
-                                    <select id="select_charge_flg" class="form-control">
+                                    <select id="select_charge_type" class="form-control">
                                         <option value="" disabled selected>{{ __('有料フラグ') }}</option>
-                                        <option value="1">{{ config('const.charge_flg_off_name') }}</option>
-                                        <option value="2">{{ config('const.charge_flg_on_name') }}</option>
+                                        <option value="1">{{ config('const.charge_type_off_name') }}</option>
+                                        <option value="2">{{ config('const.charge_type_on_name') }}</option>
                                     </select>
                                 </div>
                                 <div class="col-1">
@@ -191,10 +191,10 @@
                                     <input type="hidden" name="id" value="">
                                 </div>
                                 <div class="col-2">
-                                    <select id="select_pay_charge_flg" class="form-control">
+                                    <select id="select_pay_charge_type" class="form-control">
                                         <option value="" disabled selected>{{ __('有料フラグ') }}</option>
-                                        <option value="1">{{ config('const.charge_flg_off_name') }}</option>
-                                        <option value="2">{{ config('const.charge_flg_on_name') }}</option>
+                                        <option value="1">{{ config('const.charge_type_off_name') }}</option>
+                                        <option value="2">{{ config('const.charge_type_on_name') }}</option>
                                     </select>
                                 </div>
                                 <div class="col-1">

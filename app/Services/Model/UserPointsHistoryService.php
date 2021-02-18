@@ -93,7 +93,7 @@ class UserPointsHistoryService extends BaseService
         
         foreach($data as $value) {
             // 指定したポイント区分と異なる場合は消費処理をスキップ
-            if($value->charge_flg != $type) {
+            if($value->charge_type != $type) {
                 continue;
             }
             // ループ処理の回数をカウント
@@ -184,7 +184,7 @@ class UserPointsHistoryService extends BaseService
         }
         
         // ポイント区分が無料で、現在無料ポイントがない場合
-        if($type == 1 && !$this->searchExists(['charge_flg' => $type, 'used_flg' => 0, 'to_user_id' => $user_id])) {
+        if($type == 1 && !$this->searchExists(['charge_type' => $type, 'used_flg' => 0, 'to_user_id' => $user_id])) {
             // ポイント区分を反転させる
             $type = 2;
         }
@@ -198,7 +198,7 @@ class UserPointsHistoryService extends BaseService
         // ポイント区分が有料の場合
         if($type == 2) {
             // 有料のポイント履歴のみに絞る
-            $conditions['charge_flg'] = 2;
+            $conditions['charge_type'] = 2;
         }
         $order = ['created_at' => 'asc'];
         // ポイント履歴データを取得
@@ -215,7 +215,7 @@ class UserPointsHistoryService extends BaseService
             if($type == 1) {
                 $current_points = $this->getPayAction($pay_points, $data, $type);
                 // 無料ポイントを使い切った場合有料ポイントの消費に移る
-                if($current_points > 0 && !$this->searchExists(['charge_flg' => $type, 'used_flg' => 0, 'to_user_id' => $user_id])) {
+                if($current_points > 0 && !$this->searchExists(['charge_type' => $type, 'used_flg' => 0, 'to_user_id' => $user_id])) {
                     // 消費ポイントの残量を渡して再度消費処理を実行
                     $this->getPayAction($current_points, $data, 2);
                 }

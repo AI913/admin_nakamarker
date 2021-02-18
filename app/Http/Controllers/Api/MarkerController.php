@@ -33,7 +33,7 @@ class MarkerController extends BaseApiController
             $conditions['status'] = config('const.open');  // 公開フラグの値が"公開"のみに限定
             if($request->input('name')) { $conditions['name@like'] = $request->input('name'); }
             if($request->input('type')) { $conditions['type'] = $request->input('type'); }
-            if($request->input('charge_flg')) { $conditions['charge_flg'] = $request->input('charge_flg'); }
+            if($request->input('charge_type')) { $conditions['charge_type'] = $request->input('charge_type'); }
             // ソート条件
             $order = $this->setSort($request);
 

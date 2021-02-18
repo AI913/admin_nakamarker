@@ -48,7 +48,7 @@
                                 </dl>
                                 <dl class="row">
                                     <dt class="col-4 text-right">有料フラグ</dt>
-                                    <dd class="col-8"><span id="detail_charge_flg" class="detail-view"></span></dd>
+                                    <dd class="col-8"><span id="detail_charge_type" class="detail-view"></span></dd>
                                 </dl>
                                 <dl class="row">
                                     <dt class="col-4 text-right">備考</dt>
@@ -95,10 +95,10 @@
                                     </select>
                                 </div>
                                 <div class="col-2">
-                                    <select id="select_charge_flg" class="form-control">
+                                    <select id="select_charge_type" class="form-control">
                                         <option value="" disabled selected>{{ __('有料フラグ') }}</option>
-                                        <option value="1">{{ config('const.charge_flg_off_name') }}</option>
-                                        <option value="2">{{ config('const.charge_flg_on_name') }}</option>
+                                        <option value="1">{{ config('const.charge_type_off_name') }}</option>
+                                        <option value="2">{{ config('const.charge_type_on_name') }}</option>
                                     </select>
                                 </div>
                                 <div class="col-1">
