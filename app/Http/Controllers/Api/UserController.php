@@ -141,8 +141,8 @@ class UserController extends BaseApiController
             $points = $this->mainService->getPointQuery(['user_points_histories.to_user_id' => Auth::user()->id])->get();
 
             // 有効期限の最も近いポイントをそれぞれ取得
-            $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_type' => 1, 'used_flg' => 0])->first();
-            $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_type' => 2, 'used_flg' => 0])->first();
+            $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id, 'charge_type' => 1, 'used_flg' => 0])->first();
+            $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id, 'charge_type' => 2, 'used_flg' => 0])->first();
 
             // ステータスOK
             return $this->success([
