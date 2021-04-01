@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
  ************************************************/
 Route::post('/user/create', 'Api\UserController@create');
 Route::post('/login',       'Api\AuthController@login');
+Route::post('/config',      'Api\ConfigController@index');
 
 /************************************************
  *  アプリ側ルーティング(ログイン)

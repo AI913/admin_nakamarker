@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Support\Facades\Auth;
 use App\Model\User;
 use App\Model\Config;
+use App\Services\Api\ConfigService;
 use App\Lib\Message;
 use App\Lib\Common;
 
@@ -38,17 +39,18 @@ class AppAuth
                         Auth::login($user);
                     }
                     // ログイン日時の保存チェック
-                    $reset_hour = Config::where('key', '=', 'reset_hour')->first();
-                    $reset_interval = Config::where('key', '=', 'reset_interval')->first();
-                    if(Common::getLoginFlg($user->login_time, $reset_hour->value, $reset_interval->value)) {
+                    $config = new ConfigService(app()->make(Config::class));
+                    $config_list = $config->getKeyList();
+
+                    if(Common::getLoginDate($user->login_time, $config_list->reset_hour, $config_list->reset_interval)) {
                         // 保存データのセット
                         $data = [
                             'id'            => $user->id,
-                            'login_time'    => Common::getLoginFlg($user->login_time, $reset_hour->value, $reset_interval->value)
+                            'login_time'    => Common::getLoginDate($user->login_time, $config_list->reset_hour, $config_list->reset_interval)
                         ];
 
                         // データの保存
-                        User::find($user->id)->fill($data)->save();
+                        $user->fill($data)->save();
                     }
                     return $next($request);
                 }

@@ -78,4 +78,28 @@ class ConfigController extends BaseAdminController
         ];
     }
 
+    /**
+     * 登録後、後処理
+     * @param Request $request
+     * @param Model $model
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
+    public function saveAfter(Request $request) {
+        // ジオフェンスリストキャッシュ作成
+        $this->mainService->createCache();
+        return;
+    }
+    /**
+     * 削除処理
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|void
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
+    public function remove(Request $request) {
+        $this->mainService->remove($request->id);
+        // キャッシュ作成
+        $this->mainService->createCache();
+
+        return redirect(route($this->mainRoot))->with('info_message', $this->mainTitle.'情報を削除しました');
+    }
 }

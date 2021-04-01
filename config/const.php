@@ -112,4 +112,7 @@ return [
     // 画像のフォルダ名
     'user_locations'        => 'user_locations',
     'community_locations'   => 'community_locations',
+
+    // キャッシュのキー名
+    'config_cache_key'      => 'cache_config_list',
 ];

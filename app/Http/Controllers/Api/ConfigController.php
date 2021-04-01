@@ -25,7 +25,7 @@ class ConfigController extends BaseApiController
     public function index() {
         try {
             // データを取得
-            $data = $this->mainService->getConfigDataQuery()->get();
+            $data = $this->mainService->getKeyList();
 
             // ステータスOK
             return $this->success([
