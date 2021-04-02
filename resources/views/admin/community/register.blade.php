@@ -126,6 +126,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <input type="hidden" name="id" id="id" value="{{ $data->id }}" />
+                                <input type="hidden" name="host_user_id" value="{{ $register_mode == "create" ? \Auth::user()->id : $data->host_user_id }}" />
                                 <input type="hidden" id="register_mode" name="register_mode" value="{{ $register_mode }}" />
                                 <input type="hidden" id="image_file" name="image_file" value="{{ $data->image_file ? $data->image_file : '' }}" />
                                 @include('admin.layouts.components.button.register', ['register_mode' => $register_mode])
@@ -133,7 +134,6 @@
                             </div>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>
