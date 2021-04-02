@@ -84,8 +84,8 @@ class ConfigController extends BaseAdminController
      * @param Model $model
      * @throws \Psr\SimpleCache\InvalidArgumentException
      */
-    public function saveAfter(Request $request) {
-        // ジオフェンスリストキャッシュ作成
+    public function saveAfter(Request $request, $model) {
+        // キャッシュ作成
         $this->mainService->createCache();
         return;
     }

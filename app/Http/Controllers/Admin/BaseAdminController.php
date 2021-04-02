@@ -290,7 +290,7 @@ class BaseAdminController extends Controller
      * @param Request $request
      * @param $model
      */
-    public function saveAfter(Request $request) {
+    public function saveAfter(Request $request, Model $model) {
         // 削除ボタンを押下して画像を設定しない状態でデータを保存する場合
         if($request['img_delete'] && $request['img_delete'] == 1) {
             // 設定済みだった画像をストレージから削除
