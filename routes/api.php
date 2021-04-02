@@ -5,9 +5,10 @@ use Illuminate\Http\Request;
 /************************************************
  *  アプリ側ルーティング(非ログイン)
  ************************************************/
-Route::post('/user/create', 'Api\UserController@create');
-Route::post('/login',       'Api\AuthController@login');
-Route::post('/config',      'Api\ConfigController@index');
+Route::post('/user/create',         'Api\UserController@create');
+Route::post('/login',               'Api\AuthController@login');
+Route::post('/config',              'Api\ConfigController@index');
+Route::post('/config/maintenance',  'Api\ConfigController@maintenance');
 
 /************************************************
  *  アプリ側ルーティング(ログイン)

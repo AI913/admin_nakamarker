@@ -35,4 +35,18 @@ class ConfigController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
+
+    /**
+     * メンテナンス専用画面の表示フラグを返す
+     */
+    public function maintenance() {
+        try {
+            // ステータスOK
+            return $this->success([
+                'mtc_flg'   => $this->mainService->getKeyList()->mtc_flg,
+            ]);
+        } catch (\Exception $e) {
+            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
 }

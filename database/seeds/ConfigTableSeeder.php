@@ -42,6 +42,13 @@ class ConfigTableSeeder extends Seeder
             'del_flg' => 0,
             'update_user_id' => $faker->numberBetween(1, 5),
         ]);
+        \App\Model\Config::create([
+            'key' => 'mtc_flg',
+            'value' => 0,
+            'memo'  => 'メンテナンス画面の表示フラグ(※0か1で設定)',
+            'del_flg' => 0,
+            'update_user_id' => $faker->numberBetween(1, 5),
+        ]);
 
         // レコード20件分出力
         for($i=0; $i < 20; $i++){
