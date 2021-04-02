@@ -26,11 +26,11 @@ class UserPointsHistoryService extends BaseService
      */
     public function getDataChangeQuery($data, $type) {
         // 有料ポイントの合計値データのみをリターン
-        if(!is_null($data) && $type == config('const.charge_flg_on')) {
+        if(!is_null($data) && $type == config('const.charge_type_on')) {
             return $data->total_points;
         }
         // 無料ポイントの合計値データのみをリターン
-        if(!is_null($data) && $type == config('const.charge_flg_off')) {
+        if(!is_null($data) && $type == config('const.charge_type_off')) {
             return $data->free_total_points;
         }
         // nullの場合は0をリターン
@@ -52,10 +52,10 @@ class UserPointsHistoryService extends BaseService
                                     ->where('user_points_histories.to_user_id', '=', $user_id)
                                     ->first();
         // nullチェック
-        $charge = $this->getDataChangeQuery($charge, config('const.charge_flg_on'));
+        $charge = $this->getDataChangeQuery($charge, config('const.charge_type_on'));
 
         // ポイント区分が"有料"の場合
-        if($type == config('const.charge_flg_on')) {
+        if($type == config('const.charge_type_on')) {
             // 所有する有料ポイントの値が消費ポイントより低い場合はfalseをリターン
             if($charge < $pay_points) {
                 return false;
@@ -69,7 +69,7 @@ class UserPointsHistoryService extends BaseService
                                       ->where('user_points_histories.to_user_id', '=', $user_id)
                                       ->first();
             // nullチェック
-            $free = $this->getDataChangeQuery($free, config('const.charge_flg_off'));
+            $free = $this->getDataChangeQuery($free, config('const.charge_type_off'));
 
             // 無料ポイントと有料ポイントの合計値を変数に代入
             $total_points = (int)$charge + (int)$free;
@@ -93,7 +93,7 @@ class UserPointsHistoryService extends BaseService
         
         foreach($data as $value) {
             // 指定したポイント区分と異なる場合は消費処理をスキップ
-            if($value->charge_flg != $type) {
+            if($value->charge_type != $type) {
                 continue;
             }
             // ループ処理の回数をカウント
@@ -184,9 +184,9 @@ class UserPointsHistoryService extends BaseService
         }
         
         // ポイント区分が無料で、現在無料ポイントがない場合
-        if($type == config('const.charge_flg_off') && !$this->searchExists(['charge_flg' => $type, 'used_flg' => 0, 'to_user_id' => $user_id])) {
+        if($type == config('const.charge_type_off') && !$this->searchExists(['charge_type' => $type, 'used_flg' => 0, 'to_user_id' => $user_id])) {
             // ポイント区分を反転させる
-            $type = config('const.charge_flg_on');
+            $type = config('const.charge_type_on');
         }
 
         // 検索条件とソート条件を設定
@@ -196,9 +196,9 @@ class UserPointsHistoryService extends BaseService
             'used_flg' => 0, // 使用済みのポイントは利用しないように排除
         ];
         // ポイント区分が有料の場合
-        if($type == config('const.charge_flg_on')) {
+        if($type == config('const.charge_type_on')) {
             // 有料のポイント履歴のみに絞る
-            $conditions['charge_flg'] = config('const.charge_flg_on');
+            $conditions['charge_type'] = config('const.charge_type_on');
         }
         $order = ['created_at' => 'asc'];
         // ポイント履歴データを取得
@@ -207,17 +207,17 @@ class UserPointsHistoryService extends BaseService
         \DB::beginTransaction();
         try {
             // ポイントの消費処理(有料ポイント)
-            if($type == config('const.charge_flg_on')) {
+            if($type == config('const.charge_type_on')) {
                 $this->getPayAction($pay_points, $data, $type);
             }
 
             // ポイントの消費処理(無料ポイント)
-            if($type == 1) {
+            if($type == config('const.charge_type_off')) {
                 $current_points = $this->getPayAction($pay_points, $data, $type);
                 // 無料ポイントを使い切った場合有料ポイントの消費に移る
-                if($current_points > 0 && !$this->searchExists(['charge_flg' => $type, 'used_flg' => 0, 'to_user_id' => $user_id])) {
+                if($current_points > 0 && !$this->searchExists(['charge_type' => $type, 'used_flg' => 0, 'to_user_id' => $user_id])) {
                     // 消費ポイントの残量を渡して再度消費処理を実行
-                    $this->getPayAction($current_points, $data, config('const.charge_flg_on'));
+                    $this->getPayAction($current_points, $data, config('const.charge_type_on'));
                 }
             }
             \DB::commit();

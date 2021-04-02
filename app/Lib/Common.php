@@ -233,8 +233,8 @@ class Common {
      */
     public static function getPointChargeFlagList() {
         return [
-            ['id' => config('const.charge_flg_off'),     'name' => config('const.charge_flg_off_name')],
-            ['id' => config('const.charge_flg_on'),      'name' => config('const.charge_flg_on_name')],
+            ['id' => config('const.charge_type_off'),     'name' => config('const.charge_type_off_name')],
+            ['id' => config('const.charge_type_on'),      'name' => config('const.charge_type_on_name')],
         ];
     }
 

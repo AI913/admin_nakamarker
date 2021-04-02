@@ -24,7 +24,7 @@ class MarkerService extends BaseService
         // 削除フラグ排除のため、searchQuery()を実行
         $query = $this->searchQuery($conditions)
                       ->select('id as marker_id', 'type', 'name', 'description', 
-                               'image_file', 'price', 'charge_flg', 'status'
+                               'image_file', 'price', 'charge_type', 'status'
                         );
 
         // ソート条件
@@ -64,11 +64,11 @@ class MarkerService extends BaseService
                 break;
                 // マーカーの有料フラグで昇順
                 case 4:
-                    $query->orderBy('charge_flg', 'asc');
+                    $query->orderBy('charge_type', 'asc');
                 break;
                 // マーカーの有料フラグで降順
                 case -4:
-                    $query->orderBy('charge_flg', 'desc');
+                    $query->orderBy('charge_type', 'desc');
                 break;
             }
         }

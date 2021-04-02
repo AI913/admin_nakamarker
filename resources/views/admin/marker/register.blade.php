@@ -113,22 +113,22 @@
                                     <span class="col-md-9 col-form-label" style="color: blue">※無償で提供する場合は"デフォルト"に✓を入れてください</span>
                                     <div class="offset-md-3 col-md-9 form-inline" id="type_checked">
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
-                                            <input type="radio" class="custom-control-input" id="flg1" name="charge_flg" value="{{ config('const.charge_flg_off') }}" data-type="{{ config('const.charge_flg_off_name') }}" 
-                                            {{ !$data->charge_flg || $data->charge_flg == config('const.charge_flg_off') || old('charge_flg') == config('const.charge_flg_off') ? 'checked' : '' }}>
+                                            <input type="radio" class="custom-control-input" id="flg1" name="charge_type" value="{{ config('const.charge_type_off') }}" data-type="{{ config('const.charge_type_off_name') }}" 
+                                            {{ !$data->charge_type || $data->charge_type == config('const.charge_type_off') || old('charge_type') == config('const.charge_type_off') ? 'checked' : '' }}>
 
-                                            <label class="custom-control-label cursor-pointer" for="flg1">{{ config('const.charge_flg_off_name') }}</label>
+                                            <label class="custom-control-label cursor-pointer" for="flg1">{{ config('const.charge_type_off_name') }}</label>
                                         </div>
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
-                                            <input type="radio" class="custom-control-input" id="flg2" name="charge_flg" value="{{ config('const.charge_flg_on') }}" data-type="{{ config('const.charge_flg_on_name') }}" 
-                                            {{ $data->charge_flg == config('const.charge_flg_on') || old('charge_flg') == config('const.charge_flg_on') ? 'checked' : '' }}>
+                                            <input type="radio" class="custom-control-input" id="flg2" name="charge_type" value="{{ config('const.charge_type_on') }}" data-type="{{ config('const.charge_type_on_name') }}" 
+                                            {{ $data->charge_type == config('const.charge_type_on') || old('charge_type') == config('const.charge_type_on') ? 'checked' : '' }}>
 
-                                            <label class="custom-control-label cursor-pointer" for="flg2">{{ config('const.charge_flg_on_name') }}</label>
+                                            <label class="custom-control-label cursor-pointer" for="flg2">{{ config('const.charge_type_on_name') }}</label>
                                         </div>
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
-                                            <input type="radio" class="custom-control-input" id="flg3" name="charge_flg" value="{{ config('const.charge_flg_default') }}" data-type="{{ config('const.charge_flg_default_name') }}" 
-                                            {{ $data->charge_flg == config('const.charge_flg_default') || old('charge_flg') == config('const.charge_flg_default') ? 'checked' : '' }}>
+                                            <input type="radio" class="custom-control-input" id="flg3" name="charge_type" value="{{ config('const.charge_type_default') }}" data-type="{{ config('const.charge_type_default_name') }}" 
+                                            {{ $data->charge_type == config('const.charge_type_default') || old('charge_type') == config('const.charge_type_default') ? 'checked' : '' }}>
 
-                                            <label class="custom-control-label cursor-pointer" for="flg3">{{ config('const.charge_flg_default_name') }}</label>
+                                            <label class="custom-control-label cursor-pointer" for="flg3">{{ config('const.charge_type_default_name') }}</label>
                                         </div>
                                     </div>
                                 </div>

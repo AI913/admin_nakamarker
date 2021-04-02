@@ -39,7 +39,7 @@ class UserPointsHistoryController extends BaseAdminController
         $conditions = [];
         if ($request->id) { $conditions['user_points_histories.id'] = $request->id; }
         if ($request->type) { $conditions['user_points_histories.type'] = $request->type; }
-        if ($request->charge_flg) { $conditions['user_points_histories.charge_flg'] = $request->charge_flg; }
+        if ($request->charge_type) { $conditions['user_points_histories.charge_type'] = $request->charge_type; }
         if ($request->name) { $conditions['user_points_histories.user.name@like'] = $request->name; }
         
         // 〇ソート条件
@@ -124,7 +124,7 @@ class UserPointsHistoryController extends BaseAdminController
             'type'              => $request->type,
             'give_point'        => $request->give_point,
             'pay_point'         => 0,
-            'charge_flg'        => $request->charge_flg,
+            'charge_type'        => $request->charge_type,
             'user_id'           => $request->user_id,
             'update_user_id'    => \Auth::user()->id,
         ];
