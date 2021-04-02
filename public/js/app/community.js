@@ -422,6 +422,7 @@ function initList(search) {
             {data: 'name'},
             {data: 'type_name', name: 'type'},
             {data: 'created_at_style', name: 'created_at'},
+            {data: 'host_user_name'},
             {data: 'total_counts'},
             {
                 data: function(p) {
@@ -457,8 +458,9 @@ function initList(search) {
             { targets: [3], orderable: true, width: '120px'},
             { targets: [5], orderable: true, className: 'text-center', width: '100px'},
             { targets: [6], orderable: true, className: 'text-center', width: '100px'},
-            { targets: [7], orderable: false, className: 'text-center', width: '100px'},
-            { targets: [8], orderable: false, className: 'text-center', width: '150px'},
+            { targets: [7], orderable: true, className: 'text-center', width: '100px'},
+            { targets: [8], orderable: false, className: 'text-center', width: '100px'},
+            { targets: [9], orderable: false, className: 'text-center', width: '150px'},
            ],
            search
     );
