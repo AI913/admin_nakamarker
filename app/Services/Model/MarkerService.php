@@ -27,7 +27,7 @@ class MarkerService extends BaseService
               ->selectRaw('count(user_markers.user_id) as total_counts')
               ->addSelect('user_markers.marker_id')
               ->groupByRaw('user_markers.marker_id')
-              ->where('markers.charge_type', '!=', 3);
+              ->where('markers.charge_type', '!=', config('const.charge_type_default'));
 
         return $query;
     }
