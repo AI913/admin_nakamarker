@@ -51,7 +51,7 @@ class Common {
      * ※1日1回ログイン日時は保存する
      * @return bool|string
      */
-    public static function getLoginFlg($login_time, $hour=0, $interval=24) {
+    public static function getLoginDate($login_time, $hour=0, $interval=24) {
         // 現在の日時を取得
         $today = Carbon::now();
         // ログイン日時の日付変更基準日時を設定

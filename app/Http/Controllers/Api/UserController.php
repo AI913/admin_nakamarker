@@ -90,7 +90,7 @@ class UserController extends BaseApiController
             $data = [
                 'id'            => $user->id,
                 'user_token'    => $token,
-                'device_token'  => $request->input('device_token')
+                'device_token'  => $request->input('device_token'),
                 'login_time'    => Carbon::now(),
             ];
             // 画像ありの場合は保存処理を実行
