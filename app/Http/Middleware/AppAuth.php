@@ -26,7 +26,10 @@ class AppAuth
             $token = $request->bearerToken();
     
             // user_tokenの確認 & ユーザの取得
-            $user = User::where('user_token', '=', $token)->first();
+            $user = null;
+            if($token) {
+                $user = User::where('user_token', '=', $token)->first();
+            }
             
             // ログイン条件を満たしているか確認
             // 1. ユーザが存在していること
@@ -48,11 +51,12 @@ class AppAuth
                             'id'            => $user->id,
                             'login_time'    => Common::getLoginDate($user->login_time, $config_list->reset_hour, $config_list->reset_interval)
                         ];
-
                         // データの保存
                         $user->fill($data)->save();
                     }
+
                     return $next($request);
+                
                 }
             }
 
