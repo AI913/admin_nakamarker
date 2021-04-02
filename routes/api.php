@@ -56,7 +56,4 @@ Route::middleware('app.auth')->group(function(){
 
     /******************** ニュース管理(news) ********************/
     Route::post('/news',                                    'Api\NewsController@index');
-
-    /******************** 共通設定管理(configs) ********************/
-    Route::post('/config',                          'Api\ConfigController@index');
 });
