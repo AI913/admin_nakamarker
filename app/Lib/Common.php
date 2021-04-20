@@ -2,7 +2,7 @@
 namespace App\Lib;
 
 use Illuminate\Support\Facades\Storage;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Carbon\Carbon;
 
 /**
  * 共通処理クラス
@@ -44,6 +44,39 @@ class Common {
         }
         return date($format, strtotime($date)) . " (".self::getWeekFromDate(date('w', strtotime($date))).")";
     }
+
+    /**
+     * ログイン日時の保存フラグチェック
+     * 引数1：ユーザのログイン日時データ, 引数2：時間（日付変更基準時間）, 引数3：間隔
+     * ※1日1回ログイン日時は保存する
+     * @return bool|string
+     */
+    public static function getLoginDate($login_time, $hour=0, $interval=24) {
+        // 現在の日時を取得
+        $today = Carbon::now();
+        // ログイン日時の日付変更基準日時を設定
+        $reset_time = Carbon::create($today->year, $today->month, $today->day, $hour);
+
+        // すでに日付変更基準日時以降でログインされている場合falseを返す
+        if($login_time > $reset_time) {
+            return false;
+        }
+
+        // $hourが0以上かつ現在日時が日付変更基準日時を超えていない場合
+        if($hour > 0 && $today <= $reset_time) {
+            // 現在日時がログイン日時から指定時間以上経過している場合、更新版のログイン日時を返す
+            if($today->diffInHours($login_time) > $interval) {
+                return $today;
+            }
+        }
+        // 現在日時が日付変更基準日時を超えている場合、更新版のログイン日時を返す
+        if($today >= $reset_time) {
+            return $today;
+        }
+
+        return false;
+    }
+
     /**
      * ファイル名から拡張子取得(.付き)
      * @param $name
@@ -200,8 +233,8 @@ class Common {
      */
     public static function getPointChargeFlagList() {
         return [
-            ['id' => config('const.charge_flg_off'),     'name' => config('const.charge_flg_off_name')],
-            ['id' => config('const.charge_flg_on'),      'name' => config('const.charge_flg_on_name')],
+            ['id' => config('const.charge_type_off'),     'name' => config('const.charge_type_off_name')],
+            ['id' => config('const.charge_type_on'),      'name' => config('const.charge_type_on_name')],
         ];
     }
 

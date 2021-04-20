@@ -11,7 +11,7 @@ class UserPointsHistory extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'give_point', 'pay_point', 'limit_date', 'to_user_id', 'from_user_id', 'status', 'type', 'charge_flg'
+        'give_point', 'pay_point', 'limit_date', 'to_user_id', 'from_user_id', 'status', 'type', 'charge_type'
     ];
 
     /**
@@ -48,8 +48,8 @@ class UserPointsHistory extends BaseModel
      * @return string
      */
     public function getChargeNameAttribute() {
-        if ($this->charge_flg == config('const.charge_flg_off'))  return config('const.charge_flg_off_name');
-        if ($this->charge_flg == config('const.charge_flg_on'))     return config('const.charge_flg_on_name');
+        if ($this->charge_type == config('const.charge_type_off'))  return config('const.charge_type_off_name');
+        if ($this->charge_type == config('const.charge_type_on'))     return config('const.charge_type_on_name');
     }
  
     /**

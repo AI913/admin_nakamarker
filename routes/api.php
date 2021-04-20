@@ -5,8 +5,10 @@ use Illuminate\Http\Request;
 /************************************************
  *  アプリ側ルーティング(非ログイン)
  ************************************************/
-Route::post('/user/create', 'Api\UserController@create');
-Route::post('/login',       'Api\AuthController@login');
+Route::post('/user/create',         'Api\UserController@create');
+Route::post('/login',               'Api\AuthController@login');
+Route::post('/config',              'Api\ConfigController@index');
+Route::post('/config/maintenance',  'Api\ConfigController@maintenance');
 
 /************************************************
  *  アプリ側ルーティング(ログイン)
@@ -55,7 +57,4 @@ Route::middleware('app.auth')->group(function(){
 
     /******************** ニュース管理(news) ********************/
     Route::post('/news',                                    'Api\NewsController@index');
-
-    /******************** 共通設定管理(configs) ********************/
-    Route::post('/config',                          'Api\ConfigController@index');
 });

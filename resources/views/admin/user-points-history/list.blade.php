@@ -40,7 +40,7 @@
                             @include('admin.layouts.components.select_option', [
                                 'label'         => '有料フラグ',
                                 'list'          => $charge_list,
-                                'name'          => 'charge_flg',
+                                'name'          => 'charge_type',
                                 'selected_id'   => null,
                                 'class'         => 'search-select',
                                 'blank'         => true

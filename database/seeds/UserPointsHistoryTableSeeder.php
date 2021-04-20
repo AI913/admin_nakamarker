@@ -25,7 +25,7 @@ class UserPointsHistoryTableSeeder extends Seeder
             \App\Model\UserPointsHistory::create([
                 'give_point'     => $give_point[array_rand($give_point , 1 )],   // 付与ポイントの値をランダムに抽出
                 'pay_point'      => $pay_point[array_rand($pay_point , 1 )],   // 消費ポイントの値をランダムに抽出
-                'charge_flg'     => $faker->numberBetween(1, 2),
+                'charge_type'     => $faker->numberBetween(1, 2),
                 'type'           => $type,
                 'used_flg'       => 0,
                 'to_user_id'     => $faker->numberBetween(1, 15),

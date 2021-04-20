@@ -195,11 +195,11 @@ class UserController extends BaseAdminController
         $points = $this->mainService->getUserPointQuery(['users.id' => \Auth::user()->id])->first();
 
         // ポイント付与の種別がギフトかつ無料の付与ポイントが無料の所持ポイントより多い場合
-        if($request->type == 2 && $request->charge_flg == 1 && $request->give_point > $points->free_total_points) {
+        if($request->type == 2 && $request->charge_type == 1 && $request->give_point > $points->free_total_points) {
             return ['status' => -2];
         }
         // ポイント付与の種別がギフトかつ有料の付与ポイントが有料の所持ポイントより多い場合
-        if($request->type == 2 && $request->charge_flg == 2 && $request->give_point > $points->total_points) {
+        if($request->type == 2 && $request->charge_type == 2 && $request->give_point > $points->total_points) {
             return ['status' => -2];
         }
 
@@ -208,7 +208,7 @@ class UserController extends BaseAdminController
             'type'              => $request->type,
             'give_point'        => $request->give_point,
             'pay_point'         => 0,
-            'charge_flg'        => $request->charge_flg,
+            'charge_type'        => $request->charge_type,
             'to_user_id'        => $request->user_id,
             'from_user_id'      => $request->type == 2 ? \Auth::user()->id : null,
             'status'            => 2,
@@ -220,7 +220,7 @@ class UserController extends BaseAdminController
             // ポイント付与の種別がギフトだった場合
             if($model->type == 2) {
                 // ポイントをギフトしたユーザのポイントを消費
-                $this->userPointHistoryService->getPayPointQuery($data['from_user_id'], $data['give_point'], $data['charge_flg']);
+                $this->userPointHistoryService->getPayPointQuery($data['from_user_id'], $data['give_point'], $data['charge_type']);
             }
         
             return [
@@ -349,7 +349,7 @@ class UserController extends BaseAdminController
             return ['status' => -1];
         }
 
-        if($this->userPointHistoryService->getPayPointQuery($request->user_id, $request->pay_point, $request->charge_flg)){
+        if($this->userPointHistoryService->getPayPointQuery($request->user_id, $request->pay_point, $request->charge_type)){
             return [
                 'status' => 1,
                 'id' => $request->user_id

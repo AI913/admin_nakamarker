@@ -28,7 +28,7 @@ $(function(){
         $('#price').prop("disabled", true);
         $('#price').val(0);
     }
-    $('[name="charge_flg"]').on('change', function(){
+    $('[name="charge_type"]').on('change', function(){
         $('#price').prop("disabled", false);
         if($('#flg3').prop('checked')){
             $('#price').prop("disabled", true);
@@ -49,15 +49,15 @@ function setDetailView(data, button) {
     $('#detail_price').html(number_format(data.price));
     $('#detail_image_file').attr('src', data.image_url);
     $('#detail_price').html(data.price);
-    $('#detail_charge_flg').html(data.charge_name);
+    $('#detail_charge_type').html(data.charge_name);
     $('#detail_description').html(data.description);
     $('#marker_id').data('id', data.id);
 
     // 有料フラグに応じて文字色を変更
-    if(data.charge_flg == 2) {
-        $('#detail_charge_flg').css('color','red');
+    if(data.charge_type == 2) {
+        $('#detail_charge_type').css('color','red');
     } else {
-        $('#detail_charge_flg').css('color','black');
+        $('#detail_charge_type').css('color','black');
     }
 
     if(button == '.btn-detail') {
@@ -338,17 +338,17 @@ function initList(search) {
             {
                 data: function(p) {
                     // 有料フラグが"有料"の場合は赤色で表示
-                    if(p.charge_flg === 2) {
+                    if(p.charge_type === 2) {
                         return ('<span style="color: red">'+ p.charge_name +'</span>');
                     }
                     // それ以外は普通に表示
                     return p.charge_name;
-                }, name: 'charge_flg'
+                }, name: 'charge_type'
             },
             {
                 data: function(p) {
                     // 有料フラグが"デフォルト"の場合は'-'で表示
-                    if(p.charge_flg === 3) {
+                    if(p.charge_type === 3) {
                         return (`<span>―</span>`);
                     }
                     // DL数がnullの場合は'0'で表示

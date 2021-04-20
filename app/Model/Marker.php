@@ -19,7 +19,7 @@ class Marker extends BaseModel
      * 保存対象(attribute)
      * @var array
      */
-    protected $fillable = ['type', 'name', 'description', 'status', 'image_file', 'price', 'charge_flg', 'update_user_id'];
+    protected $fillable = ['type', 'name', 'description', 'status', 'image_file', 'price', 'charge_type', 'update_user_id'];
 
     /**
      * コンストラクタ
@@ -53,9 +53,9 @@ class Marker extends BaseModel
      * @return string
      */
     public function getChargeNameAttribute() {
-        if ($this->charge_flg == config('const.charge_flg_off'))  return config('const.charge_flg_off_name');
-        if ($this->charge_flg == config('const.charge_flg_on'))     return config('const.charge_flg_on_name');
-        if ($this->charge_flg == config('const.charge_flg_default'))     return config('const.charge_flg_default_name');
+        if ($this->charge_type == config('const.charge_type_off'))  return config('const.charge_type_off_name');
+        if ($this->charge_type == config('const.charge_type_on'))     return config('const.charge_type_on_name');
+        if ($this->charge_type == config('const.charge_type_default'))     return config('const.charge_type_default_name');
     }
 
     /**

@@ -14,6 +14,7 @@ use App\Services\Api\CommunityHistoryService;
 use App\Services\Api\CommunityService;
 use App\Services\Api\ConfigService;
 use App\Lib\Message;
+use Carbon\Carbon;
 
 class UserController extends BaseApiController
 {
@@ -89,7 +90,8 @@ class UserController extends BaseApiController
             $data = [
                 'id'            => $user->id,
                 'user_token'    => $token,
-                'device_token'  => $request->input('device_token')
+                'device_token'  => $request->input('device_token'),
+                'login_time'    => Carbon::now(),
             ];
             // 画像ありの場合は保存処理を実行
             if($request->hasFile('image')) {
@@ -151,8 +153,8 @@ class UserController extends BaseApiController
             $points = $this->mainService->getPointQuery(['user_points_histories.to_user_id' => Auth::user()->id])->get();
 
             // 有効期限の最も近いポイントをそれぞれ取得
-            $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 1, 'used_flg' => 0])->first();
-            $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 2, 'used_flg' => 0])->first();
+            $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id, 'charge_type' => 1, 'used_flg' => 0])->first();
+            $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id, 'charge_type' => 2, 'used_flg' => 0])->first();
 
             // ステータスOK
             return $this->success([
@@ -179,23 +181,36 @@ class UserController extends BaseApiController
             \DB::beginTransaction();
             // ポイントが増加する場合
             if($request->give_point) {
-                // 選択したユーザの総ポイント数を取得
+                // ログインユーザの総ポイント数を取得
                 $points = $this->mainService->getUserPointQuery(['users.id' => Auth::user()->id])->first();
 
+                // 付与対象のユーザが存在するか確認
+                if($this->mainService->searchExists(['id' => $request->to_user_id, 'status' => config('const.user_app_unsubscribe')]) ||
+                   $this->mainService->searchExists(['id' => $request->to_user_id, 'status' => config('const.user_app_account_stop')])
+                ) {
+                    return $this->error(-3, ["message" => Message::ERROR_NOT_EXISTS_USER]);
+                }
+                
                 // ポイント付与の種別がギフトかつ無料の付与ポイントが無料の所持ポイントより多い場合
-                if($request->type == 2 && $request->charge_flg == 1 && $request->give_point > $points->free_total_points) {
-                    return ['status' => -2];
+                if($request->type == config('const.point_gift') && 
+                   $request->charge_type == config('const.charge_type_off') && 
+                   $request->give_point > $points->free_total_points
+                ) {
+                    return $this->error(-2, ["message" => Message::ERROR_NOT_OVER_FREE_POINT]);
                 }
                 // ポイント付与の種別がギフトかつ有料の付与ポイントが有料の所持ポイントより多い場合
-                if($request->type == 2 && $request->charge_flg == 2 && $request->give_point > $points->total_points) {
-                    return ['status' => -2];
+                if($request->type == config('const.point_gift') && 
+                   $request->charge_type == config('const.charge_type_on') && 
+                   $request->give_point > $points->total_points
+                ) {
+                    return $this->error(-2, ["message" => Message::ERROR_NOT_OVER_CHARGE_POINT]);
                 }
 
                 // 保存データを配列に格納
                 $data = [
                     'type'              => 2,
                     'give_point'        => $request->give_point,
-                    'charge_flg'        => $request->charge_flg,
+                    'charge_type'       => $request->charge_type,
                     'to_user_id'        => $request->to_user_id,
                     'from_user_id'      => Auth::user()->id,
                     'status'            => 2,
@@ -207,7 +222,7 @@ class UserController extends BaseApiController
                 // ポイント付与の種別がギフトだった場合
                 if($model->type == 2) {
                     // ポイントをギフトしたユーザのポイントを消費
-                    $this->userPointHistoryService->getPayPointQuery($data['from_user_id'], $data['give_point'], $data['charge_flg']);
+                    $this->userPointHistoryService->getPayPointQuery($data['from_user_id'], $data['give_point'], $data['charge_type']);
                 }
 
                 // ポイント取得
@@ -215,8 +230,8 @@ class UserController extends BaseApiController
                 $points = $this->mainService->getPointQuery(['user_points_histories.to_user_id' => $data['from_user_id']])->get();
 
                 // 有効期限の最も近いポイントをそれぞれ取得
-                $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $data['from_user_id'], 'charge_flg' => 1, 'used_flg' => 0])->first();
-                $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $data['from_user_id'], 'charge_flg' => 2, 'used_flg' => 0])->first();
+                $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $data['from_user_id'], 'charge_type' => config('const.charge_type_off'), 'used_flg' => 0])->first();
+                $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $data['from_user_id'], 'charge_type' => config('const.charge_type_on'), 'used_flg' => 0])->first();
                 
                 \DB::commit();
                 return $this->success([
@@ -226,27 +241,7 @@ class UserController extends BaseApiController
                     'remaining_charge_point' => $remaining_charge_point
                 ]);
 
-            } else if ($request->pay_point) {
-                // ポイント消費処理
-                $this->userPointHistoryService->getPayPointQuery(Auth::user()->id, $request->pay_point, $request->charge_flg);
-
-                // ポイント取得
-                $free_points = $this->mainService->getFreePointQuery(['user_points_histories.to_user_id' => $request->to_user_id])->get();
-                $points = $this->mainService->getPointQuery(['user_points_histories.to_user_id' => $request->to_user_id])->get();
-
-                // 有効期限の最も近いポイントをそれぞれ取得
-                $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 1, 'used_flg' => 0])->first();
-                $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $user->id, 'charge_flg' => 2, 'used_flg' => 0])->first();
-
-                \DB::commit();
-                return $this->success([
-                    'total_give_free_point' => $free_points,
-                    'total_give_charge_point' => $points,
-                    'remaining_free_point' => $remaining_free_point,
-                    'remaining_charge_point' => $remaining_charge_point
-                ]);
             }
-    
         } catch (\Exception $e) {
             \DB::rollback();
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
@@ -365,7 +360,7 @@ class UserController extends BaseApiController
             $marker = $this->markerService->searchOne(['id' => $request->input('marker_id')]);
             
             // ポイントの消費
-            $points = $this->userPointHistoryService->getPayPointQuery(Auth::user()->id, $marker->price, $marker->charge_flg);
+            $points = $this->userPointHistoryService->getPayPointQuery(Auth::user()->id, $marker->price, $marker->charge_type);
 
             // 保存データを配列に格納
             $data = [
@@ -388,8 +383,8 @@ class UserController extends BaseApiController
             }
 
             // 有効期限の最も近いポイントをそれぞれ取得
-            $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id, 'charge_flg' => 1, 'used_flg' => 0])->first();
-            $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id, 'charge_flg' => 2, 'used_flg' => 0])->first();
+            $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id, 'charge_type' => 1, 'used_flg' => 0])->first();
+            $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id, 'charge_type' => 2, 'used_flg' => 0])->first();
 
             \DB::commit();
             // ステータスOK

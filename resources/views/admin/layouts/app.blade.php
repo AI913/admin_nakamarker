@@ -15,6 +15,8 @@
 
     <link rel="stylesheet" href="{{ asset('css/datetimepicker/jquery.datetimepicker.min.css') }}">
 
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+
     @yield('app_css')
 
     <title>@yield('app_title') | {{ env('APP_SYSTEM_NAME') }}</title>
@@ -196,6 +198,8 @@
 {{-- 日付フォーマットのライブラリ --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/locale/ja.js"></script>
+
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
 <script src="{{ asset('js/common.js') }}?v={{ config('const.app_version') }}" ></script>
 

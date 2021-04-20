@@ -36,13 +36,13 @@ $(function(){
         $(document).on('click', '.point_modal', function(){
             $('#create_point').val('');
             $('#select_point_type').val(null);
-            $('#select_charge_flg').val(null);
+            $('#select_charge_type').val(null);
         });
         // リセットボタン押下時にポイント入力フォームの値をリセットする
         $(document).on('click', '#detail_point_reset', function(){
             $('#create_point').val('');
             $('#select_point_type').val(null);
-            $('#select_charge_flg').val(null);
+            $('#select_charge_type').val(null);
         });
 
     /* 
@@ -520,7 +520,7 @@ function setMarkerTable(id) {
             {
                 data: function(p) {
                     // 有料フラグが"有料"の場合は赤色で表示
-                    if(p.charge_flg === 2) {
+                    if(p.charge_type === 2) {
                         return ('<span style="color: red">'+ p.charge_name +'</span>');
                     }
                     // それ以外は普通に表示
@@ -597,7 +597,7 @@ function setPointTable(id) {
             {
                 data: function(p) {
                     // 有料フラグが"有料"の場合は赤色で表示
-                    if(p.charge_flg === 2) {
+                    if(p.charge_type === 2) {
                         return ('<span style="color: red">'+ p.charge_name +'</span>');
                     }
                     // それ以外は普通に表示
@@ -639,7 +639,7 @@ $(function(){
             $('#select_point_type').focus();
             return false;
         }
-        if ($('#select_charge_flg').val() == null) {
+        if ($('#select_charge_type').val() == null) {
             alert('有料フラグが正しくありません');
             $('#select_point_type').focus();
             return false;
@@ -667,7 +667,7 @@ function updatePoints() {
         data:   {
             'give_point': $('#create_point').val(),
             'type': $('#select_point_type').val(),
-            'charge_flg': $('#select_charge_flg').val(),
+            'charge_type': $('#select_charge_type').val(),
             'user_id': user_id,
         }
     })
@@ -688,7 +688,7 @@ function updatePoints() {
 
                 $('#create_point').val('');
                 $('#select_point_type').val(null);
-                $('#select_charge_flg').val(null);
+                $('#select_charge_type').val(null);
                 
                 setPointTable(response.id);
             }
@@ -711,7 +711,7 @@ function payPoints() {
         headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data:   {
             'pay_point': $('#pay_point').val(),
-            'charge_flg': $('#select_pay_charge_flg').val(),
+            'charge_type': $('#select_pay_charge_type').val(),
             'user_id': user_id,
         }
     })
@@ -732,7 +732,7 @@ function payPoints() {
 
                 $('#create_point').val('');
                 $('#select_point_type').val(null);
-                $('#select_charge_flg').val(null);
+                $('#select_charge_type').val(null);
                 
                 setPointTable(response.id);
             }

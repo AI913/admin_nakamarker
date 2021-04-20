@@ -77,12 +77,12 @@ return [
     'point_admin_name'      => '管理者特権',
 
     // ポイント有料フラグ種別
-    'charge_flg_off'            => 1,
-    'charge_flg_on'             => 2,
-    'charge_flg_default'        => 3,
-    'charge_flg_off_name'       => '無料',
-    'charge_flg_on_name'        => '有料',
-    'charge_flg_default_name'   => 'デフォルト',
+    'charge_type_off'            => 1,
+    'charge_type_on'             => 2,
+    'charge_type_default'        => 3,
+    'charge_type_off_name'       => '無料',
+    'charge_type_on_name'        => '有料',
+    'charge_type_default_name'   => 'デフォルト',
     
     // ニュース情報種別
     'official_type'        => 1,
@@ -112,4 +112,7 @@ return [
     // 画像のフォルダ名
     'user_locations'        => 'user_locations',
     'community_locations'   => 'community_locations',
+
+    // キャッシュのキー名
+    'config_cache_key'      => 'cache_config_list',
 ];
