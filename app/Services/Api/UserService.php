@@ -222,4 +222,30 @@ class UserService extends BaseService
         }
         return $query;
     }
+
+    /**
+     * ユーザの新規作成
+     * @param $data ユーザデータ
+     * @return Model|mixed
+     * @throws \Exception
+     */
+    public function create($data) {
+      try {
+        $now = Carbon::now();
+        $model = $this->newModel();
+        $model->fill($data);
+        $model->login_time = $now;
+        $model->created_at = $now;
+        $model->updated_at = $now;
+        $model->save();
+        $id = $model->id;
+        $model->user_token = self::issueUserToken($id);
+        $model->update_user_id  = $id;
+        $model->save();
+        return $model;
+      } catch (\Exception $e) {
+        \Log::error('database save error:'.$e->getMessage());
+        throw new \Exception($e);
+      }
+    }
 }
