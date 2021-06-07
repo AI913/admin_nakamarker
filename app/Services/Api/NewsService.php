@@ -22,7 +22,7 @@ class NewsService extends BaseService
      */
     public function getNewsQuery($order=[], $limit=0) {
         // newsテーブルからデータを取得
-        $query = $this->searchQuery([], [], [], $limit)->select('title', 'body', 'image_file', 'condition_start_time', 'condition_end_time');
+        $query = $this->searchQuery([], [], [], $limit)->select('id', 'title', 'body', 'image_file', 'condition_start_time', 'condition_end_time');
 
         // ソート条件
         foreach($order as $key => $value) {
