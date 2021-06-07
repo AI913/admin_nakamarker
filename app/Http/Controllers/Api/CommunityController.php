@@ -370,23 +370,17 @@ class CommunityController extends BaseApiController
                 return $this->error(-10, ["message" => Message::ERROR_NOT_COMMUNIRY_MEMBER]);
             }
 
-            // データを配列化
             $data = $request->all();
             // ロケーションIDを保存用のキーに変換
-            $request->input('location_id') ? $data['id'] = $data['location_id'] : '';
-            // ユーザIDのセット
+            $data['id'] = $data['location_id'];
             $data['user_id'] = \Auth::user()->id;
-            // 画像ありの場合は保存処理を実行
             if($request->hasFile('image')) {
                 $data['image_file'] = $this->fileSave($request, config('const.community_locations'));
             }
 
-            // コミュニティマーカーの保存
-            $this->communityLocationService->save($data);
-
+            $comData = $this->communityLocationService->save($data);
             \DB::commit();
-            // ステータスOK
-            return $this->success();
+            return $this->success(['location_list' => $comData]);
 
         } catch (\Exception $e) {
             \DB::rollback();
