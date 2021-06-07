@@ -174,9 +174,11 @@ class UserService extends BaseService
                       ->select('id')
                       ->with(['community' => function ($query) {
                           // community_historiesテーブルとcommunitiesテーブルの値をクエリすることが可能
-                          $query->select('communities.id as community_id', 'communities.type', 'communities.name', 
-                                         'communities.description', 'communities.image_file', 
-                                         'communities.status as community_status', 'community_histories.status as entry_status');
+                          $query->select('communities.id as community_id', 'communities.type', 'communities.name',
+                                         'communities.description', 'communities.image_file',
+                                         'communities.status as community_status',
+                                         'community_histories.status as entry_status',
+                                         'host_user_id');
                       }])
                       ->get();
 
@@ -220,6 +222,12 @@ class UserService extends BaseService
                 break;
             }
         }
+
+        // 自身がオーナーであるコミュニティにはフラグを立てる
+        foreach($query as $communityData) {
+          $communityData['isHost'] = ($communityData['host_user_id'] == $conditions['id']);
+        }
+
         return $query;
     }
 

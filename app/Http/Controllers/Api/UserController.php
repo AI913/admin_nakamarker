@@ -398,13 +398,10 @@ class UserController extends BaseApiController
             // ソート条件
             $order = $this->setSort($request);
             // ユーザのコミュニティ情報を取得
-            // $user_community = $this->communityService->getUserCommunityQuery(Auth::user()->id, $order)->get();
             $user_community = $this->userService->getUserCommunityQuery($conditions, $order);
 
             // ステータスOK
-            return $this->success([
-                'community_list' => $user_community,
-            ]);
+            return $this->success(['community_list' => $user_community]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
