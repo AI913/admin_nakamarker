@@ -78,23 +78,29 @@ class CommunityController extends BaseApiController
     public function register(Request $request) {
         try {
             \DB::beginTransaction();
-
-            // データを配列化
+            $userId = \Auth::user()->id;
             $data = $request->all();
             // コミュニティの種別を設定
             $data['status'] ? $data['type'] = config('const.community_personal_open') : $data['type'] = config('const.community_personal');
             // ホストユーザの設定
-            $data['host_user_id'] = \Auth::user()->id;
+            $data['host_user_id'] = $userId;
             // 画像ありの場合は保存処理を実行
             if($request->hasFile('image')) {
                 $data['image_file'] = $this->fileSave($request);
             }
-            
-            // コミュニティ一覧データを取得
-            $this->mainService->save($data);
+
+            $community = $this->mainService->save($data);
+
+            // 作成したコミュニティに作成者自身を参加
+            $addData = [
+                'community_id' => $community->id,
+                'user_id' => $userId,
+                'status' => 1
+            ];
+            $this->communityHistoryService->save($addData);
 
             \DB::commit();
-            // ステータスOK
+
             return $this->success();
 
         } catch (\Exception $e) {
