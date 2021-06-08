@@ -121,12 +121,11 @@ abstract class BaseService{
      *      (例)：　$relation[] = ['store' => [], 'user' => ['del_flg' => 0]]
      *              リレーション先テーブルに条件を加える場合は、下記参照
      * @param int $limit(取得件数)
+     * @param int $offset(取得開始するindex)
      * @return \Illuminate\Database\Eloquent\Builder|mixed
      */
-    public function searchQuery($conditions=[], $order=[], $relation=[], $limit=0) {
+    public function searchQuery($conditions=[], $order=[], $relation=[], $limit=0, $offset=0) {
         $query = $this->model()::query();
-        // メインテーブルSELECT
-        $query->select($this->model()->getTable().".*");
 
         // 検索条件
         $query = self::getConditions($query, $this->model()->getTable(), $conditions);
@@ -154,6 +153,9 @@ abstract class BaseService{
             }
         }
         // 件数指定あれば設定
+        if ($offset > 0) {
+            $query->offset($offset);
+        }
         if ($limit > 0) {
             $query->limit($limit);
         }

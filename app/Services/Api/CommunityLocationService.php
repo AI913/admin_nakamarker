@@ -5,6 +5,8 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use App\Model\CommunityLocation;
+use App\Services\Api\MarkerService;
+use App\Services\Api\UserService;
 
 class CommunityLocationService extends BaseService
 {
@@ -12,8 +14,11 @@ class CommunityLocationService extends BaseService
      * コンストラクタ
      * CommunityService constructor.
      */
-    public function __construct(CommunityLocation $model) {
+    public function __construct(CommunityLocation $model, UserService $userService, MarkerService $markerService) {
         $this->model = $model;
+
+        $this->userService = $userService;
+        $this->markerService = $markerService;
     }
 
     /**
@@ -77,7 +82,49 @@ class CommunityLocationService extends BaseService
 
         return $query;
     }
-    
+
+    /**
+      * 全コミュニティの場所更新情報取得
+      * @param array $conditions(検索条件)
+      *      (例)：　$conditions[] = ['key' => $value]
+      *             key は条件によって、オプション付与可能(カラム@条件)
+      *              (例)： 'name@like' @likeを付与し、like検索が可能
+      * @param array $order(ソート条件)
+      *      (例)：　$order[] = ['key' => 'desc' or 'asc']
+      * @param int $offset(取得開始するindex)
+      * @return \Illuminate\Database\Eloquent\Builder|mixed
+      */
+    public function getCommunityLocationUpadateQuery($conditions=[], $order=[], $offset=0) {
+      $relations = ['user' => [], 'community' => []];
+
+      $extract = $this->searchQuery($conditions, $order, $relations, 100, $offset)->get();
+      $returnData = [];
+      foreach ($extract as $value) {
+        $action = "";
+        if ($value['del_flg'] == 1){
+          $action = "削除";
+        } else {
+          if ($value['created_at'] == $value['updated_at']){
+            $action = "登録";
+          } else {
+            $action = "編集";
+          }
+        }
+
+        $tmp['community_id'] = $value['community_id'];
+        $tmp['image_url'] = $value['image_url'];
+        $tmp['updated_at'] = $value['updated_at'];
+        $tmp['text'] = $value['community']['name']." の ".
+                       $this->userService->find($value['update_user_id'])->name." が ".
+                       $this->markerService->find($value['marker_id'])->name." を ".
+                       $action." しました";
+
+        array_push($returnData, $tmp);
+      }
+
+      return $returnData;
+    }
+
     /**
      * ロケーション登録の本人確認
      * 引数1: ロケーションID, 引数2: ユーザID

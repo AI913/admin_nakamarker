@@ -54,6 +54,7 @@ Route::middleware('app.auth')->group(function(){
     Route::post('/community/location',                      'Api\CommunityController@locationInfo');
     Route::post('/community/location/register',             'Api\CommunityController@locationRegister');
     Route::post('/community/location/remove',               'Api\CommunityController@locationRemove');
+    Route::post('/community/location/news',                 'Api\CommunityController@locationNews');
 
     /******************** ニュース管理(news) ********************/
     Route::post('/news',                                    'Api\NewsController@index');

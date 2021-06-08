@@ -387,4 +387,17 @@ class CommunityController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
+
+    /**
+     * 場所登録の更新情報取得
+     * @param $request->offset 何件目から取得するか
+     * @throws \Exception
+     */
+    public function locationNews(Request $request) {
+        try {
+          return $this->success(['updated_list' => $this->communityLocationService->getCommunityLocationUpadateQuery([],['updated_at' => 'desc'], $request->input('offset'))]);
+        } catch (\Exception $e) {
+          return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+        }
+    }
 }
