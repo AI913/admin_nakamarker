@@ -246,7 +246,7 @@ class CommunityController extends BaseApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function userInfo(Request $request) {
+    public function getUserListOfJoinRequest(Request $request) {
         try {
             // コミュニティのホストかどうかを確認
             if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
@@ -256,15 +256,8 @@ class CommunityController extends BaseApiController
             // 検索条件
             $conditions = [];
             if ($request->input('community_id')) { $conditions['id'] = $request->input('community_id'); }
-            // ソート条件
-            $order = $this->setSort($request);
-
-            // コミュニティ一覧データを取得
-            $communities = $this->mainService->getApplyListQuery(config('const.community_history_apply'), $conditions, $order);
-
-            // ステータスOK
-            return $this->success(['communities' => $communities]);
-
+            
+            return $this->success(['communities' => $this->mainService->getApplyListQuery(config('const.community_history_apply'), $conditions)]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }

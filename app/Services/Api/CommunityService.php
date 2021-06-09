@@ -89,7 +89,7 @@ class CommunityService extends BaseService
      */
     public function getApplyListQuery($status, $conditions=[], $order=[]) {
         // 削除フラグ排除のため、searchQuery()を実行
-        $query = $this->searchQuery($conditions)
+        $query = $this->searchQuery($conditions, $order)
                       ->select('id')
                       ->with(['user' => function ($query) use ($status) {
                           // community_historiesテーブルとusersテーブルの値をクエリすることが可能
@@ -100,7 +100,6 @@ class CommunityService extends BaseService
 
         // 結合したusersテーブルと中間テーブルの値に絞り込み
         $query = $query[0]->user;
-        
         return $query;
     }
 
