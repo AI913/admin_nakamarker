@@ -60,7 +60,7 @@ class AuthController extends BaseApiController
             \DB::beginTransaction();
             // パスワードをリターン
             $password = $this->mainService->issueOnetimePassword();
-            
+
             // 発行したパスワードデータを保存(有効期限は共通設定テーブルから値を抽出)
             $data = [
                 'id'               => Auth::user()->id, // ユーザID
@@ -73,7 +73,7 @@ class AuthController extends BaseApiController
             // アプリ表示用にカスタマイズ
             $confirmPassword = str_split($password, 4);
             $confirmPassword = $confirmPassword[0].'-'.$confirmPassword[1].'-'.$confirmPassword[2];
-    
+
             \DB::commit();
             // ステータスOK
             return $this->success([
@@ -98,7 +98,7 @@ class AuthController extends BaseApiController
 
             // データを保存
            $this->mainService->save($data);
-    
+
             \DB::commit();
             // ステータスOK
             return $this->success();
@@ -121,7 +121,7 @@ class AuthController extends BaseApiController
             $this->mainService->save($data);
             // ステータスOK
             return $this->success(["message" => Message::SUCCESS_UNSUBSCRIBE]);
-            
+
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }

@@ -38,7 +38,7 @@ class NewsController extends BaseApiController
             $limit = 0;
             $config = $this->configService->searchOne(['key' => 'news_list']);
             $config->value ? $limit = $config->value : '';
-            
+
             // ニュース一覧データを取得
             $news = $this->mainService->getNewsQuery($order, $limit)->get();
 

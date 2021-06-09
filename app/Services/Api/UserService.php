@@ -52,7 +52,7 @@ class UserService extends BaseService
         for($i=0; $i<12; $i++) {
             $password .= $password_list[array_rand($password_list)];
         }
-        
+
         return $password;
     }
 
@@ -96,7 +96,7 @@ class UserService extends BaseService
         if($conditions) {
             $query = $this->getConditions($query, $this->model()->getTable(), $conditions);
         }
-        
+
         return $query;
     }
 
@@ -125,7 +125,7 @@ class UserService extends BaseService
 
     /**
      * ログインユーザが所有するマーカーリスト
-     * 引数1：検索条件, 引数2：ソート条件 
+     * 引数1：検索条件, 引数2：ソート条件
      */
     public function getUserMarkerQuery($conditions=[], $order=[]) {
         // 削除フラグ排除のため、searchQuery()を実行
@@ -133,7 +133,7 @@ class UserService extends BaseService
                       ->select('id')
                       ->with(['marker' => function ($query) {
                           // user_markersテーブルとmarkersテーブルの値をクエリすることが可能
-                          $query->select('user_markers.marker_id', 'user_markers.updated_at', 
+                          $query->select('user_markers.marker_id', 'user_markers.updated_at',
                                          'markers.type', 'markers.name', 'markers.image_file', 'markers.description');
                       }])
                       ->get();
@@ -144,7 +144,7 @@ class UserService extends BaseService
 
     /**
      * ログインユーザが所属するコミュニティリスト
-     * 引数1：検索条件, 引数2：ソート条件 
+     * 引数1：検索条件, 引数2：ソート条件
      */
     public function getUserCommunityQuery($conditions=[], $order=[]) {
         // 削除フラグ排除のため、searchQuery()を実行

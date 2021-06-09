@@ -29,7 +29,7 @@ class CommunityService extends BaseService
 
     /**
      * コミュニティが所有するデータリスト
-     * 引数1：検索条件, 引数2：ソート条件 
+     * 引数1：検索条件, 引数2：ソート条件
      */
     public function getCommunityMarkerQuery($conditions=[], $order=[]) {
         // 削除フラグ排除のため、searchQuery()を実行
@@ -49,7 +49,7 @@ class CommunityService extends BaseService
 
     /**
      * コミュニティの参加人数を取得
-     * 
+     *
      */
     public function joinCount() {
         $query = $this->model()->query();
@@ -74,7 +74,7 @@ class CommunityService extends BaseService
         $query->leftJoinSub($joinCount, 'j', 'communities.id', '=', 'j.community_id')
               ->select('communities.*', 'j.total_counts')
               ->where('communities.del_flg', '=', 0);
-        
+
         // 検索条件があれば実行
         if($conditions) {
             $query = $this->getConditions($query, $this->model()->getTable(), $conditions);

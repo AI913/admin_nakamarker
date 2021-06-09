@@ -81,7 +81,7 @@ class BaseApiController extends Controller
     public function setSort($param) {
         // ソート条件を設定
         if(key_exists('order', $param->all())) {
-            $sort = $param->input('order'); 
+            $sort = $param->input('order');
             $order[$sort] = $sort;
             return $order;
         }

@@ -120,7 +120,7 @@ class CommunityController extends BaseApiController
             if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
                 return $this->error(-10, ["message" => Message::ERROR_NOT_HOST]);
             }
-            
+
             // データを配列化
             $data = $request->all();
             // コミュニティの種別を設定
@@ -220,7 +220,7 @@ class CommunityController extends BaseApiController
     public function markerUpdate(Request $request) {
         try {
             \DB::beginTransaction();
-            
+
             // コミュニティのホストかどうかを確認
             if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
                 return $this->error(-10, ["message" => Message::ERROR_NOT_HOST]);
@@ -252,11 +252,11 @@ class CommunityController extends BaseApiController
             if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
                 return $this->error(-10, ["message" => Message::ERROR_NOT_HOST]);
             }
-            
+
             // 検索条件
             $conditions = [];
             if ($request->input('community_id')) { $conditions['id'] = $request->input('community_id'); }
-            
+
             return $this->success(['communities' => $this->mainService->getApplyListQuery(config('const.community_history_apply'), $conditions)]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
@@ -331,7 +331,7 @@ class CommunityController extends BaseApiController
     public function locationRemove(Request $request) {
         try {
             \DB::beginTransaction();
-            
+
             // ロケーションを登録した本人では無い場合
             if(!$this->communityLocationService->isRegisterUser($request->input('location_id'), \Auth::user()->id)) {
                 // 削除対象のロケーションに紐づくコミュニティIDを取得

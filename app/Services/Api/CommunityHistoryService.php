@@ -26,7 +26,7 @@ class CommunityHistoryService extends BaseService
         $conditions['user_id'] = $user_id;
         $conditions['status'] = config('const.community_history_approval');
         $conditions['community_id'] = $community_id;
-        
+
         // ユーザの所属有無を判定
         return $this->searchExists($conditions);
     }

@@ -17,7 +17,7 @@ class UserPointsHistoryService extends BaseService
     public function __construct(UserPointsHistory $model, UserService $userService) {
         $this->model = $model;
 
-        $this->userService = $userService; 
+        $this->userService = $userService;
     }
 
     /**
@@ -33,7 +33,7 @@ class UserPointsHistoryService extends BaseService
         if($conditions) {
             $query = $this->getConditions($query, $this->model()->getTable(), $conditions);
         }
-        
+
         return $query;
     }
 
@@ -90,7 +90,7 @@ class UserPointsHistoryService extends BaseService
 
             // 無料ポイントと有料ポイントの合計値を変数に代入
             $total_points = (int)$charge + (int)$free;
-            
+
             // 所有する合計ポイントが消費ポイントより低い場合はfalseをリターン
             if($total_points < $pay_points) {
                 return false;
@@ -107,7 +107,7 @@ class UserPointsHistoryService extends BaseService
         $current_pay_points = null;
         $tmp = null;
         $loop_time = 0;
-        
+
         foreach($data as $value) {
             // 指定したポイント区分と異なる場合は消費処理をスキップ
             if($value->charge_type != $type) {
@@ -117,7 +117,7 @@ class UserPointsHistoryService extends BaseService
             $loop_time++;
             // 現在のポイント履歴データ(1レコード)に残っているポイントを算出
             $current_points = $value->give_point - $value->pay_point;
-            
+
             // 消費ポイントの残量を算出(ループ処理が2回目以降)
             if (isset($current_pay_points)) {
                 // 計算結果を一時的に変数へ代入
@@ -169,7 +169,7 @@ class UserPointsHistoryService extends BaseService
         if($data < 0) {
             $data = -$data;
         }
-            
+
         // 既存のpay_pointカラムの値と合算する
         $data += $model->pay_point;
 
@@ -199,7 +199,7 @@ class UserPointsHistoryService extends BaseService
         if(!$this->getConfirmPointQuery($user_id, $pay_points, $type)) {
             return false;
         }
-        
+
         // ポイント区分が無料で、現在無料ポイントがない場合
         if($type == config('const.charge_type_off') && !$this->searchExists(['charge_type' => $type, 'used_flg' => 0, 'to_user_id' => $user_id])) {
             // ポイント区分を反転させる
@@ -220,7 +220,7 @@ class UserPointsHistoryService extends BaseService
         $order = ['created_at' => 'asc'];
         // ポイント履歴データを取得
         $data = $this->searchList($conditions, $order);
-        
+
         \DB::beginTransaction();
         try {
             // リターン用の変数を宣言
@@ -255,7 +255,7 @@ class UserPointsHistoryService extends BaseService
             ];
         } catch(\Exception $e) {
             \DB::rollBack();
-            
+
             \Log::error('pay point save error:'.$e->getMessage());
             throw new \Exception($e);
             return;

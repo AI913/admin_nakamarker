@@ -12,7 +12,7 @@ class ConfigController extends BaseApiController
      * Class ConfigController
      * @package App\Http\Controllers
      */
-    public function __construct(ConfigService $mainService) 
+    public function __construct(ConfigService $mainService)
     {
         $this->mainService  = $mainService;
     }

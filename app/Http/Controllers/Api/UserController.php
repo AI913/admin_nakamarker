@@ -26,7 +26,7 @@ class UserController extends BaseApiController
     protected $communityHistoryService;
     protected $communityService;
     protected $configService;
-    
+
 
     /**
      * ユーザ管理コントローラー
@@ -177,17 +177,17 @@ class UserController extends BaseApiController
                 ) {
                     return $this->error(-3, ["message" => Message::ERROR_NOT_EXISTS_USER]);
                 }
-                
+
                 // ポイント付与の種別がギフトかつ無料の付与ポイントが無料の所持ポイントより多い場合
-                if($request->type == config('const.point_gift') && 
-                   $request->charge_type == config('const.charge_type_off') && 
+                if($request->type == config('const.point_gift') &&
+                   $request->charge_type == config('const.charge_type_off') &&
                    $request->give_point > $points->free_total_points
                 ) {
                     return $this->error(-2, ["message" => Message::ERROR_NOT_OVER_FREE_POINT]);
                 }
                 // ポイント付与の種別がギフトかつ有料の付与ポイントが有料の所持ポイントより多い場合
-                if($request->type == config('const.point_gift') && 
-                   $request->charge_type == config('const.charge_type_on') && 
+                if($request->type == config('const.point_gift') &&
+                   $request->charge_type == config('const.charge_type_on') &&
                    $request->give_point > $points->total_points
                 ) {
                     return $this->error(-2, ["message" => Message::ERROR_NOT_OVER_CHARGE_POINT]);
@@ -219,7 +219,7 @@ class UserController extends BaseApiController
                 // 有効期限の最も近いポイントをそれぞれ取得
                 $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $data['from_user_id'], 'charge_type' => config('const.charge_type_off'), 'used_flg' => 0])->first();
                 $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => $data['from_user_id'], 'charge_type' => config('const.charge_type_on'), 'used_flg' => 0])->first();
-                
+
                 \DB::commit();
                 return $this->success([
                     'total_give_free_point' => $free_points,
@@ -338,7 +338,7 @@ class UserController extends BaseApiController
             \DB::beginTransaction();
             // マーカー情報の取得
             $marker = $this->markerService->searchOne(['id' => $request->input('marker_id')]);
-            
+
             // ポイントの消費
             $points = $this->userPointHistoryService->getPayPointQuery(Auth::user()->id, $marker->price, $marker->charge_type);
 
@@ -379,7 +379,7 @@ class UserController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
     }
-    
+
     /**
      * コミュニティ情報の取得
      * @param $id
