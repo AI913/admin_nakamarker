@@ -148,7 +148,7 @@ class UserService extends BaseService
      */
     public function getUserCommunityQuery($conditions=[], $order=[]) {
         // 削除フラグ排除のため、searchQuery()を実行
-        $query = $this->searchQuery($conditions)
+        $query = $this->searchQuery($conditions, $order)
                       ->select('id')
                       ->with(['community' => function ($query) {
                           // community_historiesテーブルとcommunitiesテーブルの値をクエリすることが可能
@@ -162,44 +162,6 @@ class UserService extends BaseService
 
         // 結合したcommunitiesテーブルと中間テーブルの値に絞り込み
         $query = $query[0]->community;
-        
-        // ソート条件
-        foreach($order as $key => $value) {
-            switch ($key) {
-                // 作成日時の昇順
-                case 99:
-                    $query = $query->sortBy('created_at');
-                break;
-                // 作成日時の降順
-                case -99:
-                    $query = $query->sortByDesc('created_at');
-                break;
-                // コミュニティの種別で昇順
-                case 1:
-                    $query = $query->sortBy('type');
-                break;
-                // コミュニティの種別で降順
-                case -1:
-                    $query = $query->sortByDesc('type');
-                break;
-                // コミュニティの公開フラグで昇順
-                case 2:
-                    $query = $query->sortBy('community_status');
-                break;
-                // コミュニティの公開フラグで降順
-                case -2:
-                    $query = $query->sortByDesc('community_status');
-                break;
-                // コミュニティの申請ステータスで昇順
-                case 3:
-                    $query = $query->sortBy('entry_status');
-                break;
-                // コミュニティの申請ステータスで降順
-                case -3:
-                    $query = $query->sortByDesc('entry_status');
-                break;
-            }
-        }
 
         // 自身がオーナーであるコミュニティにはフラグを立てる
         foreach($query as $communityData) {

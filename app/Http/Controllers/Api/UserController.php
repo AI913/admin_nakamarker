@@ -385,18 +385,18 @@ class UserController extends BaseApiController
      * @param $id
      * @throws \Exception
      */
-    public function communityInfo(Request $request) {
+    public function getUserJoinedCommunity(Request $request) {
         try {
             // 検索条件
             $conditions = [];
             $conditions['id'] = Auth::user()->id;
             // ソート条件
-            $order = $this->setSort($request);
-            // ユーザのコミュニティ情報を取得
-            $user_community = $this->userService->getUserCommunityQuery($conditions, $order);
+            $order = [];
+            if (isset($request->order)) {
+              $order = [$request->order[0] => $request->order[1]];
+            }
 
-            // ステータスOK
-            return $this->success(['community_list' => $user_community]);
+            return $this->success(['community_list' => $this->userService->getUserCommunityQuery($conditions, $order)]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
