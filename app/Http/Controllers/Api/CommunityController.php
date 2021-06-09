@@ -151,7 +151,7 @@ class CommunityController extends BaseApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function markerInfo(Request $request) {
+    public function getCommunityMarkerList(Request $request) {
         try {
             // コミュニティに加盟しているかどうか確認
             if(!$this->communityHistoryService->isCommunityUser($request->input('community_id'), \Auth::user()->id)) {
@@ -162,7 +162,10 @@ class CommunityController extends BaseApiController
             $conditions = [];
             $conditions['id'] = $request->input('community_id');
             // ソート条件
-            $order = $this->setSort($request);
+            $order = [];
+            if (isset($request->order)) {
+              $order = [$request->order[0] => $request->order[1]];
+            }
             // コミュニティのマーカー情報を取得
             $community_marker = $this->mainService->getCommunityMarkerQuery($conditions, $order);
 
