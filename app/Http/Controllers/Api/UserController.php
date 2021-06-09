@@ -311,21 +311,18 @@ class UserController extends BaseApiController
      * @param $id
      * @throws \Exception
      */
-    public function markerInfo(Request $request) {
+    public function getUserMarker(Request $request) {
         try {
             // 検索条件
             $conditions = [];
             $conditions['id'] = Auth::user()->id;
             // ソート条件
-            $order = $this->setSort($request);
-            // ユーザのマーカー情報を取得
-            $user_marker = $this->userService->getUserMarkerQuery($conditions, $order);
-            // $user_marker = $this->markerService->getUserMarkerQuery(Auth::user()->id, $order)->get();
+            $order = [];
+            if (isset($request->order)) {
+              $order = [$request->order[0] => $request->order[1]];
+            }
 
-            // ステータスOK
-            return $this->success([
-                'marker_list' => $user_marker,
-            ]);
+            return $this->success(['marker_list' => $this->userService->getUserMarkerQuery($conditions, $order)]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }

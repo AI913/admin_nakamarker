@@ -30,7 +30,7 @@ Route::middleware('app.auth')->group(function(){
     Route::post('/user/location/register',          'Api\UserController@locationRegister');
     Route::post('/user/location/remove',            'Api\UserController@locationRemove');
     /******************** ユーザマーカー管理(user_markers) ********************/
-    Route::post('/user/marker',                     'Api\UserController@markerInfo');
+    Route::post('/user/marker',                     'Api\UserController@getUserMarker');
     Route::post('/user/marker/update',              'Api\UserController@markerUpdate');
     /******************** ユーザコミュニティ管理(community_histories) ********************/
     Route::post('/user/community_history',          'Api\UserController@communityInfo');

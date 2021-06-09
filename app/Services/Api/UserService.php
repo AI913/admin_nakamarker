@@ -129,7 +129,7 @@ class UserService extends BaseService
      */
     public function getUserMarkerQuery($conditions=[], $order=[]) {
         // 削除フラグ排除のため、searchQuery()を実行
-        $query = $this->searchQuery($conditions)
+        $query = $this->searchQuery($conditions, $order)
                       ->select('id')
                       ->with(['marker' => function ($query) {
                           // user_markersテーブルとmarkersテーブルの値をクエリすることが可能
@@ -139,28 +139,6 @@ class UserService extends BaseService
                       ->get();
         // 結合したmarkersテーブルと中間テーブルの値に絞り込み
         $query = $query[0]->marker;
-        
-        // ソート条件
-        foreach($order as $key => $value) {
-            switch ($key) {
-                // 作成日時の昇順
-                case 99:
-                    $query = $query->sortBy('created_at');
-                break;
-                // 作成日時の降順
-                case -99:
-                    $query = $query->sortByDesc('created_at');
-                break;
-                // マーカーの種別で昇順
-                case 1:
-                    $query = $query->sortBy('type');
-                break;
-                // マーカーの種別で降順
-                case -1:
-                    $query = $query->sortByDesc('type');
-                break;
-            }
-        }
         return $query;
     }
 
