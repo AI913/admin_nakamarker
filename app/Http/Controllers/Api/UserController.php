@@ -252,13 +252,8 @@ class UserController extends BaseApiController
             if (isset($request->order)) {
               $order = [$request->order[0] => $request->order[1]];
             }
-            // ユーザの登録場所とそれに紐づくマーカー情報を取得
-            $user_location = $this->userLocationService->getUserLocationQuery($conditions, $order);
 
-            // ステータスOK
-            return $this->success([
-                'location_list' => $user_location,
-            ]);
+            return $this->success(['location_list' => $this->userLocationService->getUserLocationQuery($conditions, $order)]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }

@@ -313,7 +313,10 @@ class CommunityController extends BaseApiController
             if($request->input('user_id')) { $conditions['community_locations.user_id'] = $request->input('user_id'); }
             if($request->input('marker_id')) { $conditions['community_locations.marker_id'] = $request->input('marker_id'); }
             // ソート条件
-            $order = $this->setSort($request);
+            $order = [];
+            if (isset($request->order)) {
+              $order = [$request->order[0] => $request->order[1]];
+            }
             // コミュニティのロケーション情報を取得
             $community_location = $this->communityLocationService->getCommunityLocationQuery($conditions, $order);
 
