@@ -26,7 +26,7 @@ class MarkerController extends BaseApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index(Request $request) {
+    public function getAllMarker(Request $request) {
         try {
             // 検索条件
             $conditions = [];
@@ -35,13 +35,12 @@ class MarkerController extends BaseApiController
             if($request->input('type')) { $conditions['type'] = $request->input('type'); }
             if($request->input('charge_type')) { $conditions['charge_type'] = $request->input('charge_type'); }
             // ソート条件
-            $order = $this->setSort($request);
+            $order = [];
+            if (isset($request->order)) {
+              $order = [$request->order[0] => $request->order[1]];
+            }
 
-            // マーカー一覧データを取得
-            $markers = $this->mainService->getMarkerQuery($conditions, $order)->get();
-            // ステータスOK
-            return $this->success(['markers' => $markers]);
-
+            return $this->success(['markers' => $this->mainService->getMarkerQuery($conditions, $order)]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
