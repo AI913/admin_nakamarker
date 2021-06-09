@@ -248,7 +248,10 @@ class UserController extends BaseApiController
             // ロケーション情報の詳細を取得する際に設定
             if ($request->input('location_id')) { $conditions['id'] = $request->input('location_id'); }
             // ソート条件
-            $order = $this->setSort($request);
+            $order = [];
+            if (isset($request->order)) {
+              $order = [$request->order[0] => $request->order[1]];
+            }
             // ユーザの登録場所とそれに紐づくマーカー情報を取得
             $user_location = $this->userLocationService->getUserLocationQuery($conditions, $order);
 
