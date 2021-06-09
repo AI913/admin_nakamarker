@@ -21,42 +21,10 @@ class CommunityService extends BaseService
      * 引数1：検索条件, 引数2: ソート条件
      */
     public function getCommunityQuery($conditions=[], $order=[]) {
-        // communitiesテーブルからデータを取得
-        $query = $this->searchQuery($conditions)
-                      ->select('id as community_id', 'type', 'name', 'description', 'image_file', 'host_user_id')
-                      ->with('hostUser:id,name as host_user_name,image_file');
-        
-        // ソート条件
-        foreach($order as $key => $value) {
-            switch ($value) {
-                // 作成日時の昇順
-                case 99:
-                    $query->orderBy('created_at', 'asc');
-                break;
-                // 作成日時の降順
-                case -99:
-                    $query->orderBy('created_at', 'desc');
-                break;
-                // コミュニティの名前で昇順
-                case 1:
-                    $query->orderBy('name', 'asc');
-                break;
-                // コミュニティの名前で降順
-                case -1:
-                    $query->orderBy('name', 'desc');
-                break;
-                // コミュニティの種別で昇順
-                case 2:
-                    $query->orderBy('type', 'asc');
-                break;
-                // コミュニティの種別で降順
-                case -2:
-                    $query->orderBy('type', 'desc');
-                break;
-            }
-        }
-
-        return $query;
+      return $this->searchQuery($conditions, $order)
+                  ->select('id as community_id', 'type', 'name', 'description', 'image_file', 'host_user_id')
+                  ->with('hostUser:id,name as host_user_name,image_file')
+                  ->get();
     }
 
     /**
