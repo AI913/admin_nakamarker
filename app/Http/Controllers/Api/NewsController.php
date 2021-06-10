@@ -29,22 +29,26 @@ class NewsController extends BaseApiController
      */
     public function index(Request $request) {
         try {
-            // ソート条件
             $order = [];
             if (isset($request->order)) {
               $order = [$request->order[0] => $request->order[1]];
             }
-            // 取得件数の設定(configsテーブルのnews_listというkeyカラムで件数を設定する)
-            $limit = 0;
-            $config = $this->configService->searchOne(['key' => 'news_list']);
-            $config->value ? $limit = $config->value : '';
 
-            // ニュース一覧データを取得
-            $news = $this->mainService->getNewsQuery($order, $limit)->get();
+            $limit = $this->configService->searchOne(['key' => 'news_list'])->value;
 
-            // ステータスOK
-            return $this->success(['news' => $news]);
+            $returnData = [];
+            foreach ($this->mainService->getNewsQuery($order, $limit, $request->offset) as $data) {
+              array_push($returnData, [
+                'id'   => $data['id'],
+                'title' => $data['title'],
+                'body' => $data['body'],
+                'image_file' => $data['image_file'],
+                'condition_start_time' => $data['condition_start_time'],
+                'condition_end_time' => $data['condition_end_time']
+              ]);
+            }
 
+            return $this->success(['news_list' => $returnData]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
