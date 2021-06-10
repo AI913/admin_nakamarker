@@ -10,6 +10,7 @@ use App\Services\Api\CommunityHistoryService;
 use App\Services\Api\CommunityLocationService;
 use App\Services\Api\MarkerService;
 use App\Services\Api\UserService;
+use App\Services\Api\ConfigService;
 use App\Lib\Message;
 
 class CommunityController extends BaseApiController
@@ -20,6 +21,7 @@ class CommunityController extends BaseApiController
     protected $communityLocationService;
     protected $markerService;
     protected $userService;
+    protected $configService;
 
     /**
      * コミュニティ管理コントローラー
@@ -32,7 +34,8 @@ class CommunityController extends BaseApiController
         CommunityHistoryService $communityHistoryService,
         CommunityLocationService $communityLocationService,
         MarkerService $markerService,
-        UserService $userService
+        UserService $userService,
+        ConfigService $configService
     ) {
         $this->mainService  = $mainService;
         $this->communityMarkerService = $communityMarkerService;
@@ -40,6 +43,7 @@ class CommunityController extends BaseApiController
         $this->communityLocationService = $communityLocationService;
         $this->markerService = $markerService;
         $this->userService = $userService;
+        $this->configService = $configService;
         // フォルダ名の設定
         $this->folder = 'communities';
     }
@@ -392,7 +396,16 @@ class CommunityController extends BaseApiController
      */
     public function locationNews(Request $request) {
         try {
-          return $this->success(['updated_list' => $this->communityLocationService->getCommunityLocationUpadateQuery([],['updated_at' => 'desc'], $request->input('offset'))]);
+          // ソート条件
+          $order = [];
+          if (isset($request->order)) {
+            $order = [$request->order[0] => $request->order[1]];
+          }
+
+          $limit = $this->configService->searchOne(['key' => 'news_list'])->value;
+
+          $list = $this->communityLocationService->getCommunityLocationUpadateQuery([], $order, $limit, $request->input('offset'));
+          return $this->success(['update_list' => $list]);
         } catch (\Exception $e) {
           return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }

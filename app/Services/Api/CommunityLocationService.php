@@ -45,10 +45,8 @@ class CommunityLocationService extends BaseService
       * @param int $offset(取得開始するindex)
       * @return \Illuminate\Database\Eloquent\Builder|mixed
       */
-    public function getCommunityLocationUpadateQuery($conditions=[], $order=[], $offset=0) {
-      $relations = ['user' => [], 'community' => []];
-
-      $extract = $this->searchQuery($conditions, $order, $relations, 100, $offset)->get();
+    public function getCommunityLocationUpadateQuery($conditions=[], $order=['updated_at' => 'desc'], $limit=0, $offset=0) {
+      $extract = $this->searchQuery($conditions, $order, ['user' => [], 'community' => []], $limit, $offset)->get();
       $returnData = [];
       foreach ($extract as $value) {
         $action = "";
