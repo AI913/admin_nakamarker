@@ -426,4 +426,32 @@ class UserController extends BaseApiController
         }
     }
 
+    /**
+      * マーカーIDから登録場所情報の取得
+      * @param $request->marker_id マーカーID
+      * @throws \Exception
+      */
+    public function getUserLocationFromMarkerId(Request $request) {
+      try {
+        $conditions = [
+          'user_id'   => Auth::user()->id,
+          'marker_id' => $request['marker_id']
+        ];
+
+        $returnData = [];
+        foreach ($this->userLocationService->getUserLocationQuery($conditions) as $data) {
+          array_push($returnData, [
+            'id'   => $data['location_id'],
+            'name' => $data['location_name'],
+            'latitude' => $data['latitude'],
+            'longitude' => $data['longitude'],
+            'image_file' => $data['image_file']
+          ]);
+        }
+
+        return $this->success(['userlocation_list' => $returnData]);
+      } catch (\Exception $e) {
+        return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+      }
+    }
 }
