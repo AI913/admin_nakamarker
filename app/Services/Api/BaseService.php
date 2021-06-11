@@ -164,48 +164,30 @@ abstract class BaseService{
 
     /**
      * 指定データ保存
-     * @param $data
-     * @param bool $common
-     * @return Model|mixed
+     * @param $data 保存するデータ
+     * @return Model|mixed 保存したモデル
      * @throws \Exception
      */
-    public function save($data, $common=true) {
-        try {
-            // 同じ日時変数を使用する
-            $now = Carbon::now();
-            if ($common) {
-                // 共通DBレイアウトの場合
-                if (key_exists('id', $data) && $data['id']) {
-                    // UPDATE
-                    $model = $this->find($data["id"]);
-                } else {
-                    // INSERT
-                    $model = $this->newModel();
-                    $model->created_at = $now;
-                }
-                $model->updated_at      = $now;
-                $model->update_user_id  = self::getUserId();
-            } else {
-                // 共通DBレイアウトを使用しない場合
-                if (key_exists('id', $data) && $data['id']) {
-                    // UPDATE
-                    $model = $this->find($data["id"]);
-                } else {
-                    // INSERT
-                    $model = $this->newModel();
-                }
-                // 更新日時が存在しない場合に設定
-                // ※fillメソッド使用時は、updated_atが必須となるため
-                $model->timestamps = false;
-            }
+    public function save($data) {
+      try {
+        $now = Carbon::now();
 
-            $model->fill($data);
-            $model->save();
+        if (isset($data['id'])) {
+          $model = $this->find($data["id"]);
+        } else {
+          $model = $this->newModel();
+          $model->created_at = $now;
+        }
 
-            return $model;
-        } catch (\Exception $e) {
-            \Log::error('database save error:'.$e->getMessage());
-            throw new \Exception($e);
+        $model->update_user_id = self::getUserId();
+        $model->updated_at = $now;
+        $model->fill($data);
+        $model->save();
+
+        return $model;
+      } catch (\Exception $e) {
+        \Log::error('database save error:'.$e->getMessage());
+        throw new \Exception($e);
         }
     }
 
