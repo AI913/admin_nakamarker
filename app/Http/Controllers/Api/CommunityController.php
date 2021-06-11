@@ -74,37 +74,50 @@ class CommunityController extends BaseApiController
 
     /**
      * コミュニティ情報の登録
-     * @param Request $request
+     * @param Request $request->name コミュニティ名
+     * @param Request $request->image コミュニティ画像
+     * @param Request $request->status 公開ステータス(0 or 1)
+     * @param Request $request->description コミュニティ概要
      * @return \Illuminate\Http\JsonResponse
      */
     public function register(Request $request) {
         try {
             \DB::beginTransaction();
-            $userId = \Auth::user()->id;
             $data = $request->all();
-            // コミュニティの種別を設定
-            $data['status'] ? $data['type'] = config('const.community_personal_open') : $data['type'] = config('const.community_personal');
-            // ホストユーザの設定
+
+            $userId = \Auth::user()->id;
+
             $data['host_user_id'] = $userId;
-            // 画像ありの場合は保存処理を実行
-            if($request->hasFile('image')) {
+
+            if ($request['status']) {
+              $data['type'] = config('const.community_personal_open');
+            } else {
+              $data['type'] = config('const.community_personal');
+            }
+
+            if ($request->hasFile('image')) {
                 $data['image_file'] = $this->fileSave($request);
             }
 
             $community = $this->mainService->save($data);
 
             // 作成したコミュニティに作成者自身を参加
-            $addData = [
+            $updata = [
                 'community_id' => $community->id,
-                'user_id' => $userId,
-                'status' => 1
+                'user_id' => $userId
             ];
-            $this->communityHistoryService->save($addData);
+            $this->communityHistoryService->save($updata);
 
             \DB::commit();
 
-            return $this->success();
-
+            return $this->success(["created_community" => [
+                'id' => $community->id,
+                'type' => $community->type,
+                'name' => $community->name,
+                'description' => $community->description,
+                'status' => $community->status,
+                'image_url' => $community->image_url,
+            ]]);
         } catch (\Exception $e) {
             \DB::rollback();
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
