@@ -89,11 +89,8 @@ class CommunityController extends BaseApiController
 
             $data['host_user_id'] = $userId;
 
-            if ($request['status']) {
-              $data['type'] = config('const.community_personal_open');
-            } else {
-              $data['type'] = config('const.community_personal');
-            }
+            if ($request['status']) $data['type'] = config('const.community_personal_open');
+            else                    $data['type'] = config('const.community_personal');
 
             if ($request->hasFile('image')) {
                 $data['image_file'] = $this->fileSave($request);
@@ -126,7 +123,11 @@ class CommunityController extends BaseApiController
 
     /**
      * コミュニティ情報の更新
-     * @param Request $request
+     * @param Request $request->name コミュニティ名
+     * @param Request $request->image コミュニティ画像
+     * @param Request $request->status 公開ステータス(0 or 1)
+     * @param Request $request->description コミュニティ概要
+     * @param Request $request->community_id コミュニティID
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request) {
@@ -141,22 +142,30 @@ class CommunityController extends BaseApiController
             // データを配列化
             $data = $request->all();
             // コミュニティの種別を設定
-            key_exists('status', $data) && $data['status'] ? $data['type'] = config('const.community_personal_open') : $data['type'] = config('const.community_personal');
-            // コミュニティIDを保存用のキーに変換
-            $data['community_id'] ? $data['id'] = $data['community_id'] : '';
+            if (isset($data['status'])) {
+              if ($data['status']) $data['type'] = config('const.community_personal_open');
+              else                 $data['type'] = config('const.community_personal');
+            }
+
+            $data['id'] = $data['community_id'];
 
             // 画像ありの場合は保存処理を実行
             if($request->hasFile('image')) {
                 $data['image_file'] = $this->fileSave($request);
             }
 
-            // コミュニティデータを保存
-            $this->mainService->save($data);
+            $community = $this->mainService->save($data);
 
             \DB::commit();
-            // ステータスOK
-            return $this->success();
 
+            return $this->success(["community" => [
+                'id' => $community->id,
+                'type' => $community->type,
+                'name' => $community->name,
+                'description' => $community->description,
+                'status' => $community->status,
+                'image_url' => $community->image_url,
+            ]]);
         } catch (\Exception $e) {
             \DB::rollback();
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
