@@ -59,7 +59,7 @@ class CommunityLocationService extends BaseService
             $action = "編集";
           }
         }
-
+        $tmp['location_id'] = $value['id'];
         $tmp['community_id'] = $value['community_id'];
         $tmp['image_url'] = $value['image_url'];
         $tmp['updated_at'] = $value['updated_at'];
