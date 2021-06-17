@@ -115,13 +115,11 @@ class UserController extends BaseApiController
             if($request->hasFile('image')) {
                 $data['image_file'] = $this->fileSave($request);
             }
-            // ユーザ名の更新
-            $user = $this->userService->save($data);
+            
+            $this->userService->save($data);
 
             \DB::commit();
-            // ステータスOK
-            return $this->success(['name' => $user->name]);
-
+            return $this->success();
         } catch (\Exception $e) {
             \DB::rollback();
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);

@@ -25,7 +25,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name', 'user_token', 'firebase_uid', 'email', 'password', 'login_time', 'device_token', 
-        'status', 'memo', 'user_agent', 'onetime_password', 'limit_date', 'del_flg'
+        'status', 'memo', 'user_agent', 'onetime_password', 'limit_date', 'image_file', 'del_flg'
     ];
 
     /**
