@@ -106,6 +106,9 @@ class UserController extends BaseApiController
         try {
             \DB::beginTransaction();
             // 保存するデータを配列に格納
+
+            \Log::debug($request);
+            
             $data = [
                 'id'   => Auth::user()->id,
                 'name' => $request->input('name'),
@@ -313,6 +316,8 @@ class UserController extends BaseApiController
      */
     public function getUserMarker(Request $request) {
         try {
+            \Log::debug($request);
+
             // 検索条件
             $conditions = [];
             $conditions['id'] = Auth::user()->id;
@@ -322,7 +327,15 @@ class UserController extends BaseApiController
               $order = [$request->order[0] => $request->order[1]];
             }
 
-            return $this->success(['marker_list' => $this->userService->getUserMarkerQuery($conditions, $order)]);
+            return $this->success(['marker_list' => 
+            // [
+            //     'marker_id' => $marker->id,
+            //     'type' => $marker->type,
+            //     'name' => $marker->name,
+            //     'description' => $marker->description,
+            //     'image_file' => $marker->image_url,
+            // ]
+            $this->userService->getUserMarkerQuery($conditions, $order) -> marker_id ]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
