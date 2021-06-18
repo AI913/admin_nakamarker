@@ -61,13 +61,13 @@ class UserController extends BaseApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function info(Request $request) {
+    public function info(Request $request)
+    {
         try {
             // ステータスOK
             return $this->success(['name' => Auth::user()->name]);
-
         } catch (\Exception $e) {
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -76,25 +76,26 @@ class UserController extends BaseApiController
      * @param RoleService $roleService
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create(Request $request) {
-      try {
-        \DB::beginTransaction();
+    public function create(Request $request)
+    {
+        try {
+            \DB::beginTransaction();
 
-        $user = $this->userService->create($request->all());
-        // todo: アプリからの送信方法、サーバ側の保存方法を見直してから
-        // if($request->hasFile('image')) {
-        //   $updateData = ['id' => $user->id];
-        //   $updateData['image_file'] = $this->fileSave($request);
-        //   $this->userService->save($updateData, false);
-        // }
+            $user = $this->userService->create($request->all());
+            // todo: アプリからの送信方法、サーバ側の保存方法を見直してから
+            // if($request->hasFile('image')) {
+            //   $updateData = ['id' => $user->id];
+            //   $updateData['image_file'] = $this->fileSave($request);
+            //   $this->userService->save($updateData, false);
+            // }
 
-        \DB::commit();
+            \DB::commit();
 
-        return $this->success(['user_token' => $user->user_token]);
-      } catch (\Exception $e) {
-        \DB::rollBack();
-        return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
-      }
+            return $this->success(['user_token' => $user->user_token]);
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
+        }
     }
 
     /**
@@ -102,20 +103,21 @@ class UserController extends BaseApiController
      * @param RoleService $roleService
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         try {
             \DB::beginTransaction();
             // 保存するデータを配列に格納
 
             \Log::debug($request);
-            
+
             $data = [
                 'id'   => Auth::user()->id,
                 'name' => $request->input('name'),
                 'device_token' => $request->input('device_token')
             ];
             // 画像ありの場合は保存処理を実行
-            if($request->hasFile('image')) {
+            if ($request->hasFile('image')) {
                 $data['image_file'] = $this->fileSave($request);
             }
             // ユーザ名の更新
@@ -124,10 +126,9 @@ class UserController extends BaseApiController
             \DB::commit();
             // ステータスOK
             return $this->success(['name' => $user->name]);
-
         } catch (\Exception $e) {
             \DB::rollback();
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -136,7 +137,8 @@ class UserController extends BaseApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function pointInfo(Request $request) {
+    public function pointInfo(Request $request)
+    {
         try {
             // ポイント取得
             $free_points = $this->userService->getFreePointQuery(['user_points_histories.to_user_id' => Auth::user()->id])->get();
@@ -153,9 +155,8 @@ class UserController extends BaseApiController
                 'remaining_free_point' => $remaining_free_point,
                 'remaining_charge_point' => $remaining_charge_point
             ]);
-
         } catch (\Exception $e) {
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -166,32 +167,36 @@ class UserController extends BaseApiController
      * @return array
      * @throws \Exception
      */
-    public function pointUpdate(Request $request) {
+    public function pointUpdate(Request $request)
+    {
         try {
             \DB::beginTransaction();
             // ポイントが増加する場合
-            if($request->give_point) {
+            if ($request->give_point) {
                 // ログインユーザの総ポイント数を取得
                 $points = $this->userService->getUserPointQuery(['users.id' => Auth::user()->id])->first();
 
                 // 付与対象のユーザが存在するか確認
-                if($this->userService->searchExists(['id' => $request->to_user_id, 'status' => config('const.user_app_unsubscribe')]) ||
-                   $this->userService->searchExists(['id' => $request->to_user_id, 'status' => config('const.user_app_account_stop')])
+                if (
+                    $this->userService->searchExists(['id' => $request->to_user_id, 'status' => config('const.user_app_unsubscribe')]) ||
+                    $this->userService->searchExists(['id' => $request->to_user_id, 'status' => config('const.user_app_account_stop')])
                 ) {
                     return $this->error(-3, ["message" => Message::ERROR_NOT_EXISTS_USER]);
                 }
 
                 // ポイント付与の種別がギフトかつ無料の付与ポイントが無料の所持ポイントより多い場合
-                if($request->type == config('const.point_gift') &&
-                   $request->charge_type == config('const.charge_type_off') &&
-                   $request->give_point > $points->free_total_points
+                if (
+                    $request->type == config('const.point_gift') &&
+                    $request->charge_type == config('const.charge_type_off') &&
+                    $request->give_point > $points->free_total_points
                 ) {
                     return $this->error(-2, ["message" => Message::ERROR_NOT_OVER_FREE_POINT]);
                 }
                 // ポイント付与の種別がギフトかつ有料の付与ポイントが有料の所持ポイントより多い場合
-                if($request->type == config('const.point_gift') &&
-                   $request->charge_type == config('const.charge_type_on') &&
-                   $request->give_point > $points->total_points
+                if (
+                    $request->type == config('const.point_gift') &&
+                    $request->charge_type == config('const.charge_type_on') &&
+                    $request->give_point > $points->total_points
                 ) {
                     return $this->error(-2, ["message" => Message::ERROR_NOT_OVER_CHARGE_POINT]);
                 }
@@ -210,7 +215,7 @@ class UserController extends BaseApiController
                 // ポイント履歴の更新or作成
                 $model = $this->userPointHistoryService->save($data);
                 // ポイント付与の種別がギフトだった場合
-                if($model->type == 2) {
+                if ($model->type == 2) {
                     // ポイントをギフトしたユーザのポイントを消費
                     $this->userPointHistoryService->getPayPointQuery($data['from_user_id'], $data['give_point'], $data['charge_type']);
                 }
@@ -230,11 +235,10 @@ class UserController extends BaseApiController
                     'remaining_free_point' => $remaining_free_point,
                     'remaining_charge_point' => $remaining_charge_point
                 ]);
-
             }
         } catch (\Exception $e) {
             \DB::rollback();
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -243,22 +247,25 @@ class UserController extends BaseApiController
      * @param $id
      * @throws \Exception
      */
-    public function locationInfo(Request $request) {
+    public function locationInfo(Request $request)
+    {
         try {
             // 検索条件
             $conditions = [];
             $conditions['user_id'] = \Auth::user()->id;
             // ロケーション情報の詳細を取得する際に設定
-            if ($request->input('location_id')) { $conditions['id'] = $request->input('location_id'); }
+            if ($request->input('location_id')) {
+                $conditions['id'] = $request->input('location_id');
+            }
             // ソート条件
             $order = [];
             if (isset($request->order)) {
-              $order = [$request->order[0] => $request->order[1]];
+                $order = [$request->order[0] => $request->order[1]];
             }
 
             return $this->success(['location_list' => $this->userLocationService->getUserLocationQuery($conditions, $order)]);
         } catch (\Exception $e) {
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -267,7 +274,8 @@ class UserController extends BaseApiController
      * @param $id
      * @throws \Exception
      */
-    public function locationRegister(Request $request) {
+    public function locationRegister(Request $request)
+    {
         try {
             \DB::beginTransaction();
 
@@ -276,7 +284,7 @@ class UserController extends BaseApiController
             $data['id'] = $data['location_id'];
             $data['user_id'] = Auth::user()->id;
             // 画像ありの場合は保存処理を実行
-            if($request->hasFile('image')) {
+            if ($request->hasFile('image')) {
                 $data['image_file'] = $this->fileSave($request, config('const.user_locations'));
             }
 
@@ -285,7 +293,7 @@ class UserController extends BaseApiController
             return $this->success(['location_list' => $locationData]);
         } catch (\Exception $e) {
             \DB::rollback();
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -294,7 +302,8 @@ class UserController extends BaseApiController
      * @param $id
      * @throws \Exception
      */
-    public function locationRemove(Request $request) {
+    public function locationRemove(Request $request)
+    {
         try {
             \DB::beginTransaction();
             // ユーザの登録場所とそれに紐づくマーカー情報を取得
@@ -305,7 +314,7 @@ class UserController extends BaseApiController
             return $this->success();
         } catch (\Exception $e) {
             \DB::rollback();
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -314,7 +323,8 @@ class UserController extends BaseApiController
      * @param $id
      * @throws \Exception
      */
-    public function getUserMarker(Request $request) {
+    public function getUserMarker(Request $request)
+    {
         try {
             \Log::debug($request);
 
@@ -324,20 +334,24 @@ class UserController extends BaseApiController
             // ソート条件
             $order = [];
             if (isset($request->order)) {
-              $order = [$request->order[0] => $request->order[1]];
+                $order = [$request->order[0] => $request->order[1]];
             }
 
-            return $this->success(['marker_list' => 
-            // [
-            //     'marker_id' => $marker->id,
-            //     'type' => $marker->type,
-            //     'name' => $marker->name,
-            //     'description' => $marker->description,
-            //     'image_file' => $marker->image_url,
-            // ]
-            $this->userService->getUserMarkerQuery($conditions, $order) -> marker_id ]);
+            $returnData = [];
+
+            foreach ($this->userService->getUserMarkerQuery($conditions, $order) as $markers) {
+                array_push($returnData, [
+                    'marker_id' => $markers['id'],
+                    'type' => $markers['type'],
+                    'name' => $markers['name'],
+                    'description' => $markers['description'],
+                    'image_file' => $markers['image_url'],
+                ]);
+            }
+
+            return $this->success(['marker_list' => $returnData]);
         } catch (\Exception $e) {
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -346,7 +360,8 @@ class UserController extends BaseApiController
      * @param $id
      * @throws \Exception
      */
-    public function markerUpdate(Request $request) {
+    public function markerUpdate(Request $request)
+    {
         try {
             \DB::beginTransaction();
             // マーカー情報の取得
@@ -389,7 +404,7 @@ class UserController extends BaseApiController
             ]);
         } catch (\Exception $e) {
             \DB::rollBack();
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -398,7 +413,8 @@ class UserController extends BaseApiController
      * @param $id
      * @throws \Exception
      */
-    public function getUserJoinedCommunity(Request $request) {
+    public function getUserJoinedCommunity(Request $request)
+    {
         try {
             // 検索条件
             $conditions = [];
@@ -406,20 +422,21 @@ class UserController extends BaseApiController
             // ソート条件
             $order = [];
             if (isset($request->order)) {
-              $order = [$request->order[0] => $request->order[1]];
+                $order = [$request->order[0] => $request->order[1]];
             }
 
             return $this->success(['community_list' => $this->userService->getUserCommunityQuery($conditions, $order)]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
     /**
      * コミュニティ参加情報を更新
      */
-    public function communityUpdate(Request $request) {
+    public function communityUpdate(Request $request)
+    {
         try {
             \DB::beginTransaction();
 
@@ -435,36 +452,37 @@ class UserController extends BaseApiController
             return $this->success();
         } catch (\Exception $e) {
             \DB::rollBack();
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
     /**
-      * マーカーIDから登録場所情報の取得
-      * @param $request->marker_id マーカーID
-      * @throws \Exception
-      */
-    public function getUserLocationFromMarkerId(Request $request) {
-      try {
-        $conditions = [
-          'user_id'   => Auth::user()->id,
-          'marker_id' => $request['marker_id']
-        ];
+     * マーカーIDから登録場所情報の取得
+     * @param $request->marker_id マーカーID
+     * @throws \Exception
+     */
+    public function getUserLocationFromMarkerId(Request $request)
+    {
+        try {
+            $conditions = [
+                'user_id'   => Auth::user()->id,
+                'marker_id' => $request['marker_id']
+            ];
 
-        $returnData = [];
-        foreach ($this->userLocationService->getUserLocationQuery($conditions) as $data) {
-          array_push($returnData, [
-            'id'   => $data['location_id'],
-            'name' => $data['location_name'],
-            'latitude' => $data['latitude'],
-            'longitude' => $data['longitude'],
-            'image_file' => $data['image_file']
-          ]);
+            $returnData = [];
+            foreach ($this->userLocationService->getUserLocationQuery($conditions) as $data) {
+                array_push($returnData, [
+                    'id'   => $data['location_id'],
+                    'name' => $data['location_name'],
+                    'latitude' => $data['latitude'],
+                    'longitude' => $data['longitude'],
+                    'image_file' => $data['image_file']
+                ]);
+            }
+
+            return $this->success(['userlocation_list' => $returnData]);
+        } catch (\Exception $e) {
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
-
-        return $this->success(['userlocation_list' => $returnData]);
-      } catch (\Exception $e) {
-        return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
-      }
     }
 }
