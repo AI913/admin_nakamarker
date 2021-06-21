@@ -267,12 +267,12 @@ class UserController extends BaseApiController
             foreach ($this->userLocationService->getUserLocationQuery($conditions, $order) as $locations) {
                 array_push($returnData, [
                     'location_id' => $locations['location_id'],
-                    'name' => $locations['name'],
+                    'name' => $locations['location_name'],
                     'latitude' => $locations['latitude'],
                     'longitude' => $locations['longitude'],
                     'image_file' => $locations['image_url'],
-                    'marker_type' => $locations['type'],
-                    'marker_name' => $locations['marker_name'],
+                    'marker_type' => $locations['marker']['marker_type'],
+                    'marker_name' => $locations['marker']['marker_name'],
                     'memo' => $locations['memo']
                 ]);
             }
