@@ -81,13 +81,16 @@ class UserController extends BaseApiController
         try {
             \DB::beginTransaction();
 
-            $user = $this->userService->create($request->all());
-            // todo: アプリからの送信方法、サーバ側の保存方法を見直してから
-            // if($request->hasFile('image')) {
-            //   $updateData = ['id' => $user->id];
-            //   $updateData['image_file'] = $this->fileSave($request);
-            //   $this->userService->save($updateData, false);
-            // }
+            $data = [
+                'name' => $request->input('name'),
+                'device_token' => $request->input('device_token')
+            ];
+            
+            if ($request->hasFile('image')) {
+                $data['image_file'] = $this->fileSave($request);
+            }
+
+            $user = $this->userService->create($data);
 
             \DB::commit();
 
