@@ -207,13 +207,21 @@ class CommunityController extends BaseApiController
             if (isset($request->order)) {
               $order = [$request->order[0] => $request->order[1]];
             }
-            // コミュニティのマーカー情報を取得
-            $community_marker = $this->mainService->getCommunityMarkerQuery($conditions, $order);
+           
+            $returnData = [];
 
-            // ステータスOK
-            return $this->success([
-                'marker_list' => $community_marker,
-            ]);
+            foreach ($this->mainService->getCommunityMarkerQuery($conditions, $order) as $markers) {
+                array_push($returnData, [
+                    'history_id' => $markers['history_id'],
+                    'marker_id' => $markers['marker_id'],
+                    'type' => $markers['type'],
+                    'name' => $markers['name'],
+                    'description' => $markers['description'],
+                    'image_file' => $markers['image_url'],
+                ]);
+            }
+
+            return $this->success(['marker_list' => $returnData]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
@@ -298,7 +306,17 @@ class CommunityController extends BaseApiController
             $conditions = [];
             if ($request->input('community_id')) { $conditions['id'] = $request->input('community_id'); }
 
-            return $this->success(['communities' => $this->mainService->getApplyListQuery(config('const.community_history_apply'), $conditions)]);
+            $returnData = [];
+
+            foreach ($this->mainService->getApplyListQuery(config('const.community_history_apply'), $conditions) as $users) {
+                array_push($returnData, [
+                    'history_id' => $users['history_id'],
+                    'user_name' => $users['user_name'],
+                    'memo' => $users['memo']
+                ]);
+            }
+
+            return $this->success(['applicant_list' => $returnData]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
