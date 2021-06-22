@@ -265,7 +265,22 @@ class UserController extends BaseApiController
                 $order = [$request->order[0] => $request->order[1]];
             }
 
-            return $this->success(['location_list' => $this->userLocationService->getUserLocationQuery($conditions, $order)]);
+            $returnData = [];
+
+            foreach ($this->userLocationService->getUserLocationQuery($conditions, $order) as $locations) {
+                array_push($returnData, [
+                    'location_id' => $locations['location_id'],
+                    'name' => $locations['location_name'],
+                    'latitude' => $locations['latitude'],
+                    'longitude' => $locations['longitude'],
+                    'image_file' => $locations['image_url'],
+                    'marker_type' => $locations['marker']['marker_type'],
+                    'marker_name' => $locations['marker']['marker_name'],
+                    'memo' => $locations['memo']
+                ]);
+            }
+
+            return $this->success(['location_list' => $returnData]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
