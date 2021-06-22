@@ -370,13 +370,27 @@ class CommunityController extends BaseApiController
             if (isset($request->order)) {
               $order = [$request->order[0] => $request->order[1]];
             }
-            // コミュニティのロケーション情報を取得
-            $community_location = $this->communityLocationService->getCommunityLocationQuery($conditions, $order);
 
-            // ステータスOK
-            return $this->success([
-                'location_list' => $community_location,
-            ]);
+            $returnData = [];
+
+            // コミュニティのロケーション情報を取得
+            foreach ($this->communityLocationService->getCommunityLocationQuery($conditions, $order) as $locations) {
+                array_push($returnData, [
+                    'location_id' => $locations['location_id'],
+                    'name' => $locations['location_name'],
+                    'latitude' => $locations['latitude'],
+                    'longitude' => $locations['longitude'],
+                    'image_file' => $locations['image_file'],
+                    'marker_type' => $locations['marker']['marker_type'],
+                    'marker_id' => $locations['marker_id'],
+                    'marker_name' => $locations['marker']['marker_name'],
+                    'user_id' => $locations['user_id'],
+                    'user_name' => $locations['user']['user_name'],
+                    'memo' => $locations['memo'],
+                ]);
+            }
+
+            return $this->success(['location_list' => $returnData]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
