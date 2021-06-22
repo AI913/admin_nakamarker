@@ -282,7 +282,6 @@ class CommunityController extends BaseApiController
      */
     public function getUserListOfJoinRequest(Request $request) {
         try {
-            \Log::debug($request);
             // コミュニティのホストかどうかを確認
             if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
                 return $this->error(-10, ["message" => Message::ERROR_NOT_HOST]);
