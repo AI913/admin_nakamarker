@@ -55,8 +55,6 @@ class CommunityController extends BaseApiController
      */
     public function getAllCommunity(Request $request) {
         try {
-
-            \Log::debug($request);
             // 検索条件
             $conditions = [];
             $conditions['status'] = config('const.open'); // "公開"で設定されているものだけに絞る
