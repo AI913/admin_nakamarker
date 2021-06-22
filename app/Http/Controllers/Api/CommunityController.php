@@ -192,13 +192,21 @@ class CommunityController extends BaseApiController
             if (isset($request->order)) {
               $order = [$request->order[0] => $request->order[1]];
             }
-            // コミュニティのマーカー情報を取得
-            $community_marker = $this->mainService->getCommunityMarkerQuery($conditions, $order);
+           
+            $returnData = [];
 
-            // ステータスOK
-            return $this->success([
-                'marker_list' => $community_marker,
-            ]);
+            foreach ($this->mainService->getCommunityMarkerQuery($conditions, $order) as $markers) {
+                array_push($returnData, [
+                    'history_id' => $markers['history_id'],
+                    'marker_id' => $markers['marker_id'],
+                    'type' => $markers['type'],
+                    'name' => $markers['name'],
+                    'description' => $markers['description'],
+                    'image_file' => $markers['image_url'],
+                ]);
+            }
+
+            return $this->success(['marker_list' => $returnData]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
