@@ -282,6 +282,7 @@ class CommunityController extends BaseApiController
      */
     public function getUserListOfJoinRequest(Request $request) {
         try {
+            \Log::debug($request);
             // コミュニティのホストかどうかを確認
             if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
                 return $this->error(-10, ["message" => Message::ERROR_NOT_HOST]);
@@ -291,7 +292,17 @@ class CommunityController extends BaseApiController
             $conditions = [];
             if ($request->input('community_id')) { $conditions['id'] = $request->input('community_id'); }
 
-            return $this->success(['communities' => $this->mainService->getApplyListQuery(config('const.community_history_apply'), $conditions)]);
+            $returnData = [];
+
+            foreach ($this->mainService->getApplyListQuery(config('const.community_history_apply'), $conditions) as $users) {
+                array_push($returnData, [
+                    'history_id' => $users['history_id'],
+                    'user_name' => $users['user_name'],
+                    'memo' => $users['memo']
+                ]);
+            }
+
+            return $this->success(['applicant_list' => $returnData]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
