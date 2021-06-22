@@ -66,7 +66,22 @@ class CommunityController extends BaseApiController
               $order = [$request->order[0] => $request->order[1]];
             }
 
-            return $this->success(['communities' => $this->mainService->getCommunityQuery($conditions, $order)]);
+            $returnData = [];
+
+            foreach ($this->mainService->getCommunityQuery($conditions, $order) as $data) {
+                array_push($returnData, [
+                    'community_id'   => $data['community_id'],
+                    'type'   => $data['type'],
+                    'name' => $data['name'],
+                    'description'   => $data['description'],
+                    'community_image_file' => $data['image_file'],
+                    'host_user_id' => $data['host_user_id'],
+                    'host_user_name' => $data['hostUser']['host_user_name'],
+                    'user_image_file' => $data['hostUser']['image_file']
+                ]);
+            }
+
+            return $this->success(['communities' => $returnData]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
         }
