@@ -399,8 +399,8 @@ class UserController extends BaseApiController
             $user_marker = $this->userMarkerService->save($data);
 
             // ポイント取得
-            $free_points = $this->userService->getFreePointQuery(['user_points_histories.to_user_id' => Auth::user()->id])->get();
-            $points = $this->userService->getPointQuery(['user_points_histories.to_user_id' => Auth::user()->id])->get();
+            $free_points = $this->userService->getFreePointQuery(['user_points_histories.to_user_id' => Auth::user()->id])->first();
+            $points = $this->userService->getPointQuery(['user_points_histories.to_user_id' => Auth::user()->id])->first();
 
             if (!$points) {
                 // URL無効エラー
@@ -414,10 +414,8 @@ class UserController extends BaseApiController
             \DB::commit();
             // ステータスOK
             return $this->success([
-                'total_give_free_point' => $free_points,
-                'total_give_charge_point' => $points,
-                'remaining_free_point' => $remaining_free_point,
-                'remaining_charge_point' => $remaining_charge_point
+                'total_give_free_point' => $free_points["free_total_points"],
+                'total_give_charge_point' => $points["total_points"]
             ]);
         } catch (\Exception $e) {
             \DB::rollBack();
