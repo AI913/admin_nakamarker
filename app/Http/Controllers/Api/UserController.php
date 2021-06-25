@@ -142,22 +142,47 @@ class UserController extends BaseApiController
     public function pointInfo(Request $request)
     {
         try {
-            // ポイント取得
             $free_points = $this->userService->getFreePointQuery(['user_points_histories.to_user_id' => Auth::user()->id, 'charge_type' => 1,])->first();
-            $points = $this->userService->getPointQuery(['user_points_histories.to_user_id' => Auth::user()->id, 'charge_type' => 2,])->first();
+            $chargePoints = $this->userService->getPointQuery(['user_points_histories.to_user_id' => Auth::user()->id, 'charge_type' => 2,])->first();
 
-            // 有効期限の最も近いポイントをそれぞれ取得
             $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id, 'charge_type' => 1, 'used_flg' => 0])->first();
             $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id, 'charge_type' => 2, 'used_flg' => 0])->first();
-            $data = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id])->first();
 
-            // ステータスOK
+            $limitDateData = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id])->first();
+            \Log::debug($limitDateData);
+
+            // 以下、データが無い場合のnullチェック。
+            $totalFree = 0;
+            if (isset($free_points)) {
+                $totalFree = (int)$free_points['free_total_points'];
+            }
+
+            $totalCharge = 0;
+            if (isset($chargePoints)) {
+                $totalCharge = (int)$chargePoints['total_points'];
+            }
+
+            $remainingFree = 0;
+            if (isset($remaining_free_point)) {
+                $remainingFree = (int)$remaining_free_point['remaining_points'];
+            }
+
+            $remainingCharge = 0;
+            if (isset($remaining_charge_point)) {
+                $remainingCharge = (int)$remaining_charge_point['remaining_points'];
+            }
+
+            $limitDate = 0;
+            if (isset($limitDateData)) {
+                $limitDate = $limitDateData['limit_date'];
+            }
+            
             return $this->success([
-                'total_give_free_point' => $free_points['free_total_points'],
-                'total_give_charge_point' => $points['total_points'],
-                'limit_date' => $data['limit_date'],
-                'remaining_free_point' => $remaining_free_point['remaining_points'],
-                'remaining_charge_point' => $remaining_charge_point['remaining_points']
+                'total_give_free_point' => $totalFree,
+                'total_give_charge_point' => $totalCharge,
+                'limit_date' => $limitDate,
+                'remaining_free_point' => $remainingFree,
+                'remaining_charge_point' => $remainingCharge
             ]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
