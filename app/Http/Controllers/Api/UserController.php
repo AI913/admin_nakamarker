@@ -423,28 +423,33 @@ class UserController extends BaseApiController
             ];
 
             // 保存処理
-            $user_marker = $this->userMarkerService->save($data);
+            $this->userMarkerService->save($data);
 
             // ポイント取得
-            $free_points = $this->userService->getFreePointQuery(['user_points_histories.to_user_id' => Auth::user()->id])->get();
-            $points = $this->userService->getPointQuery(['user_points_histories.to_user_id' => Auth::user()->id])->get();
+            $free_points = $this->userService->getFreePointQuery(['user_points_histories.to_user_id' => Auth::user()->id])->first();
+            $chargePoints = $this->userService->getPointQuery(['user_points_histories.to_user_id' => Auth::user()->id])->first();
 
-            if (!$points) {
+            if (!$chargePoints) {
                 // URL無効エラー
                 return $this->error(-2, ['message' => Message::ERROR_REGISTER_TOKEN]);
             }
-
-            // 有効期限の最も近いポイントをそれぞれ取得
-            $remaining_free_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id, 'charge_type' => 1, 'used_flg' => 0])->first();
-            $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id, 'charge_type' => 2, 'used_flg' => 0])->first();
-
+            
             \DB::commit();
-            // ステータスOK
+
+            // 以下、データが無い場合のnullチェック。
+            $totalFree = 0;
+            if (isset($free_points)) {
+                $totalFree = (int)$free_points['free_total_points'];
+            }
+
+            $totalCharge = 0;
+            if (isset($chargePoints)) {
+                $totalCharge = (int)$chargePoints['total_points'];
+            }
+            
             return $this->success([
-                'total_give_free_point' => $free_points,
-                'total_give_charge_point' => $points,
-                'remaining_free_point' => $remaining_free_point,
-                'remaining_charge_point' => $remaining_charge_point
+                'total_give_free_point' => $totalFree,
+                'total_give_charge_point' => $totalCharge
             ]);
         } catch (\Exception $e) {
             \DB::rollBack();
