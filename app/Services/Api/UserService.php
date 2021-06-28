@@ -134,7 +134,12 @@ class UserService extends BaseService
                       ->with(['marker' => function ($query) {
                           // user_markersテーブルとmarkersテーブルの値をクエリすることが可能
                           $query->select('user_markers.marker_id', 
-                                         'markers.type', 'markers.name', 'markers.image_file', 'markers.description')
+                                         'markers.type',
+                                         'markers.name',
+                                         'markers.description',
+                                         'markers.price',
+                                         'markers.charge_type',
+                                         'markers.status')
                                 ->where('user_markers.del_flg', "=", 0);
                       }])
                       ->get();

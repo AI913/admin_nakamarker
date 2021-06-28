@@ -385,11 +385,14 @@ class UserController extends BaseApiController
 
             foreach ($this->userService->getUserMarkerQuery($conditions, $order) as $markers) {
                 array_push($returnData, [
-                    'marker_id' => $markers['id'],
+                    'marker_id' => $markers['marker_id'],
                     'type' => $markers['type'],
                     'name' => $markers['name'],
                     'description' => $markers['description'],
-                    'image_file' => $markers['image_url'],
+                    'price' => $markers['price'],
+                    'charge_type' => $markers['charge_type'],
+                    'status' => $markers['status'],
+                    'image_file' => $markers['image_url']
                 ]);
             }
 
