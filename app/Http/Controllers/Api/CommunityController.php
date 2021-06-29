@@ -122,7 +122,8 @@ class CommunityController extends BaseApiController
             // 作成したコミュニティに作成者自身を参加
             $updata = [
                 'community_id' => $community->id,
-                'user_id' => $userId
+                'user_id' => $userId,
+                'status' => config('const.community_history_approval')
             ];
             $this->communityHistoryService->save($updata);
 
