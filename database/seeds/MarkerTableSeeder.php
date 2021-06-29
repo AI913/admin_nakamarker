@@ -22,6 +22,7 @@ class MarkerTableSeeder extends Seeder
             \App\Model\Marker::create([
                 'type' => $faker->numberBetween(1, 3), // 1~3の間で乱数
                 'name' => 'marker'.$i,
+                'search_word' => $faker->city,
                 'price' => $price[array_rand($price , 1 )],   // 購入価格ポイントの値をランダムに抽出
                 'charge_type' => $faker->numberBetween(1, 3), // 1~3の間で乱数
                 'status' => 1,
