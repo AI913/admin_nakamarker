@@ -65,19 +65,25 @@ class CommunityController extends BaseApiController
             if (isset($request->order)) {
               $order = [$request->order[0] => $request->order[1]];
             }
+            
+            $joiningCommunities = $this->userService->getUserCommunityQuery(['id' => \Auth::user()->id])->toArray(); 
 
             $returnData = [];
-
             foreach ($this->mainService->getCommunityQuery($conditions, $order) as $data) {
                 array_push($returnData, [
-                    'community_id'   => $data['community_id'],
-                    'type'   => $data['type'],
+                    'community_id' => $data['id'],
+                    'type' => $data['type'],
                     'name' => $data['name'],
-                    'description'   => $data['description'],
-                    'community_image_file' => $data['image_file'],
+                    'description' => $data['description'],
+                    'status' => $data['status'],
+                    'created_at' => $data['created_at'],
+                    'updated_at' => $data['updated_at'],
+                    'image_url' => $data['image_url'],
                     'host_user_id' => $data['host_user_id'],
                     'host_user_name' => $data['hostUser']['host_user_name'],
-                    'user_image_file' => $data['hostUser']['image_file']
+                    'host_user_image_url' => $data['hostUser']['image_url'],
+                    'is_host' => \Auth::user()->id == $data['host_user_id'],
+                    'is_join' => in_array($data['id'], array_column($joiningCommunities, 'community_id'))
                 ]);
             }
 
