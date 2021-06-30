@@ -63,6 +63,8 @@ class CommunityLocationService extends BaseService
         $tmp['community_id'] = $value['community_id'];
         $tmp['image_url'] = $value['image_url'];
         $tmp['updated_at'] = $value['updated_at'];
+        $tmp['latitude'] = (double)$value['latitude'];
+        $tmp['longitude'] = (double)$value['longitude'];
         $tmp['text'] = $value['community']['name']." の ".
                        $this->userService->find($value['update_user_id'])->name." が ".
                        $this->markerService->find($value['marker_id'])->name." を ".
