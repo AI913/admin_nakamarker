@@ -42,7 +42,7 @@ class NewsController extends BaseApiController
                 'id'   => $data['id'],
                 'title' => $data['title'],
                 'body' => $data['body'],
-                'image_file' => $data['image_file'],
+                'image_url' => $data['image_url'],
                 'condition_start_time' => $data['condition_start_time'],
                 'condition_end_time' => $data['condition_end_time']
               ]);
