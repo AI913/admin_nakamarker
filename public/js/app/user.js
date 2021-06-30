@@ -1,4 +1,4 @@
-$(function(){
+$(function () {
     // 一覧画面のみ適用(ID=main_listがある場合のみ)
     if ($('#main_list').length) {
 
@@ -13,137 +13,137 @@ $(function(){
     /* 
      *   登録場所の画像削除
      */
-        $(document).on('click', '.btn-delete',function(){
-            if(confirm('画像を削除して宜しいでしょうか？')) {
-                deleteImage($(this));
-            }
-            return;
-        })
+    $(document).on('click', '.btn-delete', function () {
+        if (confirm('画像を削除して宜しいでしょうか？')) {
+            deleteImage($(this));
+        }
+        return;
+    })
 
     /* 
      *   登録場所の"備考"ボタン押下処理
      */
-        $(document).on('click', '.btn-location',function(){
-            let user_id = $('#user_id').data('id');
-            let location_id = $(this).data('id');
-            setLocationDetail(location_id, user_id);
-        })
+    $(document).on('click', '.btn-location', function () {
+        let user_id = $('#user_id').data('id');
+        let location_id = $(this).data('id');
+        setLocationDetail(location_id, user_id);
+    })
 
     /* 
      *   ポイント履歴
      */
-        // "閉じる"ボタン押下時にポイント入力フォームの値をリセットする
-        $(document).on('click', '.point_modal', function(){
-            $('#create_point').val('');
-            $('#select_point_type').val(null);
-            $('#select_charge_type').val(null);
-        });
-        // リセットボタン押下時にポイント入力フォームの値をリセットする
-        $(document).on('click', '#detail_point_reset', function(){
-            $('#create_point').val('');
-            $('#select_point_type').val(null);
-            $('#select_charge_type').val(null);
-        });
+    // "閉じる"ボタン押下時にポイント入力フォームの値をリセットする
+    $(document).on('click', '.point_modal', function () {
+        $('#create_point').val('');
+        $('#select_point_type').val(null);
+        $('#select_charge_type').val(null);
+    });
+    // リセットボタン押下時にポイント入力フォームの値をリセットする
+    $(document).on('click', '#detail_point_reset', function () {
+        $('#create_point').val('');
+        $('#select_point_type').val(null);
+        $('#select_charge_type').val(null);
+    });
 
     /* 
      *   申請状況カラムのボタンが押下されたとき
      */
-        $(document).on('click', '.btn-status', function(){
-            // 申請状況の値を更新
-            updateStatus($(this));
-        });
+    $(document).on('click', '.btn-status', function () {
+        // 申請状況の値を更新
+        updateStatus($(this));
+    });
 
     /* 
      *   コミュニティ情報の"詳細"ボタン押下処理
      */
-        $(document).on('click', '.btn-history',function(){
-            let community_history_id = $(this).data('id');
-            setHistoryDetail(community_history_id);
-        })
+    $(document).on('click', '.btn-history', function () {
+        let community_history_id = $(this).data('id');
+        setHistoryDetail(community_history_id);
+    })
 
     /* 
      *   アカウント停止処理
      */
-        if($('#btn_account_stop').text() == 'アカウント停止中'){
-            // アカウント停止状態は備考以外の入力を受け付けない
+    if ($('#btn_account_stop').text() == 'アカウント停止中') {
+        // アカウント停止状態は備考以外の入力を受け付けない
+        $("#name").prop("disabled", true);
+        $("#email").prop("disabled", true);
+        $("#password").prop("disabled", true);
+        $("#status1").prop("disabled", true);
+        $("#status2").prop("disabled", true);
+        $("#status3").prop("disabled", true);
+    }
+    $('#btn_account_stop').on('click', function () {
+
+        // クリックごとにvalue値を変更
+        if ($('#btn_account_stop').text() == 'アカウントの停止') {
+            $('#status4').val(4);
+            $('#btn_account_stop').text('アカウント停止中');
+            $('#btn_account_stop').attr('class', 'btn btn-dark text-white width-150 float-right');
             $("#name").prop("disabled", true);
             $("#email").prop("disabled", true);
             $("#password").prop("disabled", true);
             $("#status1").prop("disabled", true);
             $("#status2").prop("disabled", true);
             $("#status3").prop("disabled", true);
+            alert('アカウントの停止を確定するには"更新"ボタンを押してください');
+        } else {
+            // アカウント停止解除後は全項目の入力を受け付ける
+            $('#status4').val(null);
+            $('#status1').val(1);
+            $('#btn_account_stop').text('アカウントの停止');
+            $('#btn_account_stop').attr('class', 'btn btn-danger width-150 float-right');
+            $("#name").prop("disabled", false);
+            $("#email").prop("disabled", false);
+            $("#password").prop("disabled", false);
+            $("#status1").prop("disabled", false);
+            $("#status2").prop("disabled", false);
+            $("#status3").prop("disabled", false);
         }
-        $('#btn_account_stop').on('click', function(){
-
-            // クリックごとにvalue値を変更
-            if($('#btn_account_stop').text() == 'アカウントの停止'){
-                $('#status4').val(4);
-                $('#btn_account_stop').text('アカウント停止中');
-                $('#btn_account_stop').attr('class', 'btn btn-dark text-white width-150 float-right');
-                $("#name").prop("disabled", true);
-                $("#email").prop("disabled", true);
-                $("#password").prop("disabled", true);
-                $("#status1").prop("disabled", true);
-                $("#status2").prop("disabled", true);
-                $("#status3").prop("disabled", true);
-                alert('アカウントの停止を確定するには"更新"ボタンを押してください');
-            } else {
-                // アカウント停止解除後は全項目の入力を受け付ける
-                $('#status4').val(null);
-                $('#status1').val(1);
-                $('#btn_account_stop').text('アカウントの停止');
-                $('#btn_account_stop').attr('class', 'btn btn-danger width-150 float-right');
-                $("#name").prop("disabled", false);
-                $("#email").prop("disabled", false);
-                $("#password").prop("disabled", false);
-                $("#status1").prop("disabled", false);
-                $("#status2").prop("disabled", false);
-                $("#status3").prop("disabled", false);
-            }
-        });
+    });
 
     /* 
      *   モーダルの終了処理
      */
-        // 登録情報の備考
-        $(document).on('click', '#location_modal_close', function(){
-            $('#user_location_modal').modal('hide');
-        });
-        // 登録情報の画像
-        $(document).on('click', '#location_image_close', function(){
-            let id = $(this).data('id');
-            $(`#location_modal${id}`).modal('hide');
-        });
-        $(document).on('click', '.close', function(){
-            let id = $(this).data('id');
-            $(`#location_modal${id}`).modal('hide');
-        });
-        // マーカー情報の画像
-        $(document).on('click', '#marker_image_close', function(){
-            let id = $(this).data('id');
-            $(`#marker_modal${id}`).modal('hide');
-        });
-        $(document).on('click', '.close', function(){
-            let id = $(this).data('id');
-            $(`#marker_modal${id}`).modal('hide');
-        });
-        // コミュニティ情報の詳細
-        $(document).on('click', '#community_image_close', function(){
-            let id = $(this).data('id');
-            $(`#community_modal${id}`).modal('hide');
-        });
-        $(document).on('click', '.close', function(){
-            let id = $(this).data('id');
-            $(`#community_modal${id}`).modal('hide');
-        });
-        $(document).on('click', '#history_modal_close', function(){
-            $('#community_history_modal').modal('hide');
-        });
+    // 登録情報の備考
+    $(document).on('click', '#location_modal_close', function () {
+        $('#user_location_modal').modal('hide');
+    });
+    // 登録情報の画像
+    $(document).on('click', '#location_image_close', function () {
+        let id = $(this).data('id');
+        $(`#location_modal${id}`).modal('hide');
+    });
+    $(document).on('click', '.close', function () {
+        let id = $(this).data('id');
+        $(`#location_modal${id}`).modal('hide');
+    });
+    // マーカー情報の画像
+    $(document).on('click', '#marker_image_close', function () {
+        let id = $(this).data('id');
+        $(`#marker_modal${id}`).modal('hide');
+    });
+    $(document).on('click', '.close', function () {
+        let id = $(this).data('id');
+        $(`#marker_modal${id}`).modal('hide');
+    });
+    // コミュニティ情報の詳細
+    $(document).on('click', '#community_image_close', function () {
+        let id = $(this).data('id');
+        $(`#community_modal${id}`).modal('hide');
+    });
+    $(document).on('click', '.close', function () {
+        let id = $(this).data('id');
+        $(`#community_modal${id}`).modal('hide');
+    });
+    $(document).on('click', '#history_modal_close', function () {
+        $('#community_history_modal').modal('hide');
+    });
 
-        // 2つ目のモーダルを閉じた後にbodyがスクロール出来る現象を防ぐため
-        $(document).on('hidden.bs.modal', '.modal', function () {
-            if ($('.modal').is(':visible')) $('body').addClass('modal-open');
-        });
+    // 2つ目のモーダルを閉じた後にbodyがスクロール出来る現象を防ぐため
+    $(document).on('hidden.bs.modal', '.modal', function () {
+        if ($('.modal').is(':visible')) $('body').addClass('modal-open');
+    });
 });
 
 /**
@@ -154,15 +154,15 @@ function deleteImage(button) {
     let location_id = $(button).data('id');
     let user_id = $('#user_id').data('id');
     $.ajax({
-        url:    `/ajax/user/detail/${user_id}/location/${location_id}/image`,
-        type:   'POST',
+        url: `/ajax/user/detail/${user_id}/location/${location_id}/image`,
+        type: 'POST',
         dataType: 'json',
-        headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        data:   {
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        data: {
             'location_id': location_id,
         }
-    }).done(function(response){
-        if(response == -1) {
+    }).done(function (response) {
+        if (response == -1) {
             alert('画像の消去に失敗しました')
         }
         $('#image_modal_user').attr('src', response);
@@ -176,16 +176,16 @@ function deleteImage(button) {
  */
 function updateStatus(button) {
     $.ajax({
-        url:    '/ajax/community/history/update',
-        type:   'POST',
+        url: '/ajax/community/history/update',
+        type: 'POST',
         dataType: 'json',
-        headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        data:   {
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        data: {
             'user_id': $(button).data('user_id'),
             'community_id': $(button).data('community_id'),
             'status': $(button).data('status'),
         }
-    }).done(function(response){
+    }).done(function (response) {
         $(button).data('status', response)
         if (response == 1) {
             $(button).removeClass('btn-danger');
@@ -211,44 +211,44 @@ function setDetailView(data, button) {
     /* 
      *   モーダルに表示する会員情報
      */
-        $('#detail_name').html(data.name);
-        $('#detail_status').html(data.status_name);
-        $('#detail_email').html(data.email);
-        $('#detail_login_time').html(data.login_time_style);
-        $('#detail_created_at').html(data.created_at_style);
-        $('#detail_user_agent').html(data.user_agent);
-        $('#detail_memo').html(data.memo);
-        $('#user_id').data('id', data.id);              // 各タグで共有
+    $('#detail_name').html(data.name);
+    $('#detail_status').html(data.status_name);
+    $('#detail_email').html(data.email);
+    $('#detail_login_time').html(data.login_time_style);
+    $('#detail_created_at').html(data.created_at_style);
+    $('#detail_user_agent').html(data.user_agent);
+    $('#detail_memo').html(data.memo);
+    $('#user_id').data('id', data.id);              // 各タグで共有
 
-        $('#detail_name_community').html(data.name);
-        $('#detail_status_community').html(data.status_name);
-    
+    $('#detail_name_community').html(data.name);
+    $('#detail_status_community').html(data.status_name);
+
     /* 
      *   "詳細"モーダルの表示処理("登録場所"タブ)
      */
-        if(button == '.btn-detail') {
-            // 過去に表示したテーブルのリセット
-            if ($.fn.DataTable.isDataTable('#user_location_list')) {
-                $('#user_location_list').DataTable().destroy();
-            }
-            // DataTable設定("登録場所")
-            settingDataTables(
-                // 取得
-                // tableのID
-                'user_location_list',
-                // 取得URLおよびパラメタ
-                '/ajax/user/detail/'+ data.id +'/location',
-                {},
-                // 各列ごとの表示定義
-                [
-                    {data: 'location_id'},
-                    {data: 'marker_name'},
-                    {data: 'location_name'},
-                    {
-                        // ロケーションイメージの画像を表示(モーダル形式)
-                        data: function (p) {
-                            
-                            return `
+    if (button == '.btn-detail') {
+        // 過去に表示したテーブルのリセット
+        if ($.fn.DataTable.isDataTable('#user_location_list')) {
+            $('#user_location_list').DataTable().destroy();
+        }
+        // DataTable設定("登録場所")
+        settingDataTables(
+            // 取得
+            // tableのID
+            'user_location_list',
+            // 取得URLおよびパラメタ
+            '/ajax/user/detail/' + data.id + '/location',
+            {},
+            // 各列ごとの表示定義
+            [
+                { data: 'location_id' },
+                { data: 'marker_name' },
+                { data: 'location_name' },
+                {
+                    // ロケーションイメージの画像を表示(モーダル形式)
+                    data: function (p) {
+
+                        return `
                                 <a href="" data-toggle="modal" data-target="#location_modal${p.location_id}">
                                     <img src="${p.image_url}" id="location_image" height="45" width="65">
                                 </a>
@@ -274,86 +274,86 @@ function setDetailView(data, button) {
                                     </div>
                                 </div>
                             `;
-                        }
-                    },
-                    {data: 'created_at_style', name: 'created_at'},
-                    // GoogleMapのリンクを埋め込み
-                    {
-                        data: function (p) {
-                            // ロケーション情報を埋め込んだGoogle MapのURLを変数に代入
-                            let url = `https://www.google.com/maps?q=${p.latitude},${p.longitude}`;
-                            // 登録場所の備考ボタン・削除ボタンの設定(備考はデータがあるときのみ表示)
-                            return getListLink('map', p.location_id, url, 'list-button');
-                        }
-                    },
-                    {
-                        data: function (p) {
-                            let url = `user/detail/${p.user_id}/location/remove`;
-
-                            // 登録場所の備考ボタン・削除ボタンの設定(備考はデータがあるときのみ表示)
-                            if(p.memo == null) {
-                                return getListLink('remove_modal', p.location_id, url, 'list-button');
-                            }
-                            return getListLink('location', p.location_id, '', 'list-button') +
-                                getListLink('remove_modal', p.location_id, url, 'list-button');
-                        }
                     }
-                ],
-                // 各列ごとの装飾
-                [
-                    { targets: [0], width: '100px'},
-                    { targets: [1], width: '150px'},
-                    { targets: [2], width: '150px'},
-                    { targets: [3], orderable: false, className: 'text-center', width: '100px'},
-                    { targets: [5], orderable: false, className: 'text-center', width: '100px'},
-                    { targets: [6], orderable: false, className: 'text-center', width: '100px'},
-                ],
-                false
-            );
+                },
+                { data: 'created_at_style', name: 'created_at' },
+                // GoogleMapのリンクを埋め込み
+                {
+                    data: function (p) {
+                        // ロケーション情報を埋め込んだGoogle MapのURLを変数に代入
+                        let url = `https://www.google.com/maps?q=${p.latitude},${p.longitude}`;
+                        // 登録場所の備考ボタン・削除ボタンの設定(備考はデータがあるときのみ表示)
+                        return getListLink('map', p.location_id, url, 'list-button');
+                    }
+                },
+                {
+                    data: function (p) {
+                        let url = `user/detail/${p.user_id}/location/remove`;
+
+                        // 登録場所の備考ボタン・削除ボタンの設定(備考はデータがあるときのみ表示)
+                        if (p.memo == null) {
+                            return getListLink('remove_modal', p.location_id, url, 'list-button');
+                        }
+                        return getListLink('location', p.location_id, '', 'list-button') +
+                            getListLink('remove_modal', p.location_id, url, 'list-button');
+                    }
+                }
+            ],
+            // 各列ごとの装飾
+            [
+                { targets: [0], width: '100px' },
+                { targets: [1], width: '150px' },
+                { targets: [2], width: '150px' },
+                { targets: [3], orderable: false, className: 'text-center', width: '100px' },
+                { targets: [5], orderable: false, className: 'text-center', width: '100px' },
+                { targets: [6], orderable: false, className: 'text-center', width: '100px' },
+            ],
+            false
+        );
 
         /* 
         *   "詳細"モーダルの表示処理("マーカー"タブ)
         */
-            if ($.fn.DataTable.isDataTable('#user_markers_list')) {
-                $('#user_markers_list').DataTable().destroy();
-            }
-            setMarkerTable(data.id);
+        if ($.fn.DataTable.isDataTable('#user_markers_list')) {
+            $('#user_markers_list').DataTable().destroy();
+        }
+        setMarkerTable(data.id);
 
         /* 
         *   "詳細"モーダルの表示処理("ポイント履歴"タブ)
         */
-            if ($.fn.DataTable.isDataTable('#user_points_list')) {
-                $('#user_points_list').DataTable().destroy();
-            }
-            setPointTable(data.id);
-            
-            $('#detail_modal').modal('show');
+        if ($.fn.DataTable.isDataTable('#user_points_list')) {
+            $('#user_points_list').DataTable().destroy();
         }
-    
+        setPointTable(data.id);
+
+        $('#detail_modal').modal('show');
+    }
+
     /* 
      *   "コミュニティ情報"モーダルの表示処理
      */
-        if(button == '.btn-community') {
-            if ($.fn.DataTable.isDataTable('#user_community_list')) {
-                $('#user_community_list').DataTable().destroy();
-            }
+    if (button == '.btn-community') {
+        if ($.fn.DataTable.isDataTable('#user_community_list')) {
+            $('#user_community_list').DataTable().destroy();
+        }
 
-            // DataTable設定
-            settingDataTables(
-                // 取得
-                // tableのID
-                'user_community_list',
-                // 取得URLおよびパラメタ
-                '/ajax/user/detail/'+ data.id +'/community',
-                {},
-                // 各列ごとの表示定義
-                [
-                    {data: 'community_history_id'},
-                    {
-                        // コミュニティイメージの画像を表示(モーダル形式)
-                        data: function (p) {
-                            
-                            return `
+        // DataTable設定
+        settingDataTables(
+            // 取得
+            // tableのID
+            'user_community_list',
+            // 取得URLおよびパラメタ
+            '/ajax/user/detail/' + data.id + '/community',
+            {},
+            // 各列ごとの表示定義
+            [
+                { data: 'community_history_id' },
+                {
+                    // コミュニティイメージの画像を表示(モーダル形式)
+                    data: function (p) {
+
+                        return `
                                 <a href="" data-toggle="modal" data-target="#community_modal${p.id}">
                                     <img src="${p.image_url}" height="45" width="65">
                                 </a>
@@ -378,56 +378,56 @@ function setDetailView(data, button) {
                                     </div>
                                 </div>
                             `;
-                        }
-                    },
-                    {data: 'name'},
-                    {
-                        data: function(p) {
-                            // "非公開"の場合は赤色で表示
-                            if(p.status === 0) {
-                                return (`<span style='color: red'>${p.status_name}</span>`);
-                            }
-                            // "公開"の場合は青色で表示
-                            return (`<span style='color: blue'>${p.status_name}</span>`);
-                        }, name: 'status'
-                    },
-                    // 参加日時
-                    {data: 'updated_at_style', name: 'updated_at'},
-                    {
-                        data: function (p) {
-                            // 申請中・承認済み・却下ボタンの設定(usersのidとcommunitiesのidをdata要素に渡している)
-                            if(p.entry_status == 1) {
-                                return '<button class="btn btn-info btn-status text-white w-75" data-user_id="'+ p.user_id +'" data-community_id="'+ p.id +'" data-status="'+ p.entry_status +'">'+ p.entry_status_name +'</button>';
-                            }
-                            if(p.entry_status == 2) {
-                                return '<button class="btn btn-success btn-status text-white w-75" data-user_id="'+ p.user_id +'" data-community_id="'+ p.id +'" data-status="'+ p.entry_status +'">'+ p.entry_status_name +'</button>';
-                            }
-                            if(p.entry_status == 3) {
-                                return '<button class="btn btn-danger btn-status text-white w-75" data-user_id="'+ p.user_id +'" data-community_id="'+ p.id +'" data-status="'+ p.entry_status +'">'+ p.entry_status_name +'</button>';
-                            }
-                        }, name: 'entry_status'
-                    },
-                    {
-                        data: function (p) {
-                            // 登録場所の備考ボタン・削除ボタンの設定(備考はデータがあるときのみ表示)
-                            if(p.memo == null) {
-                                return null;
-                            }
-                            return getListLink('history', p.community_history_id, '', 'list-button');
-                        },
                     }
-                ],
-                // 各列ごとの装飾
-                [
-                    { targets: [1], orderable: false, className: 'text-center', width: '120px'},
-                    { targets: [3], orderable: true, width: '70px'},
-                    { targets: [5], orderable: true, className: 'text-center', width: '120px'},
-                    { targets: [6], orderable: false, className: 'text-center', width: '120px'},
-                ],
-                false
-            );
-            $('#community_modal').modal('show');
-        }
+                },
+                { data: 'name' },
+                {
+                    data: function (p) {
+                        // "非公開"の場合は赤色で表示
+                        if (p.status === 0) {
+                            return (`<span style='color: red'>${p.status_name}</span>`);
+                        }
+                        // "公開"の場合は青色で表示
+                        return (`<span style='color: blue'>${p.status_name}</span>`);
+                    }, name: 'status'
+                },
+                // 参加日時
+                { data: 'updated_at_style', name: 'updated_at' },
+                {
+                    data: function (p) {
+                        // 申請中・承認済み・却下ボタンの設定(usersのidとcommunitiesのidをdata要素に渡している)
+                        if (p.entry_status == 1) {
+                            return '<button class="btn btn-info btn-status text-white w-75" data-user_id="' + p.user_id + '" data-community_id="' + p.id + '" data-status="' + p.entry_status + '">' + p.entry_status_name + '</button>';
+                        }
+                        if (p.entry_status == 2) {
+                            return '<button class="btn btn-success btn-status text-white w-75" data-user_id="' + p.user_id + '" data-community_id="' + p.id + '" data-status="' + p.entry_status + '">' + p.entry_status_name + '</button>';
+                        }
+                        if (p.entry_status == 3) {
+                            return '<button class="btn btn-danger btn-status text-white w-75" data-user_id="' + p.user_id + '" data-community_id="' + p.id + '" data-status="' + p.entry_status + '">' + p.entry_status_name + '</button>';
+                        }
+                    }, name: 'entry_status'
+                },
+                {
+                    data: function (p) {
+                        // 登録場所の備考ボタン・削除ボタンの設定(備考はデータがあるときのみ表示)
+                        if (p.memo == null) {
+                            return null;
+                        }
+                        return getListLink('history', p.community_history_id, '', 'list-button');
+                    },
+                }
+            ],
+            // 各列ごとの装飾
+            [
+                { targets: [1], orderable: false, className: 'text-center', width: '120px' },
+                { targets: [3], orderable: true, width: '70px' },
+                { targets: [5], orderable: true, className: 'text-center', width: '120px' },
+                { targets: [6], orderable: false, className: 'text-center', width: '120px' },
+            ],
+            false
+        );
+        $('#community_modal').modal('show');
+    }
 }
 
 /**
@@ -436,38 +436,38 @@ function setDetailView(data, button) {
  */
 function setLocationDetail(location_id, user_id) {
     // 削除フォームIDをセット
-    $.ajax({url: `/ajax/user/detail/${user_id}/location/${location_id}`})
-    .done(function(response){
-        if (response.status == 1) {
-            $('#detail_location_memo').html(response.data.memo);
+    $.ajax({ url: `/ajax/user/detail/${user_id}/location/${location_id}` })
+        .done(function (response) {
+            if (response.status == 1) {
+                $('#detail_location_memo').html(response.data.memo);
 
-            // 備考モーダルの表示
-            $('#user_location_modal').modal('show');
-        } else {
-            alert('no data error');
-        }
-    });
+                // 備考モーダルの表示
+                $('#user_location_modal').modal('show');
+            } else {
+                alert('no data error');
+            }
+        });
 }
 /**
  * "コミュニティ履歴の詳細情報"モーダルの表示処理
  * @param id 
  */
 function setHistoryDetail(community_history_id) {
-    
-    $.ajax({url: `/ajax/community/history/${community_history_id}`})
-    .done(function(response){
-        if (response.status == 1) {
-            $('#detail_history_id').html(response.data.id);
-            $('#detail_history_name').html(response.data.community_name);
-            $('#detail_history_status').html(response.data.status_name);
-            $('#detail_history_updated_at').html(response.data.updated_at);
-            $('#detail_history_memo').html(response.data.memo);
-            // 詳細モーダルの表示
-            $('#community_history_modal').modal('show');
-        } else {
-            alert('no data error');
-        }
-    });
+
+    $.ajax({ url: `/ajax/community/history/${community_history_id}` })
+        .done(function (response) {
+            if (response.status == 1) {
+                $('#detail_history_id').html(response.data.id);
+                $('#detail_history_name').html(response.data.community_name);
+                $('#detail_history_status').html(response.data.status_name);
+                $('#detail_history_updated_at').html(response.data.updated_at);
+                $('#detail_history_memo').html(response.data.memo);
+                // 詳細モーダルの表示
+                $('#community_history_modal').modal('show');
+            } else {
+                alert('no data error');
+            }
+        });
 }
 
 /**
@@ -481,15 +481,15 @@ function setMarkerTable(id) {
         // tableのID
         'user_markers_list',
         // 取得URLおよびパラメタ
-        '/ajax/user/detail/'+ id +'/marker',
+        '/ajax/user/detail/' + id + '/marker',
         {},
         // 各列ごとの表示定義
         [
-            {data: 'user_markers_id'},
+            { data: 'user_markers_id' },
             {
                 // コミュニティイメージの画像を表示(モーダル形式)
                 data: function (p) {
-                    
+
                     return `
                         <a href="" data-toggle="modal" data-target="#marker_modal${p.id}">
                             <img src="${p.image_url}" height="45" width="65">
@@ -518,20 +518,20 @@ function setMarkerTable(id) {
                 }
             },
             {
-                data: function(p) {
+                data: function (p) {
                     // 有料フラグが"有料"の場合は赤色で表示
-                    if(p.charge_type === 2) {
-                        return ('<span style="color: red">'+ p.charge_name +'</span>');
+                    if (p.charge_type === 2) {
+                        return ('<span style="color: red">' + p.charge_name + '</span>');
                     }
                     // それ以外は普通に表示
                     return p.charge_name;
                 }, name: 'charge'
             },
-            {data: 'name'},
-            {data: 'pay_charge_point'},
-            {data: 'pay_free_point'},
+            { data: 'name' },
+            { data: 'pay_charge_point' },
+            { data: 'pay_free_point' },
             {
-                data: function(p) {
+                data: function (p) {
                     // 日付フォーマットの形式を調整
                     let time = moment(p.user_markers_updated_at);
                     return time.format("YYYY年MM月DD日 HH時mm分");
@@ -549,11 +549,11 @@ function setMarkerTable(id) {
         // 各列ごとの装飾
         [
             // ボタン部分
-            { targets: [1], orderable: false, className: 'text-center', width: '100px'},
-            { targets: [2], orderable: true, className: 'text-center', width: '100px'},
-            { targets: [4], orderable: true, className: 'text-center', width: '100px'},
-            { targets: [5], orderable: true, className: 'text-center', width: '100px'},
-            { targets: [7], orderable: false, className: 'text-center', width: '120px'},
+            { targets: [1], orderable: false, className: 'text-center', width: '100px' },
+            { targets: [2], orderable: true, className: 'text-center', width: '100px' },
+            { targets: [4], orderable: true, className: 'text-center', width: '100px' },
+            { targets: [5], orderable: true, className: 'text-center', width: '100px' },
+            { targets: [7], orderable: false, className: 'text-center', width: '120px' },
         ],
         false
     );
@@ -569,16 +569,16 @@ function setPointTable(id) {
         // tableのID
         'user_points_list',
         // 取得URLおよびパラメタ
-        '/ajax/user/detail/'+ id +'/point',
+        '/ajax/user/detail/' + id + '/point',
         {},
         // 各列ごとの表示定義
         [
-            {data: 'id'},
-            {data: 'type_name', name: 'type'},
+            { data: 'id' },
+            { data: 'type_name', name: 'type' },
             {
                 data: function (p) {
                     // ポイントにナンバーフォーマットを適用
-                    if(p.give_point) {
+                    if (p.give_point) {
                         return number_format(p.give_point);
                     }
                     return p.give_point;
@@ -587,18 +587,18 @@ function setPointTable(id) {
             {
                 data: function (p) {
                     // ポイントにナンバーフォーマットを適用
-                    if(p.pay_point) {
+                    if (p.pay_point) {
                         return number_format(p.pay_point);
                     }
                     return p.pay_point;
                 }
             }, // ポイント数(消費)
-            {data: 'created_at_style', name: 'created_at'},
+            { data: 'created_at_style', name: 'created_at' },
             {
-                data: function(p) {
+                data: function (p) {
                     // 有料フラグが"有料"の場合は赤色で表示
-                    if(p.charge_type === 2) {
-                        return ('<span style="color: red">'+ p.charge_name +'</span>');
+                    if (p.charge_type === 2) {
+                        return ('<span style="color: red">' + p.charge_name + '</span>');
                     }
                     // それ以外は普通に表示
                     return p.charge_name;
@@ -616,7 +616,7 @@ function setPointTable(id) {
         // 各列ごとの装飾
         [
             // ボタン部分
-            { targets: [6], orderable: false, className: 'text-center', width: '120px'},
+            { targets: [6], orderable: false, className: 'text-center', width: '120px' },
         ],
         false
     );
@@ -626,9 +626,9 @@ function setPointTable(id) {
  * ポイント履歴管理の画面固有チェック
  * @returns {boolean}
  */
-$(function(){
+$(function () {
 
-    $(document).on("click", '#detail_point_submit', function(){
+    $(document).on("click", '#detail_point_submit', function () {
         if (!Number($('#create_point').val())) {
             alert('ポイントが正しくありません');
             $('#create_point').focus();
@@ -648,7 +648,7 @@ $(function(){
     });
 
     // (削除予定)
-    $(document).on("click", '#pay_point_submit', function(){
+    $(document).on("click", '#pay_point_submit', function () {
         payPoints();
     });
 });
@@ -663,24 +663,24 @@ function updatePoints() {
         url: `/ajax/user/detail/${user_id}/point/update`,
         type: 'POST',
         dataType: 'json',
-        headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        data:   {
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        data: {
             'give_point': $('#create_point').val(),
             'type': $('#select_point_type').val(),
             'charge_type': $('#select_charge_type').val(),
             'user_id': user_id,
         }
     })
-        .done(function(response){
-            if(response.status == -1) {
+        .done(function (response) {
+            if (response.status == -1) {
                 alert('データの保存に失敗しました')
             }
-            if(response.status == -2) {
+            if (response.status == -2) {
                 alert('ギフトできるポイントの上限を超えています')
             }
-            
+
             // 表のデータを再取得して更新
-            if(response.status == 1) {
+            if (response.status == 1) {
                 // DataTablesの再作成
                 if ($.fn.DataTable.isDataTable('#user_points_list')) {
                     $('#user_points_list').DataTable().destroy();
@@ -689,11 +689,11 @@ function updatePoints() {
                 $('#create_point').val('');
                 $('#select_point_type').val(null);
                 $('#select_charge_type').val(null);
-                
+
                 setPointTable(response.id);
             }
         })
-        .fail(function(response){
+        .fail(function (response) {
             alert('データの保存に失敗しました')
         });
 }
@@ -708,23 +708,23 @@ function payPoints() {
         url: `/ajax/user/detail/${user_id}/point/pay`,
         type: 'POST',
         dataType: 'json',
-        headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        data:   {
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        data: {
             'pay_point': $('#pay_point').val(),
             'charge_type': $('#select_pay_charge_type').val(),
             'user_id': user_id,
         }
     })
-        .done(function(response){
-            if(response.status == -1) {
+        .done(function (response) {
+            if (response.status == -1) {
                 alert('データの保存に失敗しました')
             }
-            if(response.status == -2) {
+            if (response.status == -2) {
                 alert('ポイントが不足しております')
             }
-            
+
             // 表のデータを再取得して更新
-            if(response.status == 1) {
+            if (response.status == 1) {
                 // DataTablesの再作成
                 if ($.fn.DataTable.isDataTable('#user_points_list')) {
                     $('#user_points_list').DataTable().destroy();
@@ -733,11 +733,11 @@ function payPoints() {
                 $('#create_point').val('');
                 $('#select_point_type').val(null);
                 $('#select_charge_type').val(null);
-                
+
                 setPointTable(response.id);
             }
         })
-        .fail(function(response){
+        .fail(function (response) {
             alert('データの保存に失敗しました')
         });
 }
@@ -754,9 +754,9 @@ function customCheck() {
         return false;
     }
 
-    
+
     $('#main_form').submit();
-     
+
 }
 
 /**
@@ -772,22 +772,32 @@ function initList(search) {
         // 取得URLおよびパラメタ
         '/ajax/user',
         {
-            'id':       $('#id').val(),
-            'name':     $('#name').val(),
-            'email':    $('#email').val(),
-            'status':   $('#status').val(),
+            'id': $('#id').val(),
+            'name': $('#name').val(),
+            'email': $('#email').val(),
+            'firebase_uid': $('#firebase_uid').val(),
+            'status': $('#status').val(),
         },
+
         // 各列ごとの表示定義
         [
-            {data: 'id'},
-            {data: 'name'},
-            {data: 'email'},
-            {data: 'created_at_style', name: 'created_at'},
-            {data: 'login_time_style', name: 'login_time'},
+            { data: 'id' },
+            { data: 'name' },
+            { data: 'email' },
+            { 
+                data: function (p) {
+                    if (p.firebase_uid) {
+                        return (`<span style='color: green'>O</span>`);
+                    }
+                    return (`<span style='color: red'>X</span>`);
+                }, name: 'firebase_uid'
+            },
+            { data: 'created_at_style', name: 'created_at' },
+            { data: 'login_time_style', name: 'login_time' },
             {
-                data: function(p) {
+                data: function (p) {
                     // アカウントステータスが"アカウント停止"の場合は赤色で表示
-                    if(p.status === 4) {
+                    if (p.status === 4) {
                         return (`<span style='color: red'>${p.status_name}</span>`);
                     }
                     // それ以外は普通に表示
@@ -797,7 +807,7 @@ function initList(search) {
             {
                 data: function (p) {
                     // ポイントにナンバーフォーマットを適用
-                    if(p.total_points) {
+                    if (p.total_points) {
                         return number_format(p.total_points);
                     }
                     return p.total_points;
@@ -805,34 +815,35 @@ function initList(search) {
             }, // ポイント数(有料)
             {
                 data: function (p) {
-                    if(p.free_total_points) {
+                    if (p.free_total_points) {
                         return number_format(p.free_total_points);
                     }
                     return p.free_total_points;
                 }, name: 'free_total_points'
-                    
-            
+
+
             }, // ポイント数(無料)
             {
                 data: function (p) {
                     // 登録場所・参加コミュニティ・編集ボタンの設定
                     return getListLink('detail', p.id, '', 'list-button') +
-                           getListLink('community', p.id , '', 'list-button') +
-                           getListLink('edit', p.id, '/user/edit/'+p.id, 'list-button');
+                        getListLink('community', p.id, '', 'list-button') +
+                        getListLink('edit', p.id, '/user/edit/' + p.id, 'list-button');
                 }
             }
         ],
         // 各列ごとの装飾
         [
             // ボタン部分
-            { targets: [1], orderable: true, width: '170px'},
-            { targets: [2], orderable: true, width: '170px'},
-            { targets: [3], orderable: true, width: '170px'},
-            { targets: [4], orderable: true, width: '170px'},
-            { targets: [5], orderable: true, className: 'text-center', width: '110px'},
-            { targets: [6], orderable: true, className: 'text-center', width: '110px'},
-            { targets: [7], orderable: true, className: 'text-center', width: '110px'},
-            { targets: [8], orderable: false, className: 'text-center', width: '150px'},
+            { targets: [1], orderable: true, width: '170px' },
+            { targets: [2], orderable: true, width: '170px' },
+            { targets: [3], orderable: true, width: '170px' },
+            { targets: [4], orderable: true, width: '170px' },
+            { targets: [5], orderable: true, width: '170px' },
+            { targets: [6], orderable: true, className: 'text-center', width: '110px' },
+            { targets: [7], orderable: true, className: 'text-center', width: '110px' },
+            { targets: [8], orderable: true, className: 'text-center', width: '110px' },
+            { targets: [9], orderable: false, className: 'text-center', width: '150px' },
         ],
         search
     );
@@ -851,10 +862,10 @@ function isDuplicateEmailAjax() {
     }
 
     return $.ajax({
-        url:    '/ajax/is_duplicate_email',
-        type:   'POST',
-        headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        data:   {'email': email, 'id': id}
+        url: '/ajax/is_duplicate_email',
+        type: 'POST',
+        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+        data: { 'email': email, 'id': id }
     })
 };
 
@@ -866,7 +877,7 @@ function isDuplicateEmailAjax() {
 function characterCountCheck(count) {
     let check = true;
     // 逆順での処理(下の項目から、上へ)
-    $($('.char-count-text').get().reverse()).each(function(index, elm){
+    $($('.char-count-text').get().reverse()).each(function (index, elm) {
         if (count < 6) {
             check = false;
         }
@@ -887,24 +898,24 @@ function characterCountCheck(count) {
  */
 function getListLink(type, id, link, clazz) {
     if (type == "detail") {
-        return '<a href="javascript:void(0)" class="btn btn-success btn-detail '+clazz+'" data-toggle="tooltip" title="詳細" data-placement="top" data-id="'+id+'"><i class="fas fa-search fa-fw"></i></a>';
+        return '<a href="javascript:void(0)" class="btn btn-success btn-detail ' + clazz + '" data-toggle="tooltip" title="詳細" data-placement="top" data-id="' + id + '"><i class="fas fa-search fa-fw"></i></a>';
     }
     if (type == "history") {
-        return '<a href="javascript:void(0)" class="btn btn-success btn-history '+clazz+'" data-toggle="tooltip" title="詳細" data-placement="top" data-id="'+id+'"><i class="fas fa-search fa-fw"></i></a>';
+        return '<a href="javascript:void(0)" class="btn btn-success btn-history ' + clazz + '" data-toggle="tooltip" title="詳細" data-placement="top" data-id="' + id + '"><i class="fas fa-search fa-fw"></i></a>';
     }
     if (type == "location") {
-        return '<a href="javascript:void(0)" class="btn btn-success btn-location '+clazz+'" data-toggle="tooltip" title="備考" data-placement="top" data-id="'+id+'"><i class="fas fa-search fa-fw"></i></a>';
+        return '<a href="javascript:void(0)" class="btn btn-success btn-location ' + clazz + '" data-toggle="tooltip" title="備考" data-placement="top" data-id="' + id + '"><i class="fas fa-search fa-fw"></i></a>';
     }
     if (type == "map") {
-        return '<a href="'+ link +'" target="_blank" class="btn btn-primary btn-map '+clazz+'" data-toggle="tooltip" title="Google Mapで表示" data-placement="top" data-id="'+id+'"><i class="fas fa-map-marked-alt"></i></a>';
+        return '<a href="' + link + '" target="_blank" class="btn btn-primary btn-map ' + clazz + '" data-toggle="tooltip" title="Google Mapで表示" data-placement="top" data-id="' + id + '"><i class="fas fa-map-marked-alt"></i></a>';
     }
     if (type == "community") {
-        return '<a href="javascript:void(0)" class="btn btn-warning text-white btn-community '+clazz+'" data-toggle="tooltip" title="コミュニティ情報" data-placement="top" data-id="'+id+'"><i class="fas fa-users"></i></a>';
+        return '<a href="javascript:void(0)" class="btn btn-warning text-white btn-community ' + clazz + '" data-toggle="tooltip" title="コミュニティ情報" data-placement="top" data-id="' + id + '"><i class="fas fa-users"></i></a>';
     }
     if (type == "edit") {
-        return '<a href="'+link+'" class="btn btn-primary '+clazz+'" data-toggle="tooltip" title="編集" data-placement="top"><i class="fas fa-edit fa-fw"></i></a>';
+        return '<a href="' + link + '" class="btn btn-primary ' + clazz + '" data-toggle="tooltip" title="編集" data-placement="top"><i class="fas fa-edit fa-fw"></i></a>';
     }
     if (type == "remove_modal") {
-        return '<a href="javascript:void(0)" class="btn btn-danger btn-remove-modal '+clazz+'" data-toggle="tooltip" title="削除" data-placement="top" data-id="'+id+'" data-url="'+ link +'"><i class="fas fa-trash-alt fa-fw"></i></a>';
+        return '<a href="javascript:void(0)" class="btn btn-danger btn-remove-modal ' + clazz + '" data-toggle="tooltip" title="削除" data-placement="top" data-id="' + id + '" data-url="' + link + '"><i class="fas fa-trash-alt fa-fw"></i></a>';
     }
 }
