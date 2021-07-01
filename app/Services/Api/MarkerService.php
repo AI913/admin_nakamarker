@@ -22,7 +22,7 @@ class MarkerService extends BaseService
      */
     public function getMarkerQuery($conditions=[], $order=[]) {
       return $this->searchQuery($conditions, $order)
-                  ->select('id as marker_id', 'type', 'name', 'description',
+                  ->select('id as marker_id', 'type', 'name', 'search_word', 'description', 
                            'image_file', 'price', 'charge_type', 'status')
                   ->get();
     }
