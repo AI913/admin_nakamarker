@@ -62,6 +62,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
+                                    <label class="col-md-3 col-form-label" for="name">検索ワード</label>
+                                    <div class="col-md-9">
+                                        <input class="form-control required-text" type="text" id="search_word" name="search_word" maxlength="50" placeholder="検索ワード" value="{{ $data->search_word ? $data->search_word : old('search_word') }}" data-title="検索ワード">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="description">マーカー概要</label>
                                     <div class="col-md-9">
                                         <textarea class="form-control" name="description" id="description" maxlength="500" rows="10" placeholder="備考">{{ $data->memo ? $data->memo : old('memo') }}</textarea>
