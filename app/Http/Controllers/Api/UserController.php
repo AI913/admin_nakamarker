@@ -172,7 +172,7 @@ class UserController extends BaseApiController
                 $remainingCharge = (int)$remaining_charge_point['remaining_points'];
             }
 
-            $limitDate = 0;
+            $limitDate = "";
             if (isset($limitDateData)) {
                 $limitDate = $limitDateData['limit_date'];
             }
