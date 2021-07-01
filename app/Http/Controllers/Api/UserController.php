@@ -149,7 +149,6 @@ class UserController extends BaseApiController
             $remaining_charge_point = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id, 'charge_type' => 2, 'used_flg' => 0])->first();
 
             $limitDateData = $this->userPointHistoryService->getLimitDateBaseQuery(['to_user_id' => Auth::user()->id])->first();
-            \Log::debug($limitDateData);
 
             // 以下、データが無い場合のnullチェック。
             $totalFree = 0;
