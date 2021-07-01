@@ -388,6 +388,7 @@ class UserController extends BaseApiController
                     'marker_id' => $markers['marker_id'],
                     'type' => $markers['type'],
                     'name' => $markers['name'],
+                    'search_word' => $markers['search_word'],
                     'description' => $markers['description'],
                     'price' => $markers['price'],
                     'charge_type' => $markers['charge_type'],

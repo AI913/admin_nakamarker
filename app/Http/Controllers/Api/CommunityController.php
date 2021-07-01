@@ -223,6 +223,7 @@ class CommunityController extends BaseApiController
                     'marker_id' => $markers['marker_id'],
                     'type' => $markers['type'],
                     'name' => $markers['name'],
+                    'search_word' => $markers['search_word'],
                     'description' => $markers['description'],
                     'image_file' => $markers['image_url'],
                 ]);
