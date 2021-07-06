@@ -64,8 +64,11 @@ class UserController extends BaseApiController
     public function info(Request $request)
     {
         try {
-            // ステータスOK
-            return $this->success(['name' => Auth::user()->name]);
+            $userData = Auth::user();
+            return $this->success([
+                'name' => $userData->name,
+                'image_url' => $userData->image_url
+            ]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
