@@ -93,14 +93,14 @@ class AuthController extends BaseApiController
     public function phoneRegister(Request $request) {
         try {
             \DB::beginTransaction();
-            // データを配列化
+            
             $data = $request->all();
-
-            // データを保存
-           $this->mainService->save($data);
+            $data['id'] = Auth::user()->id;
+            $data['user_token'] = $request->bearerToken();
+            $this->mainService->save($data);
 
             \DB::commit();
-            // ステータスOK
+            
             return $this->success();
         } catch (\Exception $e) {
             \DB::rollback();
