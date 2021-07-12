@@ -53,20 +53,22 @@ class CommunityController extends BaseApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getAllCommunity(Request $request) {
+    public function getAllCommunity(Request $request)
+    {
         try {
             // 検索条件
             $conditions = [];
             $conditions['status'] = config('const.open'); // "公開"で設定されているものだけに絞る
-            if ($request->input('name')) { $conditions['communities.name@like'] = $request->input('name'); }
-            if ($request->input('type') && is_numeric($request->input('type'))) { $conditions['communities.type'] = $request->input('type'); }
-            // ソート条件
-            $order = [];
-            if (isset($request->order)) {
-              $order = [$request->order[0] => $request->order[1]];
+            if ($request->input('name')) {
+                $conditions['communities.name@like'] = $request->input('name');
             }
-            
-            $joiningCommunities = $this->userService->getUserCommunityQuery(['id' => \Auth::user()->id])->toArray(); 
+            if ($request->input('type') && is_numeric($request->input('type'))) {
+                $conditions['communities.type'] = $request->input('type');
+            }
+            // ソート条件
+            $order = $this->getSortOrder($request);
+
+            $joiningCommunities = $this->userService->getUserCommunityQuery(['id' => \Auth::user()->id])->toArray();
 
             $returnData = [];
             foreach ($this->mainService->getCommunityQuery($conditions, $order) as $data) {
@@ -89,7 +91,7 @@ class CommunityController extends BaseApiController
 
             return $this->success(['communities' => $returnData]);
         } catch (\Exception $e) {
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -101,7 +103,8 @@ class CommunityController extends BaseApiController
      * @param Request $request->description コミュニティ概要
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         try {
             \DB::beginTransaction();
             $data = $request->all();
@@ -139,7 +142,7 @@ class CommunityController extends BaseApiController
             ]]);
         } catch (\Exception $e) {
             \DB::rollback();
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -152,12 +155,13 @@ class CommunityController extends BaseApiController
      * @param Request $request->community_id コミュニティID
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
         try {
             \DB::beginTransaction();
 
             // コミュニティのホストかどうかを確認
-            if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
+            if (!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
                 return $this->error(-10, ["message" => Message::ERROR_NOT_HOST]);
             }
 
@@ -165,14 +169,14 @@ class CommunityController extends BaseApiController
             $data = $request->all();
             // コミュニティの種別を設定
             if (isset($data['status'])) {
-              if ($data['status']) $data['type'] = config('const.community_personal_open');
-              else                 $data['type'] = config('const.community_personal');
+                if ($data['status']) $data['type'] = config('const.community_personal_open');
+                else                 $data['type'] = config('const.community_personal');
             }
 
             $data['id'] = $data['community_id'];
 
             // 画像ありの場合は保存処理を実行
-            if($request->hasFile('image')) {
+            if ($request->hasFile('image')) {
                 $data['image_file'] = $this->fileSave($request);
             }
 
@@ -190,7 +194,7 @@ class CommunityController extends BaseApiController
             ]]);
         } catch (\Exception $e) {
             \DB::rollback();
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -199,10 +203,11 @@ class CommunityController extends BaseApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getCommunityMarkerList(Request $request) {
+    public function getCommunityMarkerList(Request $request)
+    {
         try {
             // コミュニティに加盟しているかどうか確認
-            if(!$this->communityHistoryService->isCommunityUser($request->input('community_id'), \Auth::user()->id)) {
+            if (!$this->communityHistoryService->isCommunityUser($request->input('community_id'), \Auth::user()->id)) {
                 return $this->error(-10, ["message" => Message::ERROR_NOT_COMMUNIRY_MEMBER]);
             }
 
@@ -210,11 +215,8 @@ class CommunityController extends BaseApiController
             $conditions = [];
             $conditions['id'] = $request->input('community_id');
             // ソート条件
-            $order = [];
-            if (isset($request->order)) {
-              $order = [$request->order[0] => $request->order[1]];
-            }
-           
+            $order = $this->getSortOrder($request);
+
             $returnData = [];
 
             foreach ($this->mainService->getCommunityMarkerQuery($conditions, $order) as $markers) {
@@ -231,7 +233,7 @@ class CommunityController extends BaseApiController
 
             return $this->success(['marker_list' => $returnData]);
         } catch (\Exception $e) {
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -240,16 +242,17 @@ class CommunityController extends BaseApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function markerRegister(Request $request) {
+    public function markerRegister(Request $request)
+    {
         try {
             \DB::beginTransaction();
 
             // コミュニティのホストかどうかを確認
-            if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
+            if (!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
                 return $this->error(-10, ["message" => Message::ERROR_NOT_HOST]);
             }
             // マーカーの重複チェック
-            if($this->communityMarkerService->isDuplicateMarker($request->input('community_id'), $request->input('marker_id'))) {
+            if ($this->communityMarkerService->isDuplicateMarker($request->input('community_id'), $request->input('marker_id'))) {
                 return $this->error(-2, ["message" => Message::ERROR_NOT_MARKER_DUPLICATE]);
             }
 
@@ -262,10 +265,9 @@ class CommunityController extends BaseApiController
             \DB::commit();
             // ステータスOK
             return $this->success();
-
         } catch (\Exception $e) {
             \DB::rollback();
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -274,16 +276,17 @@ class CommunityController extends BaseApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function markerUpdate(Request $request) {
+    public function markerUpdate(Request $request)
+    {
         try {
             \DB::beginTransaction();
 
             // コミュニティのホストかどうかを確認
-            if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
+            if (!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
                 return $this->error(-10, ["message" => Message::ERROR_NOT_HOST]);
             }
             // マーカーの重複チェック
-            if($this->communityMarkerService->isDuplicateMarker($request->input('community_id'), $request->input('marker_id'))) {
+            if ($this->communityMarkerService->isDuplicateMarker($request->input('community_id'), $request->input('marker_id'))) {
                 return $this->error(-2, ["message" => Message::ERROR_NOT_MARKER_DUPLICATE]);
             }
 
@@ -291,10 +294,9 @@ class CommunityController extends BaseApiController
             $data = $request->all();
             // 履歴IDを保存用のキーに変換
             $data['history_id'] ? $data['id'] = $data['history_id'] : '';
-
         } catch (\Exception $e) {
             \DB::rollback();
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -303,16 +305,19 @@ class CommunityController extends BaseApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getUserListOfJoinRequest(Request $request) {
+    public function getUserListOfJoinRequest(Request $request)
+    {
         try {
             // コミュニティのホストかどうかを確認
-            if(!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
+            if (!$this->mainService->isHostUser($request->input('community_id'), \Auth::user()->id)) {
                 return $this->error(-10, ["message" => Message::ERROR_NOT_HOST]);
             }
 
             // 検索条件
             $conditions = [];
-            if ($request->input('community_id')) { $conditions['id'] = $request->input('community_id'); }
+            if ($request->input('community_id')) {
+                $conditions['id'] = $request->input('community_id');
+            }
 
             $returnData = [];
 
@@ -326,7 +331,7 @@ class CommunityController extends BaseApiController
 
             return $this->success(['applicant_list' => $returnData]);
         } catch (\Exception $e) {
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
     /**
@@ -334,13 +339,18 @@ class CommunityController extends BaseApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function userUpdate(Request $request) {
+    public function userUpdate(Request $request)
+    {
         try {
             \DB::beginTransaction();
             // データを配列にセット
             $data = [];
-            if($request->input('history_id')) { $data['id'] = $request->input('history_id'); }
-            if($request->input('status')) { $data['status'] = $request->input('status'); }
+            if ($request->input('history_id')) {
+                $data['id'] = $request->input('history_id');
+            }
+            if ($request->input('status')) {
+                $data['status'] = $request->input('status');
+            }
 
             // コミュニティデータを保存
             $this->communityHistoryService->save($data);
@@ -348,10 +358,9 @@ class CommunityController extends BaseApiController
             \DB::commit();
             // ステータスOK
             return $this->success();
-
         } catch (\Exception $e) {
             \DB::rollback();
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -360,24 +369,28 @@ class CommunityController extends BaseApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function locationInfo(Request $request) {
+    public function locationInfo(Request $request)
+    {
         try {
             // コミュニティに加盟しているかどうか確認
-            if(!$this->communityHistoryService->isCommunityUser($request->input('community_id'), \Auth::user()->id)) {
+            if (!$this->communityHistoryService->isCommunityUser($request->input('community_id'), \Auth::user()->id)) {
                 return $this->error(-10, ["message" => Message::ERROR_NOT_COMMUNIRY_MEMBER]);
             }
 
             // 検索条件
             $conditions = [];
             $conditions['community_locations.community_id'] = $request->input('community_id');
-            if($request->input('location_id')) { $conditions['community_locations.id'] = $request->input('location_id'); }
-            if($request->input('user_id')) { $conditions['community_locations.user_id'] = $request->input('user_id'); }
-            if($request->input('marker_id')) { $conditions['community_locations.marker_id'] = $request->input('marker_id'); }
-            // ソート条件
-            $order = [];
-            if (isset($request->order)) {
-              $order = [$request->order[0] => $request->order[1]];
+            if ($request->input('location_id')) {
+                $conditions['community_locations.id'] = $request->input('location_id');
             }
+            if ($request->input('user_id')) {
+                $conditions['community_locations.user_id'] = $request->input('user_id');
+            }
+            if ($request->input('marker_id')) {
+                $conditions['community_locations.marker_id'] = $request->input('marker_id');
+            }
+            // ソート条件
+            $order = $this->getSortOrder($request);
 
             $returnData = [];
 
@@ -400,7 +413,7 @@ class CommunityController extends BaseApiController
 
             return $this->success(['location_list' => $returnData]);
         } catch (\Exception $e) {
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -409,16 +422,17 @@ class CommunityController extends BaseApiController
      * @param $id
      * @throws \Exception
      */
-    public function locationRemove(Request $request) {
+    public function locationRemove(Request $request)
+    {
         try {
             \DB::beginTransaction();
 
             // ロケーションを登録した本人では無い場合
-            if(!$this->communityLocationService->isRegisterUser($request->input('location_id'), \Auth::user()->id)) {
+            if (!$this->communityLocationService->isRegisterUser($request->input('location_id'), \Auth::user()->id)) {
                 // 削除対象のロケーションに紐づくコミュニティIDを取得
                 $community_id = $this->mainService->searchOne(['id' => $request->input('location_id')])->id;
                 // コミュニティのホストかどうかを確認
-                if(!$this->mainService->isHostUser($community_id, \Auth::user()->id)) {
+                if (!$this->mainService->isHostUser($community_id, \Auth::user()->id)) {
                     return $this->error(-10, ["message" => Message::ERROR_NOT_HOST]);
                 }
             }
@@ -431,7 +445,7 @@ class CommunityController extends BaseApiController
             return $this->success();
         } catch (\Exception $e) {
             \DB::rollback();
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
     /**
@@ -439,12 +453,13 @@ class CommunityController extends BaseApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function locationRegister(Request $request) {
+    public function locationRegister(Request $request)
+    {
         try {
             \DB::beginTransaction();
 
             // コミュニティに加盟しているかどうか確認
-            if(!$this->communityHistoryService->isCommunityUser($request->input('community_id'), \Auth::user()->id)) {
+            if (!$this->communityHistoryService->isCommunityUser($request->input('community_id'), \Auth::user()->id)) {
                 return $this->error(-10, ["message" => Message::ERROR_NOT_COMMUNIRY_MEMBER]);
             }
 
@@ -452,17 +467,16 @@ class CommunityController extends BaseApiController
             // ロケーションIDを保存用のキーに変換
             $data['id'] = $data['location_id'];
             $data['user_id'] = \Auth::user()->id;
-            if($request->hasFile('image')) {
+            if ($request->hasFile('image')) {
                 $data['image_file'] = $this->fileSave($request, config('const.community_locations'));
             }
 
             $comData = $this->communityLocationService->save($data);
             \DB::commit();
             return $this->success(['location_list' => $comData]);
-
         } catch (\Exception $e) {
             \DB::rollback();
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 
@@ -471,20 +485,17 @@ class CommunityController extends BaseApiController
      * @param $request->offset 何件目から取得するか
      * @throws \Exception
      */
-    public function locationNews(Request $request) {
+    public function locationNews(Request $request)
+    {
         try {
-          // ソート条件
-          $order = [];
-          if (isset($request->order)) {
-            $order = [$request->order[0] => $request->order[1]];
-          }
+            $order = $this->getSortOrder($request);
 
-          $limit = $this->configService->searchOne(['key' => 'news_list'])->value;
+            $limit = $this->configService->searchOne(['key' => 'news_list'])->value;
 
-          $list = $this->communityLocationService->getCommunityLocationUpadateQuery([], $order, $limit, $request->input('offset'));
-          return $this->success(['update_list' => $list]);
+            $list = $this->communityLocationService->getCommunityLocationUpadateQuery([], $order, $limit, $request->input('offset'));
+            return $this->success(['update_list' => $list]);
         } catch (\Exception $e) {
-          return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 }

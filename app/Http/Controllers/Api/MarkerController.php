@@ -26,23 +26,27 @@ class MarkerController extends BaseApiController
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getAllMarker(Request $request) {
+    public function getAllMarker(Request $request)
+    {
         try {
             // 検索条件
             $conditions = [];
             $conditions['status'] = config('const.open');  // 公開フラグの値が"公開"のみに限定
-            if($request->input('name')) { $conditions['name@like'] = $request->input('name'); }
-            if($request->input('type')) { $conditions['type'] = $request->input('type'); }
-            if($request->input('charge_type')) { $conditions['charge_type'] = $request->input('charge_type'); }
-            // ソート条件
-            $order = [];
-            if (isset($request->order)) {
-              $order = [$request->order[0] => $request->order[1]];
+            if ($request->input('name')) {
+                $conditions['name@like'] = $request->input('name');
             }
+            if ($request->input('type')) {
+                $conditions['type'] = $request->input('type');
+            }
+            if ($request->input('charge_type')) {
+                $conditions['charge_type'] = $request->input('charge_type');
+            }
+            
+            $order = $this->getSortOrder($request);
 
             return $this->success(['markers' => $this->mainService->getMarkerQuery($conditions, $order)]);
         } catch (\Exception $e) {
-            return $this->error(-9, ["message" => __FUNCTION__.":".$e->getMessage()]);
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
 }

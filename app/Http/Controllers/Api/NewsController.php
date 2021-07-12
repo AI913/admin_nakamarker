@@ -29,11 +29,7 @@ class NewsController extends BaseApiController
      */
     public function index(Request $request) {
         try {
-            $order = [];
-            if (isset($request->order)) {
-              $order = [$request->order[0] => $request->order[1]];
-            }
-
+            $order = $this->getSortOrder($request);
             $limit = $this->configService->searchOne(['key' => 'news_list'])->value;
 
             $returnData = [];

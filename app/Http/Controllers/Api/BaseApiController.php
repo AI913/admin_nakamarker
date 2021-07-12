@@ -18,7 +18,8 @@ class BaseApiController extends Controller
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         // 本番ではクエリログを保持しない。※メモリを食うため
         if (!env('APP_DEBUG')) {
             \DB::connection()->disableQueryLog();
@@ -30,7 +31,8 @@ class BaseApiController extends Controller
      * 登録項目除外配列(下記以外に不要な項目があればオーバーライド)
      * @return array
      */
-    public function except() {
+    public function except()
+    {
         return ["_token", "register_mode", "upload_image"];
     }
 
@@ -39,9 +41,10 @@ class BaseApiController extends Controller
      * @param array $response
      * @return \Illuminate\Http\JsonResponse
      */
-    public function success($response = []) {
+    public function success($response = [])
+    {
         $rtn['status'] = 1;
-        foreach($response as $key => $value) {
+        foreach ($response as $key => $value) {
             $rtn[$key] = $value;
         }
         return response()->json($rtn);
@@ -53,12 +56,13 @@ class BaseApiController extends Controller
      * @param array $response
      * @return \Illuminate\Http\JsonResponse
      */
-    public function error($status, $response = []) {
+    public function error($status, $response = [])
+    {
         $rtn['status'] = $status;
-        foreach($response as $key => $value) {
+        foreach ($response as $key => $value) {
             $rtn[$key] = $value;
         }
-        \Log::error('status:'.$status.", message:".json_encode($response));
+        \Log::error('status:' . $status . ", message:" . json_encode($response));
         return response()->json($rtn);
     }
 
@@ -66,25 +70,28 @@ class BaseApiController extends Controller
      * ファイル保存処理
      * 引数：フォルダ名
      */
-    public function fileSave(Request $request, $folder=null) {
+    public function fileSave(Request $request, $folder = null)
+    {
         // メソッド呼び出し時のフォルダ指定を確認
         $folder ? '' : $folder = $this->folder;
 
         // 画像の新規保存
         return Common::saveImage($request->file('image'), $folder);
     }
-
+    
     /**
-     * ソート用の値を設定
-     * 引数：パラメタ
+     * ソート条件の取り出し
+     * 引数：リクエスト
      */
-    public function setSort($param) {
-        // ソート条件を設定
-        if(key_exists('order', $param->all())) {
-            $sort = $param->input('order');
-            $order[$sort] = $sort;
-            return $order;
+    public function getSortOrder($req)
+    {
+        if (isset($req['order'])) {
+            $values = explode(":", $req['order']);
+            return [
+                $values[0] => $values[1]
+            ];
         }
+
         return [];
     }
 }

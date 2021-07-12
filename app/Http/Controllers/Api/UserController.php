@@ -88,7 +88,7 @@ class UserController extends BaseApiController
                 'name' => $request->input('name'),
                 'device_token' => $request->input('device_token')
             ];
-            
+
             if ($request->hasFile('image')) {
                 $data['image_file'] = $this->fileSave($request);
             }
@@ -126,7 +126,7 @@ class UserController extends BaseApiController
             if ($request->hasFile('image')) {
                 $data['image_file'] = $this->fileSave($request);
             }
-            
+
             $this->userService->save($data);
 
             \DB::commit();
@@ -178,7 +178,7 @@ class UserController extends BaseApiController
             if (isset($limitDateData)) {
                 $limitDate = $limitDateData['limit_date'];
             }
-            
+
             return $this->success([
                 'total_give_free_point' => $totalFree,
                 'total_give_charge_point' => $totalCharge,
@@ -288,11 +288,7 @@ class UserController extends BaseApiController
             if ($request->input('location_id')) {
                 $conditions['id'] = $request->input('location_id');
             }
-            // ソート条件
-            $order = [];
-            if (isset($request->order)) {
-                $order = [$request->order[0] => $request->order[1]];
-            }
+            $order = $this->getSortOrder($request);
 
             $returnData = [];
 
@@ -377,11 +373,8 @@ class UserController extends BaseApiController
             // 検索条件
             $conditions = [];
             $conditions['id'] = Auth::user()->id;
-            // ソート条件
-            $order = [];
-            if (isset($request->order)) {
-                $order = [$request->order[0] => $request->order[1]];
-            }
+
+            $order = $this->getSortOrder($request);
 
             $returnData = [];
 
@@ -439,7 +432,7 @@ class UserController extends BaseApiController
                 // URL無効エラー
                 return $this->error(-2, ['message' => Message::ERROR_REGISTER_TOKEN]);
             }
-            
+
             \DB::commit();
 
             // 以下、データが無い場合のnullチェック。
@@ -452,7 +445,7 @@ class UserController extends BaseApiController
             if (isset($chargePoints)) {
                 $totalCharge = (int)$chargePoints['total_points'];
             }
-            
+
             return $this->success([
                 'total_give_free_point' => $totalFree,
                 'total_give_charge_point' => $totalCharge
@@ -474,11 +467,8 @@ class UserController extends BaseApiController
             // 検索条件
             $conditions = [];
             $conditions['id'] = Auth::user()->id;
-            // ソート条件
-            $order = [];
-            if (isset($request->order)) {
-                $order = [$request->order[0] => $request->order[1]];
-            }
+            
+            $order = $this->getSortOrder($request);
 
             return $this->success(['community_list' => $this->userService->getUserCommunityQuery($conditions, $order)]);
         } catch (\Exception $e) {
