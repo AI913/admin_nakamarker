@@ -43,8 +43,22 @@ class MarkerController extends BaseApiController
             }
             
             $order = $this->getSortOrder($request);
+            $returnData = [];
+            foreach ($this->mainService->getMarkerQuery($conditions, $order) as $data) {
+              array_push($returnData, [
+                'marker_id'   => $data['id'],
+                'type' => $data['type'],
+                'name' => $data['name'],
+                'search_word' => $data['search_word'],
+                'description' => $data['description'],
+                'price' => $data['price'],
+                'charge_type' => $data['charge_type'],
+                'status' => $data['status'],
+                'image_url' => $data['image_url']
+              ]);
+            }
 
-            return $this->success(['markers' => $this->mainService->getMarkerQuery($conditions, $order)]);
+            return $this->success(['markers' => $returnData]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }

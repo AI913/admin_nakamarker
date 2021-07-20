@@ -21,8 +21,6 @@ class MarkerService extends BaseService
      * 引数1：検索条件 引数2：ソート条件
      */
     public function getMarkerQuery($conditions=[], $order=[]) {
-      return $this->searchQuery($conditions, $order)
-                  ->select('id as marker_id', 'type', 'name', 'search_word', 'description', 'price', 'charge_type', 'status')
-                  ->get();
+      return $this->searchQuery($conditions, $order)->get();
     }
 }
