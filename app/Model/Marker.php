@@ -11,6 +11,7 @@ class Marker extends BaseModel
      * @var array
      */
     protected $child_appends = [
+        'image_url',
         'type_name',
         'charge_name'
     ];
