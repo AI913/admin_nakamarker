@@ -299,7 +299,7 @@ class UserController extends BaseApiController
                     'name' => $locations['location_name'],
                     'latitude' => $locations['latitude'],
                     'longitude' => $locations['longitude'],
-                    'image_file' => $locations['image_url'],
+                    'image_url' => $locations['image_url'],
                     'marker_type' => $locations['marker']['marker_type'],
                     'marker_name' => $locations['marker']['marker_name'],
                     'memo' => $locations['memo']
@@ -342,7 +342,7 @@ class UserController extends BaseApiController
                 'type_name' => $marker['type_name'],
                 'charge_name' => $marker['charge_name']
             ];
-            
+
             return $this->success(['location_data' => [
                 'location_id' => $locationData['id'],
                 'name' => $locationData['name'],
@@ -388,8 +388,6 @@ class UserController extends BaseApiController
     public function getUserMarker(Request $request)
     {
         try {
-            \Log::debug($request);
-
             // 検索条件
             $conditions = [];
             $conditions['id'] = Auth::user()->id;
