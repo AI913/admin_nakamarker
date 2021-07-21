@@ -11,7 +11,6 @@ class Marker extends BaseModel
      * @var array
      */
     protected $child_appends = [
-        'image_url',
         'type_name',
         'charge_name'
     ];
@@ -29,7 +28,8 @@ class Marker extends BaseModel
     public function __construct(array $attributes = []) {
         parent::__construct($attributes);
         // 親のアクセサと子のアクセサ配列をマージ
-        $this->appends = array_merge($this->child_appends);
+        $this->appends = array_merge($this->child_appends, $this->appends);
+
     }
 
     /**
