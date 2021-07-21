@@ -400,36 +400,43 @@ class UserController extends BaseApiController
 
     /**
      * マーカー情報の更新
-     * @param $id
+     * @param $request['is_free'] = ポイント足りなくてもマーカーを更新できるかどうか(string型で飛んできてます)
      * @throws \Exception
      */
     public function markerUpdate(Request $request)
     {
         try {
             \DB::beginTransaction();
+            $isFree = $request['is_free'] == "true";
             // マーカー情報の取得
             $marker = $this->markerService->searchOne(['id' => $request->input('marker_id')]);
 
             // ポイントの消費
             $points = $this->userPointHistoryService->getPayPointQuery(Auth::user()->id, $marker->price, $marker->charge_type);
 
-            // 保存データを配列に格納
+            if ($isFree) {
+                $data = [
+                    'user_id' => Auth::user()->id,
+                    'marker_id' => $request->input('marker_id'),
+                    'pay_free_point' => 0,
+                    'pay_charge_point' => 0,
+                ];
+            } else {
                 $data = [
                     'user_id' => Auth::user()->id,
                     'marker_id' => $request->input('marker_id'),
                     'pay_free_point' => $points['free_points'],
                     'pay_charge_point' => $points['charge_points'],
                 ];
-
-            // 保存処理
+            }
+            
             $this->userMarkerService->save($data);
 
             // ポイント取得
             $free_points = $this->userService->getFreePointQuery(['user_points_histories.to_user_id' => Auth::user()->id])->first();
             $chargePoints = $this->userService->getPointQuery(['user_points_histories.to_user_id' => Auth::user()->id])->first();
 
-            if (!$chargePoints) {
-                // URL無効エラー
+            if (!$chargePoints && !$isFree) {
                 return $this->error(-2, ['message' => Message::ERROR_REGISTER_TOKEN]);
             }
 
