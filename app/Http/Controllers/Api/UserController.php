@@ -305,7 +305,7 @@ class UserController extends BaseApiController
                 ]);
             }
 
-            return $this->success(['location_list' => $returnData]);
+            return $this->success(['location_data_list' => $returnData]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
@@ -332,7 +332,7 @@ class UserController extends BaseApiController
 
             $locationData = $this->userLocationService->save($data);
             \DB::commit();
-            return $this->success(['location_list' => $locationData]);
+            return $this->success(['location_data' => $locationData]);
         } catch (\Exception $e) {
             \DB::rollback();
             return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
