@@ -139,7 +139,8 @@ class UserService extends BaseService
                                          'markers.description',
                                          'markers.price',
                                          'markers.charge_type',
-                                         'markers.status')
+                                         'markers.status',
+                                         'markers.image_file')
                                 ->where('user_markers.del_flg', "=", 0);
                       }])
                       ->get();

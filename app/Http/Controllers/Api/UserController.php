@@ -14,6 +14,7 @@ use App\Services\Api\CommunityHistoryService;
 use App\Services\Api\CommunityService;
 use App\Services\Api\ConfigService;
 use App\Lib\Message;
+use App\Lib\Common;
 use Carbon\Carbon;
 
 class UserController extends BaseApiController
@@ -377,7 +378,7 @@ class UserController extends BaseApiController
             $order = $this->getSortOrder($request);
 
             $returnData = [];
-
+            
             foreach ($this->userService->getUserMarkerQuery($conditions, $order) as $markers) {
                 array_push($returnData, [
                     'marker_id' => $markers['marker_id'],
@@ -388,7 +389,7 @@ class UserController extends BaseApiController
                     'price' => $markers['price'],
                     'charge_type' => $markers['charge_type'],
                     'status' => $markers['status'],
-                    'image_file' => $markers['image_url']
+                    'image_url' => Common::getImageUrl($markers['image_file'], "markers")
                 ]);
             }
 
