@@ -333,7 +333,26 @@ class UserController extends BaseApiController
 
             $locationData = $this->userLocationService->save($data);
             \DB::commit();
-            return $this->success(['location_data' => $locationData]);
+
+            $marker = $this->markerService->searchOne(['id' => $locationData['marker_id']]);
+            $markerData = [
+                'id' => $marker['id'],
+                'marker_name' => $marker['name'],
+                'marker_type' => $marker['type'],
+                'type_name' => $marker['type_name'],
+                'charge_name' => $marker['charge_name']
+            ];
+            
+            return $this->success(['location_data' => [
+                'location_id' => $locationData['id'],
+                'name' => $locationData['name'],
+                'latitude' => $locationData['latitude'],
+                'longitude' => $locationData['longitude'],
+                'image_url' => $locationData['image_url'],
+                'memo' => $locationData['memo'],
+                'status_name' => $locationData['status_name'],
+                'marker' => $markerData
+            ]]);
         } catch (\Exception $e) {
             \DB::rollback();
             return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
