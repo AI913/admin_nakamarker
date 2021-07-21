@@ -414,12 +414,12 @@ class UserController extends BaseApiController
             $points = $this->userPointHistoryService->getPayPointQuery(Auth::user()->id, $marker->price, $marker->charge_type);
 
             // 保存データを配列に格納
-            $data = [
-                'user_id' => Auth::user()->id,
-                'marker_id' => $request->input('marker_id'),
-                'pay_free_point' => $points['free_points'],
-                'pay_charge_point' => $points['charge_points'],
-            ];
+                $data = [
+                    'user_id' => Auth::user()->id,
+                    'marker_id' => $request->input('marker_id'),
+                    'pay_free_point' => $points['free_points'],
+                    'pay_charge_point' => $points['charge_points'],
+                ];
 
             // 保存処理
             $this->userMarkerService->save($data);
@@ -517,7 +517,7 @@ class UserController extends BaseApiController
             $returnData = [];
             foreach ($this->userLocationService->getUserLocationQuery($conditions) as $data) {
                 array_push($returnData, [
-                    'id'   => $data['location_id'],
+                    'location_id'   => $data['location_id'],
                     'name' => $data['location_name'],
                     'latitude' => $data['latitude'],
                     'longitude' => $data['longitude'],
