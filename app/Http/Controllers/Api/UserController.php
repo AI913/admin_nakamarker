@@ -300,8 +300,7 @@ class UserController extends BaseApiController
                     'latitude' => $locations['latitude'],
                     'longitude' => $locations['longitude'],
                     'image_url' => $locations['image_url'],
-                    'marker_type' => $locations['marker']['marker_type'],
-                    'marker_name' => $locations['marker']['marker_name'],
+                    'marker' => $locations['marker'],
                     'memo' => $locations['memo']
                 ]);
             }
