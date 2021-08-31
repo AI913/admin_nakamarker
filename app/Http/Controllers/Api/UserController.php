@@ -347,7 +347,7 @@ class UserController extends BaseApiController
                 'name' => $locationData['name'],
                 'latitude' => $locationData['latitude'],
                 'longitude' => $locationData['longitude'],
-                'image_url' => $locationData['image_url'],
+                'image_url' => Common::getImageUrl($locationData['image_file'], "user_locations"),
                 'memo' => $locationData['memo'],
                 'status_name' => $locationData['status_name'],
                 'marker' => $markerData
