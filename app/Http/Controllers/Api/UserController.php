@@ -68,6 +68,7 @@ class UserController extends BaseApiController
             $userData = Auth::user();
             return $this->success([
                 'name' => $userData->name,
+                'isAuthPhone' => !is_null($userData->firebase_uid),
                 'image_url' => $userData->image_url
             ]);
         } catch (\Exception $e) {
