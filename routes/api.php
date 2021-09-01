@@ -29,13 +29,14 @@ Route::middleware('app.auth')->group(function(){
     Route::post('/user/location',                   'Api\UserController@locationInfo');
     Route::post('/user/location/register',          'Api\UserController@locationRegister');
     Route::post('/user/location/remove',            'Api\UserController@locationRemove');
-    Route::post('/user/location/from_marker',         'Api\UserController@getUserLocationFromMarkerId');
+    Route::post('/user/location/from_marker',       'Api\UserController@getUserLocationFromMarkerId');
     /******************** ユーザマーカー管理(user_markers) ********************/
     Route::post('/user/marker',                     'Api\UserController@getUserMarker');
     Route::post('/user/marker/update',              'Api\UserController@markerUpdate');
     /******************** ユーザコミュニティ管理(community_histories) ********************/
-    Route::post('/user/community_history',          'Api\UserController@getUserJoinedCommunity');
-    Route::post('/user/community_history/update',   'Api\UserController@communityUpdate');
+    Route::post('/user/community_history',              'Api\UserController@getUserJoinedCommunity');
+    Route::post('/user/community_history/update',       'Api\UserController@communityUpdate');
+    Route::post('/user/community_history/unsubscribe',  'Api\UserController@communityUnsubscribe');
 
     /******************** マーカー管理(markers) ********************/
     Route::post('/marker',                          'Api\MarkerController@getAllMarker');

@@ -555,4 +555,32 @@ class UserController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
+
+    /**
+     * 所属コミュニティからの退会処理
+     * @param $request->community_id 退会するコミュニティのID
+     * @throws \Exception
+     */
+    public function communityUnsubscribe(Request $request)
+    {
+        try {
+            $conditions['community_id'] = $request['community_id'];
+            $conditions['user_id'] = Auth::user()->id;
+            $community = $this->communityHistoryService->searchOne($conditions);
+            if (empty($community)) {
+                return $this->error(-1, ['message' => Message::ERROR_NOT_COMMUNIRY_MEMBER]);
+            }
+
+            $data['id'] = $community->id;
+            $data['community_id'] = $request['community_id'];
+            $data['user_id'] = Auth::user()->id;
+            $data['del_flg'] = 1;
+
+            $this->communityHistoryService->save($data);
+
+            return $this->success();
+        } catch (\Exception $e) {
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
+        }
+    }
 }
