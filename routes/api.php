@@ -45,6 +45,7 @@ Route::middleware('app.auth')->group(function(){
     Route::post('/community',                               'Api\CommunityController@getAllCommunity');
     Route::post('/community/register',                      'Api\CommunityController@register');
     Route::post('/community/update',                        'Api\CommunityController@update');
+    Route::post('/community/remove',                        'Api\CommunityController@remove');
     /******************** コミュニティマーカー管理(community_markers) ********************/
     Route::post('/community/marker',                        'Api\CommunityController@getCommunityMarkerList');
     Route::post('/community/marker/register',               'Api\CommunityController@markerRegister');

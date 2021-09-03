@@ -197,6 +197,30 @@ class CommunityController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
+    
+    /**
+     * コミュニティの削除
+     * @param $request->community_id 削除するコミュニティのid
+     * @throws \Exception
+     */
+    public function remove(Request $request)
+    {
+        try {
+            $community_id = $request->input('community_id');
+            if (!$this->mainService->isHostUser($community_id, \Auth::user()->id)) {
+                return $this->error(-1, ["message" => Message::ERROR_NOT_HOST]);
+            }
+            
+            $data['id'] = $community_id;
+            $data['del_flg'] = 1;
+
+            $this->mainService->save($data);
+
+            return $this->success();
+        } catch (\Exception $e) {
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
+        }
+    }
 
     /**
      * コミュニティマーカーのリストを取得
