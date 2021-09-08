@@ -92,7 +92,7 @@ class UserController extends BaseApiController
             ];
 
             if ($request->hasFile('image')) {
-                $data['image_file'] = $this->fileSave($request);
+                $data['image_file'] = $this->fileSave($request->file('image'));
             }
 
             $user = $this->userService->create($data);
@@ -126,7 +126,7 @@ class UserController extends BaseApiController
             ];
             // 画像ありの場合は保存処理を実行
             if ($request->hasFile('image')) {
-                $data['image_file'] = $this->fileSave($request);
+                $data['image_file'] = $this->fileSave($request->file('image'));
             }
 
             $this->userService->save($data);
@@ -300,7 +300,9 @@ class UserController extends BaseApiController
                     'name' => $locations['location_name'],
                     'latitude' => $locations['latitude'],
                     'longitude' => $locations['longitude'],
-                    'image_url' => $locations['image_url'],
+                    'image_url_1' => Common::getImageUrl($locations['image_file'], "user_locations"),
+                    'image_url_2' => Common::getImageUrl($locations['image_file2'], "user_locations"),
+                    'image_url_3' => Common::getImageUrl($locations['image_file3'], "user_locations"),
                     'marker' => $locations['marker'],
                     'memo' => $locations['memo']
                 ]);
@@ -323,12 +325,18 @@ class UserController extends BaseApiController
             \DB::beginTransaction();
 
             $data = $request->all();
-            // アプリ側からlocation_idで飛んでくるのでidに変換
             $data['id'] = $data['location_id'];
             $data['user_id'] = Auth::user()->id;
-            // 画像ありの場合は保存処理を実行
             if ($request->hasFile('image')) {
-                $data['image_file'] = $this->fileSave($request, config('const.user_locations'));
+                $data['image_file'] = $this->fileSave($request->file('image'), config('const.user_locations'));
+            }
+
+            if ($request->hasFile('image1')) {
+                $data['image_file2'] = $this->fileSave($request->file('image1'), config('const.user_locations'));
+            }
+
+            if ($request->hasFile('image2')) {
+                $data['image_file3'] = $this->fileSave($request->file('image2'), config('const.user_locations'));
             }
 
             $locationData = $this->userLocationService->save($data);
@@ -348,7 +356,9 @@ class UserController extends BaseApiController
                 'name' => $locationData['name'],
                 'latitude' => $locationData['latitude'],
                 'longitude' => $locationData['longitude'],
-                'image_url' => Common::getImageUrl($locationData['image_file'], "user_locations"),
+                'image_url_1' => Common::getImageUrl($locationData['image_file'], "user_locations"),
+                'image_url_2' => Common::getImageUrl($locationData['image_file2'], "user_locations"),
+                'image_url_3' => Common::getImageUrl($locationData['image_file3'], "user_locations"),
                 'memo' => $locationData['memo'],
                 'status_name' => $locationData['status_name'],
                 'marker' => $markerData

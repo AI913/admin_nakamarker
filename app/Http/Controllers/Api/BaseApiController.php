@@ -70,13 +70,13 @@ class BaseApiController extends Controller
      * ファイル保存処理
      * 引数：フォルダ名
      */
-    public function fileSave(Request $request, $folder = null)
+    public function fileSave($file, $folder = null)
     {
         // メソッド呼び出し時のフォルダ指定を確認
         $folder ? '' : $folder = $this->folder;
 
         // 画像の新規保存
-        return Common::saveImage($request->file('image'), $folder);
+        return Common::saveImage($file, $folder);
     }
     
     /**

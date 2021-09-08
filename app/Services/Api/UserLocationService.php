@@ -25,7 +25,7 @@ class UserLocationService extends BaseService
     public function getUserLocationQuery($conditions = [], $order = [])
     {
         return $this->searchQuery($conditions, $order)
-            ->select('id as location_id', 'name as location_name', 'latitude', 'longitude', 'image_file', 'memo', 'marker_id')
+            ->select('id as location_id', 'name as location_name', 'latitude', 'longitude', 'image_file', 'image_file2', 'image_file3', 'memo', 'marker_id')
             ->with('marker:id,name as marker_name,type as marker_type')
             ->get();
     }

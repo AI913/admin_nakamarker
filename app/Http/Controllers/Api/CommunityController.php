@@ -12,6 +12,7 @@ use App\Services\Api\MarkerService;
 use App\Services\Api\UserService;
 use App\Services\Api\ConfigService;
 use App\Lib\Message;
+use App\Lib\Common;
 
 class CommunityController extends BaseApiController
 {
@@ -117,7 +118,7 @@ class CommunityController extends BaseApiController
             else                    $data['type'] = config('const.community_personal');
 
             if ($request->hasFile('image')) {
-                $data['image_file'] = $this->fileSave($request);
+                $data['image_file'] = $this->fileSave($request->file('image'));
             }
 
             $community = $this->mainService->save($data);
@@ -177,7 +178,7 @@ class CommunityController extends BaseApiController
 
             // 画像ありの場合は保存処理を実行
             if ($request->hasFile('image')) {
-                $data['image_file'] = $this->fileSave($request);
+                $data['image_file'] = $this->fileSave($request->file('image'));
             }
 
             $community = $this->mainService->save($data);
@@ -425,7 +426,9 @@ class CommunityController extends BaseApiController
                     'name' => $locations['location_name'],
                     'latitude' => $locations['latitude'],
                     'longitude' => $locations['longitude'],
-                    'image_file' => $locations['image_file'],
+                    'image_url_1' => Common::getImageUrl($locations['image_file'], "communities"),
+                    'image_url_2' => Common::getImageUrl($locations['image_file2'], "communities"),
+                    'image_url_3' => Common::getImageUrl($locations['image_file3'], "communities"),
                     'marker_type' => $locations['marker']['marker_type'],
                     'marker_id' => $locations['marker_id'],
                     'marker_name' => $locations['marker']['marker_name'],
@@ -492,7 +495,15 @@ class CommunityController extends BaseApiController
             $data['id'] = $data['location_id'];
             $data['user_id'] = \Auth::user()->id;
             if ($request->hasFile('image')) {
-                $data['image_file'] = $this->fileSave($request, config('const.community_locations'));
+                $data['image_file'] = $this->fileSave($request->file('image'), config('const.community_locations'));
+            }
+
+            if ($request->hasFile('image1')) {
+                $data['image_file2'] = $this->fileSave($request->file('image1'), config('const.user_locations'));
+            }
+
+            if ($request->hasFile('image2')) {
+                $data['image_file3'] = $this->fileSave($request->file('image2'), config('const.user_locations'));
             }
 
             $comData = $this->communityLocationService->save($data);
