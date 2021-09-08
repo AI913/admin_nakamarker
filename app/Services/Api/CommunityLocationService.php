@@ -28,7 +28,7 @@ class CommunityLocationService extends BaseService
     public function getCommunityLocationQuery($conditions=[], $order=[]) {
         return $this->searchQuery($conditions, $order)
                     ->select('id as location_id', 'name as location_name', 'latitude', 'longitude',
-                             'image_file', 'memo', 'marker_id', 'user_id', 'created_at')
+                             'image_file', 'image_file2', 'image_file3', 'memo', 'marker_id', 'user_id', 'created_at')
                     ->with('marker:id,name as marker_name,type as marker_type',
                            'user:id,name as user_name')
                     ->get();
