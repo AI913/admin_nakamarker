@@ -78,7 +78,8 @@ class MarkerService extends BaseService
         $query->leftJoin('user_markers', 'markers.id', '=', 'user_markers.marker_id')
               ->select('markers.image_file', 'markers.name', 'markers.search_word', 'markers.charge_type', 'user_markers.id as user_markers_id', 
                        'user_markers.updated_at as user_markers_updated_at', 'user_markers.pay_charge_point', 'user_markers.pay_free_point')
-              ->where('user_markers.user_id', '=', $user_id)
+              ->where('user_markers.user_id', '=', $user_id) 
+              ->orWhere('markers.charge_type', '=', 3)
               ->where('user_markers.del_flg', '=', 0);
 
         return $query;
