@@ -246,7 +246,7 @@ class CommunityController extends BaseApiController
 
             foreach ($this->mainService->getCommunityMarkerQuery($conditions, $order) as $markers) {
                 array_push($returnData, [
-                    'history_id' => $markers['history_id'],
+                    'community_markers_id' => $markers['community_markers_id'],
                     'marker_id' => $markers['marker_id'],
                     'type' => $markers['type'],
                     'name' => $markers['name'],

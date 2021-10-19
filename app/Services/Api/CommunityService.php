@@ -36,7 +36,7 @@ class CommunityService extends BaseService
                       ->select('id')
                       ->with(['marker' => function ($query) {
                         // community_markersテーブルとmarkersテーブルの値をクエリすることが可能
-                        $query->select('community_markers.id as history_id', 'community_markers.marker_id',
+                        $query->select('community_markers.id as community_markers_id', 'community_markers.marker_id',
                                        'community_markers.updated_at', 'markers.type', 'markers.name', 'markers.search_word',
                                        'markers.image_file', 'markers.description');
                       }])
