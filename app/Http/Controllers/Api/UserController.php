@@ -540,7 +540,7 @@ class UserController extends BaseApiController
             // 保存データを配列に格納
             $data['user_id'] = Auth::user()->id;
             $data['community_id'] = $request->input('community_id');
-            $data['status'] = config('const.community_history_apply'); // 申請中の値をセット
+            $data['status'] = config('const.community_history_approval');
             // 保存処理
             $this->communityHistoryService->save($data);
 
