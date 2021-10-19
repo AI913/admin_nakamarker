@@ -163,7 +163,8 @@ class UserService extends BaseService
                                          'communities.description', 'communities.image_file',
                                          'communities.status as community_status',
                                          'community_histories.status as entry_status',
-                                         'host_user_id');
+                                         'host_user_id')
+                                ->where('community_histories.del_flg', "=", 0);
                       }])
                       ->get();
 
