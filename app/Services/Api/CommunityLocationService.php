@@ -67,7 +67,7 @@ class CommunityLocationService extends BaseService
         $tmp['longitude'] = (double)$value['longitude'];
         $tmp['text'] = $value['community']['name']." の ".
                        $this->userService->find($value['update_user_id'])->name." が ".
-                       $this->markerService->find($value['marker_id'])->name." を ".
+                       $value['name']." を ".
                        $action." しました";
 
         array_push($returnData, $tmp);
