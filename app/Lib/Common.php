@@ -283,4 +283,23 @@ class Common {
    	    // bcrypt暗号化
    	    return bcrypt($password);
     }
+    
+    /**
+     * 連想配列の重複しているレコード削除
+     * @param $array 連想配列
+     * @param $column 重複チェックするカラム名称
+     * @return array
+     */
+    public static function getUniqueArray($array, $column)
+    {   
+       $tmp = []; 
+       $uniqueArray = []; 
+       foreach ($array as $value){
+          if (!in_array($value[$column], $tmp)) {
+             $tmp[] = $value[$column];
+             $uniqueArray[] = $value;
+          }   
+       }   
+       return $uniqueArray;    
+    }   
 }

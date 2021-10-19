@@ -420,7 +420,24 @@ class UserController extends BaseApiController
                 ]);
             }
 
-            return $this->success(['marker_list' => $returnData]);
+            // マーカーの有料フラグがデフォルト(charge_type==3)の場合は所有マーカーとするアプリの仕様
+            $conditions = [];
+            $conditions['charge_type'] = 3;
+            foreach ($this->markerService->getMarkerQuery($conditions) as $markers) {
+                array_push($returnData, [
+                    'marker_id' => $markers['id'],
+                    'type' => $markers['type'],
+                    'name' => $markers['name'],
+                    'search_word' => $markers['search_word'],
+                    'description' => $markers['description'],
+                    'price' => $markers['price'],
+                    'charge_type' => $markers['charge_type'],
+                    'status' => $markers['status'],
+                    'image_url' => Common::getImageUrl($markers['image_file'], "markers")
+                ]);
+            }
+            
+            return $this->success(['marker_list' => Common::getUniqueArray($returnData, 'marker_id')]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
