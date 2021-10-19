@@ -21,3 +21,6 @@
 　※コミットのコメントに他の方が読んでも分かる内容であれば、一括でコミットしてもOK
 
 ※コミットのコメントは何の内容であるかを明記するように留意する
+
+API仕様書
+https://docs.google.com/spreadsheets/d/1W5XpRD4S2dEubOz7rzsUcihlYw317YkX/edit?usp=sharing&ouid=101892114607872019806&rtpof=true&sd=true
