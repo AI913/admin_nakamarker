@@ -326,6 +326,27 @@ class CommunityController extends BaseApiController
     }
 
     /**
+     * コミュニティマーカーの削除
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function markerRemove(Request $request)
+    {
+        try {
+            \DB::beginTransaction();
+
+            $this->communityMarkerService->remove($request->input('community_markers_id'));
+
+            \DB::commit();
+            
+            return $this->success();
+        } catch (\Exception $e) {
+            \DB::rollback();
+            return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
+        }
+    }
+
+    /**
      * コミュニティへの加入を希望するユーザ一覧を取得
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
