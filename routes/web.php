@@ -1,5 +1,18 @@
 <?php
 
+// 利用規約
+Route::get('/app/page/terms', function() {
+    return view('app.page.terms');
+});
+// プライバシーポリシー
+Route::get('/app/page/privacy', function() {
+    return view('app.page.privacy');
+});
+// ヘルプ
+Route::get('/app/page/help', function() {
+    return view('app.page.help');
+});
+
 Route::get('/logout',   'Admin\Auth\LoginController@logout')->name('admin/logout');
 
 /************************************************
@@ -14,7 +27,7 @@ Route::middleware('guest:admin')->group(function(){
  *  管理者画面ルーティング(ログイン)
  ************************************************/
 Route::middleware('auth:admin')->group(function () {
-    
+
     /******************** HOME ********************/
     Route::get('/',     'Admin\HomeController@index')->name('admin');
     Route::get('/home', 'Admin\HomeController@index')->name('admin/home');
@@ -49,7 +62,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('/ajax/user/detail/{id}/location/{location_id}/image',  'Admin\UserController@user_locationImage_delete')->name('admin/user/details/location/image');
     // ユーザの登録場所削除処理(user_locations)
     Route::post('/user/detail/{id}/location/remove',     'Admin\UserController@removeLocation')->name('admin/user/details/location/remove');
-    
+
     /******************** ユーザその他(ajax) ********************/
     // ユーザの所有マーカー一覧(user_markers)
     Route::get('/ajax/user/detail/{id}/marker',     'Admin\UserController@user_markers')->name('admin/user/detail/marker');
@@ -68,7 +81,7 @@ Route::middleware('auth:admin')->group(function () {
     // 特定ユーザのポイント消費(削除予定)
     Route::post('/ajax/user/detail/{id}/point/pay', 'Admin\UserController@pay_points')->name('admin/user/point/pay');
 
-    
+
     /******************** マーカー管理(markers) ********************/
     Route::get('/marker',             'Admin\MarkerController@index')->name('admin/marker');
     Route::get('/marker/create',      'Admin\MarkerController@create')->name('admin/marker/create');
@@ -80,7 +93,7 @@ Route::middleware('auth:admin')->group(function () {
     /******************** マーカーその他(ajax) ********************/
     // マーカーの所有ユーザ一覧(user_markers)
     Route::get('/ajax/marker/detail/{id}/user',     'Admin\MarkerController@marker_users')->name('admin/marker/detail/user');
-    
+
     /******************** コミュニティ管理(communities) ********************/
     Route::get('/community',             'Admin\CommunityController@index')->name('admin/community');
     Route::get('/community/create',      'Admin\CommunityController@create')->name('admin/community/create');
@@ -121,7 +134,7 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/news/detail/{id}', 'Admin\NewsController@detail')->name('admin/news/detail');
     Route::post('/news/save',       'Admin\NewsController@save')->name('admin/news/save');
     Route::post('/news/remove',     'Admin\NewsController@remove')->name('admin/news/remove');
-    
+
     /******************** 通知履歴管理(push_histories) ********************/
     Route::get('/push',             'Admin\PushHistoryController@index')->name('admin/push');
     Route::get('/push/create',      'Admin\PushHistoryController@create')->name('admin/push/create');
@@ -138,4 +151,4 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('/config/remove',     'Admin\ConfigController@remove')->name('admin/config/remove');
 });
 
-    
+
