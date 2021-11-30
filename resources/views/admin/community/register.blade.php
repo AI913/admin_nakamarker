@@ -130,7 +130,7 @@
                                 <input type="hidden" id="register_mode" name="register_mode" value="{{ $register_mode }}" />
                                 <input type="hidden" id="image_file" name="image_file" value="{{ $data->image_file ? $data->image_file : '' }}" />
                                 @include('admin.layouts.components.button.register', ['register_mode' => $register_mode])
-                                @include('admin.layouts.components.button.cancel', ['url' => "admin/community"])
+                                @include('admin.layouts.components.button.cancel', ['url' => "/admin/community"])
                             </div>
                         </div>
                     </form>

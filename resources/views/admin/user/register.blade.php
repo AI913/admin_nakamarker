@@ -110,7 +110,7 @@
                                 @if ($data->id !== \Auth::user()->id)
                                     @include('admin.layouts.components.button.register', ['register_mode' => $register_mode])
                                 @endif
-                                @include('admin.layouts.components.button.cancel', ['url' => "admin/user"])
+                                @include('admin.layouts.components.button.cancel', ['url' => "/admin/user"])
                             </div>
                         </div>
                     </form>
