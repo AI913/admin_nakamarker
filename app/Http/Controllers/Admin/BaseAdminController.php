@@ -27,7 +27,7 @@ class BaseAdminController extends Controller
     protected $mainTitle;
     // メインリスト
     protected $mainList;
-    
+
     // システム設定サービス
     protected $configService;
 
@@ -47,7 +47,7 @@ class BaseAdminController extends Controller
 
             // 共通設定サービス
             // View::share('config_service', $this->configService);
-            
+
             return $next($request);
         });
     }
@@ -96,7 +96,7 @@ class BaseAdminController extends Controller
         if(session('file_name')) {
             session()->forget('file_name');
         }
-        
+
         return view($this->mainRoot.'/list');
     }
 
@@ -250,7 +250,7 @@ class BaseAdminController extends Controller
      * @throws \Exception
      */
     public function save(Request $request) {
-        
+
         // 画像ありの場合は保存処理実行
         if ($request->hasFile('upload_image')) {
             $this->fileSave($request);

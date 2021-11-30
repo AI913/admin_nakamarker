@@ -1,3 +1,7 @@
+
+let active_url = window.location.pathname;
+active_ajax_url = active_url.replace('admin', 'admin\/ajax');
+
 $(function(){
     // 一覧画面のみ適用(ID=main_listがある場合のみ)
     if ($('#main_list').length) {
@@ -5,25 +9,24 @@ $(function(){
         // DataTables初期化
         initList(false);
     }
-    
-    /* 
+
+    /*
      *  "備考"ボタンが押下されたとき
      */
     $(document).on('click', '.btn-location',function(){
         let location_id = $(this).data('id');
-        let url = window.location.pathname;
-        setLocationDetail(location_id, url);
+        setLocationDetail(location_id);
     });
 
-    /* 
+    /*
      *  "新規登録"ボタンが押下されたとき
      */
     $(document).on('click', '.btn-location_create_link',function(){
         let url = window.location.pathname;
-        location.href = `${url}/create`;
+        location.href = `${active_url}/create`;
     });
 
-    /* 
+    /*
      *   モーダルの終了処理
      */
         // 登録情報の備考
@@ -35,11 +38,11 @@ $(function(){
 
 /**
  * "登録場所の備考情報"モーダルの表示処理
- * @param id 
+ * @param id
  */
-function setLocationDetail(location_id, url) {
+function setLocationDetail(location_id) {
     // 削除フォームIDをセット
-    $.ajax({url: `/ajax${url}/detail/${location_id}`})
+    $.ajax({url: `${active_ajax_url}/detail/${location_id}`})
     .done(function(response){
         if (response.status == 1) {
             $('#detail_location_memo').html(response.data.memo);
@@ -58,7 +61,7 @@ $(function () {
     $('#drop_area').on('click', function () {
       $('#image').click();
     });
-  
+
     $('#image').on('change', function () {
       // 画像が複数選択されていた場合(files.length : ファイルの数)
       if (this.files.length > 1) {
@@ -90,9 +93,9 @@ $(function () {
     // #2ドラッグしている要素がドロップされたとき
     $('#drop_area').on('drop', function (event) {
         event.preventDefault();
-    
+
         $('#image')[0].files = event.originalEvent.dataTransfer.files;
-    
+
         // 画像が複数選択されていた場合
         if ($('#image')[0].files.length > 1) {
             alert('アップロードできる画像は1つだけです');
@@ -117,7 +120,7 @@ $(function () {
         }
 
         reader.onload = (function (file) {  // 読み込みが完了したら
-            
+
             // previeクラスのdivにimgタグを以下のプロパティ付きで実装
             return function(e) {
                 $('.preview').empty();
@@ -128,7 +131,7 @@ $(function () {
                     class: "preview",
                     title: file.name
                 }));  // previewに画像を表示
-            };   
+            };
         })(file);
 
         reader.readAsDataURL(file); // ファイル読み込みを非同期でバックグラウンドで開始
@@ -158,16 +161,16 @@ $(function () {
 // @2 プレビュー画像削除時の設定
 $(function(){
     // 画像のセット
-    let outImage = 'http://nakamarker.localhost/images/noImage/no_image.png';
-    
+    let outImage = 'images/noImage/no_image.png';
+
     $('#delete_flg').change(function() {
         // 画像の強制削除フラグ確認
         if($('#delete_flg').prop('checked') === true) {
-            outImage = 'http://nakamarker.localhost/images/noImage/out_images.png';
+            outImage = 'images/noImage/out_images.png';
             $('#delete_flg_on').val(true);
         }
         if($('#delete_flg').prop('checked') === false) {
-            outImage = 'http://nakamarker.localhost/images/noImage/no_image.png';
+            outImage = 'images/noImage/no_image.png';
             $('#delete_flg_on').val(false);
         }
         $preview = $(".preview");
@@ -229,13 +232,13 @@ function customCheck() {
  */
 function initList(search) {
     // api通信用にURLを取得
-    let url = window.location.pathname;
+    // let url = window.location.pathname;
 
     // DataTable設定
     settingDataTables(
         // 取得
     	'main_list',
-        `/ajax${url}`,
+        `${active_ajax_url}`,
         {
             'id': $('#id').val(),
             'marker_name': $('#marker_name').val(),
@@ -249,7 +252,7 @@ function initList(search) {
             {
                 // ロケーションイメージの画像を表示(モーダル形式)
                 data: function (p) {
-                    
+
                     return `
                         <a href="" data-toggle="modal" data-target="#location_modal${p.location_id}">
                             <img src="${p.image_url}" id="location_image" data-id="${p.location_id}" height="45" width="65">

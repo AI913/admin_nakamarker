@@ -6,7 +6,7 @@ $(function(){
         initList(false);
 
         // 一覧詳細ボタンクリック
-        settingDetailAjax('/community/detail/', '.btn-community');
+        settingDetailAjax('/admin/community/detail/', '.btn-community');
     }
 
     // 公開フラグのvalue値設定
@@ -18,7 +18,7 @@ $(function(){
         }
     })
 
-    /* 
+    /*
      *   申請状況カラムのボタンが押下されたとき
      */
     $(document).on('click', '.btn-status', function(){
@@ -26,7 +26,7 @@ $(function(){
         updateStatus($(this));
     });
 
-    /* 
+    /*
      *   ユーザリストの"備考"ボタンが押下されたとき
      */
     $(document).on('click', '.btn-user',function(){
@@ -35,7 +35,7 @@ $(function(){
         setUserDetail(user_id, community_id);
     });
 
-    /* 
+    /*
      *   モーダルの終了処理
      */
         // 登録情報の画像
@@ -60,11 +60,11 @@ $(function(){
 
 /**
  * 申請状況の編集処理
- * @param {*} button 
+ * @param {*} button
  */
 function updateStatus(button) {
     $.ajax({
-        url:    '/ajax/community/history/update',
+        url:    '/admin/ajax/community/history/update',
         type:   'POST',
         dataType: 'json',
         headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -106,8 +106,8 @@ function setDetailView(data, button) {
         if ($.fn.DataTable.isDataTable('#community_user_list')) {
             $('#community_user_list').DataTable().destroy();
         }
-    
-    /* 
+
+    /*
      *   "参加ユーザリスト"の表示
      */
         // DataTable設定
@@ -116,7 +116,7 @@ function setDetailView(data, button) {
             // tableのID
             'community_user_list',
             // 取得URLおよびパラメタ
-            '/ajax/community/detail/'+ data.id +'/user',
+            '/admin/ajax/community/detail/'+ data.id +'/user',
             {},
             // 各列ごとの表示定義
             [
@@ -172,11 +172,11 @@ function setDetailView(data, button) {
 
 /**
  * "参加ユーザリストの備考情報"モーダルの表示処理
- * @param id 
+ * @param id
  */
 function setUserDetail(user_id, community_id) {
     // 削除フォームIDをセット
-    $.ajax({url: `/ajax/community/detail/${community_id}/user/${user_id}`})
+    $.ajax({url: `/admin/ajax/community/detail/${community_id}/user/${user_id}`})
     .done(function(response){
         if (response.status == 1) {
             $('#detail_user_memo').html(response.data.entry_memo);
@@ -195,7 +195,7 @@ $(function () {
     $('#drop_area').on('click', function () {
       $('#image').click();
     });
-  
+
     $('#image').on('change', function () {
       // 画像が複数選択されていた場合(files.length : ファイルの数)
       if (this.files.length > 1) {
@@ -227,9 +227,9 @@ $(function () {
     // #2ドラッグしている要素がドロップされたとき
     $('#drop_area').on('drop', function (event) {
         event.preventDefault();
-    
+
         $('#image')[0].files = event.originalEvent.dataTransfer.files;
-    
+
         // 画像が複数選択されていた場合
         if ($('#image')[0].files.length > 1) {
             alert('アップロードできる画像は1つだけです');
@@ -255,7 +255,7 @@ $(function () {
         }
 
         reader.onload = (function (file) {  // 読み込みが完了したら
-            
+
             // previeクラスのdivにimgタグを以下のプロパティ付きで実装
             return function(e) {
                 $('.preview').empty();
@@ -266,7 +266,7 @@ $(function () {
                     class: "preview",
                     title: file.name
                 }));  // previewに画像を表示
-            };   
+            };
         })(file);
 
         reader.readAsDataURL(file); // ファイル読み込みを非同期でバックグラウンドで開始
@@ -296,16 +296,16 @@ $(function () {
 // @2 プレビュー画像削除時の設定
 $(function(){
     // 画像のセット
-    let outImage = 'http://nakamarker.localhost/images/noImage/no_image.png';
-    
+    let outImage = 'images/noImage/no_image.png';
+
     $('#delete_flg').change(function() {
         // 画像の強制削除フラグ確認
         if($('#delete_flg').prop('checked') === true) {
-            outImage = 'http://nakamarker.localhost/images/noImage/out_images.png';
+            outImage = 'images/noImage/out_images.png';
             $('#delete_flg_on').val(true);
         }
         if($('#delete_flg').prop('checked') === false) {
-            outImage = 'http://nakamarker.localhost/images/noImage/no_image.png';
+            outImage = 'images/noImage/no_image.png';
             $('#delete_flg_on').val(false);
         }
         $preview = $(".preview");
@@ -377,7 +377,7 @@ function initList(search) {
         // tableのID
         'main_list',
         // 取得URLおよびパラメタ
-        '/ajax/community',
+        '/admin/ajax/community',
         {
             'id': $('#id').val(),
             'name': $('#name').val(),
@@ -391,7 +391,7 @@ function initList(search) {
             {
                 // コミュニティイメージの画像を表示(モーダル形式)
                 data: function (p) {
-                    
+
                     return `
                         <a href="" data-toggle="modal" data-target="#modal${p.id}">
                             <img src="${p.image_url}" height="45" width="65">
@@ -437,16 +437,16 @@ function initList(search) {
             {
                 data: function (p) {
                     // "登録場所"ボタンの設定
-                    return getListLink('location_list', p.id ,`/community/detail/${p.id}/location`, 'list-button');
+                    return getListLink('location_list', p.id ,`/admin/community/detail/${p.id}/location`, 'list-button');
                 }
             },
             // 各操作列
             {
                 data: function (p) {
                     // 参加メンバー・編集ボタンの設定
-                    return getListLink('community', p.id ,'/community/detail/'+p.id, 'list-button') +
-                           getListLink('edit', p.id, '/community/edit/'+p.id, 'list-button') + 
-                           getListLink('remove', p.id ,'community/remove', 'list-button');
+                    return getListLink('community', p.id ,'/admin/community/detail/'+p.id, 'list-button') +
+                           getListLink('edit', p.id, '/admin/community/edit/'+p.id, 'list-button') +
+                           getListLink('remove', p.id ,'/admin/community/remove', 'list-button');
                 }
             }
         ],

@@ -27,7 +27,7 @@
                             <input type="text" class="form-control search-text" value="" name="name" id="name" placeholder="ユーザ名">
                         </div>
                         <div class="col-lg-2">
-                            <input type="text" class="form-control search-text" value="" name="email" id="email" placeholder="メールアドレス">
+                            <input type="text" class="form-control search-text" value="" name="user_unique_id" id="user_unique_id" placeholder="ユーザー固有ID">
                         </div>
                         <div class="col-lg-2">
                             @include('admin.layouts.components.select_option', [
@@ -50,7 +50,7 @@
                             <tr role="row">
                                 <th>ID</th>
                                 <th>ユーザ名</th>
-                                <th>メールアドレス</th>
+                                <th>ユーザー固有キー</th>
                                 <th>電話登録</th>
                                 <th>登録日時</th>
                                 <th>最終ログイン日時</th>

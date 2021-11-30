@@ -77,16 +77,16 @@
                                         <div id="drop_area" class="drop_area">
                                             <div class="preview">
                                                 @if ($data->image_file && $data->image_file === config('const.out_image'))
-                                                    <img id="preview" 
+                                                    <img id="preview"
                                                         src="{{ session('file_path') ? session('file_path') : asset('images/noImage/out_images.png') }}"
-                                                        width="350" 
+                                                        width="350"
                                                         height="250"
                                                     >
                                                 @else
-                                                    <img id="preview" 
+                                                    <img id="preview"
                                                         {{-- src="{{ $data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : (session('file_path') ? session('file_path') : asset('images/noImage/no_image.png')) }}" --}}
                                                         src="{{ session('file_path') ? session('file_path') : ($data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : asset('images/noImage/no_image.png')) }}"
-                                                        width="350" 
+                                                        width="350"
                                                         height="250"
                                                     >
                                                 @endif
@@ -119,7 +119,7 @@
                                 <input type="hidden" id="community_id" name="community_id" value="{{ $community_id }}" />
                                 <input type="hidden" id="register_mode" name="register_mode" value="{{ $register_mode }}" />
                                 @include('admin.layouts.components.button.register', ['register_mode' => $register_mode])
-                                <a href="/community/detail/{{ $community_id }}/location"><button type="button" class="btn btn-outline-secondary width-100" id="btn_cancel">キャンセル</button></a>
+                                <a href="/admin/community/detail/{{ $community_id }}/location"><button type="button" class="btn btn-outline-secondary width-100" id="btn_cancel">キャンセル</button></a>
                             </div>
                         </div>
                     </form>

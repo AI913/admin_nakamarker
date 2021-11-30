@@ -19,7 +19,7 @@ class Marker extends BaseModel
      * 保存対象(attribute)
      * @var array
      */
-    protected $fillable = ['type', 'name', 'description', 'status', 'image_file', 'price', 'charge_type', 'update_user_id'];
+    protected $fillable = ['type', 'name', 'description', 'status', 'image_file', 'price', 'charge_type', 'search_word', 'update_user_id'];
 
     /**
      * コンストラクタ

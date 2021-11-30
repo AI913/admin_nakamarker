@@ -30,12 +30,12 @@ class UserController extends BaseAdminController
      * @package App\Http\Controllers
      */
     public function __construct(
-        UserService $mainService, 
+        UserService $mainService,
         UserPointsHistoryService $userPointHistoryService,
         UserLocationService $userLocationService,
         UserMarkerService $userMarkerService,
         MarkerService $markerService
-    ) 
+    )
     {
         parent::__construct();
         $this->mainService  = $mainService;
@@ -47,7 +47,7 @@ class UserController extends BaseAdminController
         $this->userMarkerService = $userMarkerService;
         $this->markerService = $markerService;
     }
-    
+
     /**
      * メインリストデータ取得
      * @param Request $request
@@ -60,9 +60,9 @@ class UserController extends BaseAdminController
         $conditions['del_flg'] = 0;
         if ($request->id) { $conditions['users.id'] = $request->id; }
         if ($request->name) { $conditions['users.name@like'] = $request->name; }
-        if ($request->email) { $conditions['users.email@like'] = $request->email; }
+        if ($request->user_unique_id) { $conditions['users.user_unique_id@like'] = $request->user_unique_id; }
         if ($request->status) { $conditions['users.status'] = $request->status; }
-        
+
         return DataTables::eloquent($this->mainService->getUserPointQuery($conditions))->make();
     }
 
@@ -84,7 +84,7 @@ class UserController extends BaseAdminController
      * @return array
      */
     public function detail($id) {
-        
+
         // 詳細(Modal)のDataTable
         // 〇検索条件
         $conditions = [];
@@ -99,7 +99,7 @@ class UserController extends BaseAdminController
         return [
             'status' => 1,
             'data' => $data,
-        ]; 
+        ];
     }
 
     /**
@@ -108,7 +108,7 @@ class UserController extends BaseAdminController
      * @throws \Exception
      */
     public function user_locations($id) {
-        
+
         // ユーザの登録場所とそれに紐づくマーカー情報を取得
         return DataTables::eloquent($this->userLocationService->getUserLocationQuery($id))->make();
     }
@@ -121,11 +121,11 @@ class UserController extends BaseAdminController
     public function user_locations_detail($user_id, $location_id) {
         // ユーザの登録場所とそれに紐づくマーカーの詳細情報を取得
         $data = $this->userLocationService->getUserLocationQuery($user_id, $location_id)->first();
-        
+
         return [
             'status' => 1,
             'data' => $data,
-        ]; 
+        ];
     }
 
     /**
@@ -154,7 +154,7 @@ class UserController extends BaseAdminController
      * @throws \Exception
      */
     public function user_communities($id, CommunityService $communityService) {
-        
+
         // ユーザに紐づいているコミュニティを取得
         return DataTables::eloquent($communityService->getUserCommunityQuery($id))->make();
     }
@@ -165,7 +165,7 @@ class UserController extends BaseAdminController
      * @throws \Exception
      */
     public function point_histories($id) {
-        
+
         // 詳細(Modal)のDataTable
         // 〇検索条件
         $conditions = [];
@@ -222,10 +222,10 @@ class UserController extends BaseAdminController
                 // ポイントをギフトしたユーザのポイントを消費
                 $this->userPointHistoryService->getPayPointQuery($data['from_user_id'], $data['give_point'], $data['charge_type']);
             }
-        
+
             return [
                 'status' => 1,
-                'id' => $request->user_id 
+                'id' => $request->user_id
             ];
         }
         return ['status' => -1];

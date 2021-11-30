@@ -80,7 +80,7 @@
     ])
 
     {{-- 削除Form読み込み --}}
-    @include('admin.layouts.components.remove_form', ['url' => url('marker/remove')])
+    @include('admin.layouts.components.remove_form', ['url' => url('admin/marker/remove')])
 
     {{-- 詳細Modal読み込み --}}
     @include('admin.marker.detail')

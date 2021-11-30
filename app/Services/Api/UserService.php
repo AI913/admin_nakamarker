@@ -133,7 +133,7 @@ class UserService extends BaseService
                       ->select('id')
                       ->with(['marker' => function ($query) {
                           // user_markersテーブルとmarkersテーブルの値をクエリすることが可能
-                          $query->select('user_markers.marker_id', 
+                          $query->select('user_markers.marker_id',
                                          'markers.type',
                                          'markers.name',
                                          'markers.description',
@@ -195,6 +195,7 @@ class UserService extends BaseService
         $model->updated_at = $now;
         $model->save();
         $id = $model->id;
+        $model->user_unique_id = $this->getUserUniqueKey();
         $model->user_token = self::issueUserToken($id);
         $model->update_user_id  = $id;
         $model->save();
@@ -203,5 +204,17 @@ class UserService extends BaseService
         \Log::error('database save error:'.$e->getMessage());
         throw new \Exception($e);
       }
+    }
+    /**
+     * ユーザー固有IDの発行
+     * @return string
+     */
+    private function getUserUniqueKey() {
+        while(true) {
+            $key = str_pad(rand(1, 9999), 4, 0, STR_PAD_LEFT)."-".str_pad(rand(1, 9999), 4, 0, STR_PAD_LEFT);
+            if (!$this->searchExists(['user_unique_id' => $key])) {
+                return $key;
+            }
+        }
     }
 }

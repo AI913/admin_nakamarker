@@ -6,11 +6,11 @@ $(function () {
         initList(false);
 
         // 登録場所もしくは参加コミュニティボタンをクリック
-        settingDetailAjax('/user/detail/', '.btn-detail');
-        settingDetailAjax('/user/detail/', '.btn-community');
+        settingDetailAjax('/admin/user/detail/', '.btn-detail');
+        settingDetailAjax('/admin/user/detail/', '.btn-community');
     }
 
-    /* 
+    /*
      *   登録場所の画像削除
      */
     $(document).on('click', '.btn-delete', function () {
@@ -20,7 +20,7 @@ $(function () {
         return;
     })
 
-    /* 
+    /*
      *   登録場所の"備考"ボタン押下処理
      */
     $(document).on('click', '.btn-location', function () {
@@ -29,7 +29,7 @@ $(function () {
         setLocationDetail(location_id, user_id);
     })
 
-    /* 
+    /*
      *   ポイント履歴
      */
     // "閉じる"ボタン押下時にポイント入力フォームの値をリセットする
@@ -45,7 +45,7 @@ $(function () {
         $('#select_charge_type').val(null);
     });
 
-    /* 
+    /*
      *   申請状況カラムのボタンが押下されたとき
      */
     $(document).on('click', '.btn-status', function () {
@@ -53,7 +53,7 @@ $(function () {
         updateStatus($(this));
     });
 
-    /* 
+    /*
      *   コミュニティ情報の"詳細"ボタン押下処理
      */
     $(document).on('click', '.btn-history', function () {
@@ -61,7 +61,7 @@ $(function () {
         setHistoryDetail(community_history_id);
     })
 
-    /* 
+    /*
      *   アカウント停止処理
      */
     if ($('#btn_account_stop').text() == 'アカウント停止中') {
@@ -102,7 +102,7 @@ $(function () {
         }
     });
 
-    /* 
+    /*
      *   モーダルの終了処理
      */
     // 登録情報の備考
@@ -148,13 +148,13 @@ $(function () {
 
 /**
  * 画像削除の処理
- * @param {*} button 
+ * @param {*} button
  */
 function deleteImage(button) {
     let location_id = $(button).data('id');
     let user_id = $('#user_id').data('id');
     $.ajax({
-        url: `/ajax/user/detail/${user_id}/location/${location_id}/image`,
+        url: `/admin/ajax/user/detail/${user_id}/location/${location_id}/image`,
         type: 'POST',
         dataType: 'json',
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -172,11 +172,11 @@ function deleteImage(button) {
 
 /**
  * 申請状況の編集処理
- * @param {*} button 
+ * @param {*} button
  */
 function updateStatus(button) {
     $.ajax({
-        url: '/ajax/community/history/update',
+        url: '/admin/ajax/community/history/update',
         type: 'POST',
         dataType: 'json',
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -208,7 +208,7 @@ function updateStatus(button) {
  * @param data
  */
 function setDetailView(data, button) {
-    /* 
+    /*
      *   モーダルに表示する会員情報
      */
     $('#detail_name').html(data.name);
@@ -223,7 +223,7 @@ function setDetailView(data, button) {
     $('#detail_name_community').html(data.name);
     $('#detail_status_community').html(data.status_name);
 
-    /* 
+    /*
      *   "詳細"モーダルの表示処理("登録場所"タブ)
      */
     if (button == '.btn-detail') {
@@ -237,7 +237,7 @@ function setDetailView(data, button) {
             // tableのID
             'user_location_list',
             // 取得URLおよびパラメタ
-            '/ajax/user/detail/' + data.id + '/location',
+            '/admin/ajax/user/detail/' + data.id + '/location',
             {},
             // 各列ごとの表示定義
             [
@@ -252,7 +252,7 @@ function setDetailView(data, button) {
                                 <a href="" data-toggle="modal" data-target="#location_modal${p.location_id}">
                                     <img src="${p.image_url}" id="location_image" height="45" width="65">
                                 </a>
-        
+
                                 <div class="modal fade" id="location_modal${p.location_id}" tabindex="-1"
                                     role="dialog" aria-labelledby="label1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -311,7 +311,7 @@ function setDetailView(data, button) {
             false
         );
 
-        /* 
+        /*
         *   "詳細"モーダルの表示処理("マーカー"タブ)
         */
         if ($.fn.DataTable.isDataTable('#user_markers_list')) {
@@ -319,7 +319,7 @@ function setDetailView(data, button) {
         }
         setMarkerTable(data.id);
 
-        /* 
+        /*
         *   "詳細"モーダルの表示処理("ポイント履歴"タブ)
         */
         if ($.fn.DataTable.isDataTable('#user_points_list')) {
@@ -330,7 +330,7 @@ function setDetailView(data, button) {
         $('#detail_modal').modal('show');
     }
 
-    /* 
+    /*
      *   "コミュニティ情報"モーダルの表示処理
      */
     if (button == '.btn-community') {
@@ -344,7 +344,7 @@ function setDetailView(data, button) {
             // tableのID
             'user_community_list',
             // 取得URLおよびパラメタ
-            '/ajax/user/detail/' + data.id + '/community',
+            '/admin/ajax/user/detail/' + data.id + '/community',
             {},
             // 各列ごとの表示定義
             [
@@ -357,7 +357,7 @@ function setDetailView(data, button) {
                                 <a href="" data-toggle="modal" data-target="#community_modal${p.id}">
                                     <img src="${p.image_url}" height="45" width="65">
                                 </a>
-        
+
                                 <div class="modal fade" id="community_modal${p.id}" tabindex="-1"
                                     role="dialog" aria-labelledby="label1" aria-hidden="true">
                                     <div class="modal-dialog modal-warning modal-dialog-centered" role="document">
@@ -432,11 +432,11 @@ function setDetailView(data, button) {
 
 /**
  * "登録場所の備考情報"モーダルの表示処理
- * @param id 
+ * @param id
  */
 function setLocationDetail(location_id, user_id) {
     // 削除フォームIDをセット
-    $.ajax({ url: `/ajax/user/detail/${user_id}/location/${location_id}` })
+    $.ajax({ url: `/admin/ajax/user/detail/${user_id}/location/${location_id}` })
         .done(function (response) {
             if (response.status == 1) {
                 $('#detail_location_memo').html(response.data.memo);
@@ -450,11 +450,11 @@ function setLocationDetail(location_id, user_id) {
 }
 /**
  * "コミュニティ履歴の詳細情報"モーダルの表示処理
- * @param id 
+ * @param id
  */
 function setHistoryDetail(community_history_id) {
 
-    $.ajax({ url: `/ajax/community/history/${community_history_id}` })
+    $.ajax({ url: `/admin/ajax/community/history/${community_history_id}` })
         .done(function (response) {
             if (response.status == 1) {
                 $('#detail_history_id').html(response.data.id);
@@ -472,7 +472,7 @@ function setHistoryDetail(community_history_id) {
 
 /**
  * ユーザごとの所有マーカーテーブルを生成
- * @param id 
+ * @param id
  */
 function setMarkerTable(id) {
     // DataTable設定
@@ -481,7 +481,7 @@ function setMarkerTable(id) {
         // tableのID
         'user_markers_list',
         // 取得URLおよびパラメタ
-        '/ajax/user/detail/' + id + '/marker',
+        '/admin/ajax/user/detail/' + id + '/marker',
         {},
         // 各列ごとの表示定義
         [
@@ -560,7 +560,7 @@ function setMarkerTable(id) {
 }
 /**
  * ユーザごとのポイント履歴テーブルを生成
- * @param id 
+ * @param id
  */
 function setPointTable(id) {
     // DataTable設定
@@ -569,7 +569,7 @@ function setPointTable(id) {
         // tableのID
         'user_points_list',
         // 取得URLおよびパラメタ
-        '/ajax/user/detail/' + id + '/point',
+        '/admin/ajax/user/detail/' + id + '/point',
         {},
         // 各列ごとの表示定義
         [
@@ -655,12 +655,12 @@ $(function () {
 
 /**
  * ポイントの更新処理
- * @param {*} button 
+ * @param {*} button
  */
 function updatePoints() {
     let user_id = $('#user_id').data('id');
     $.ajax({
-        url: `/ajax/user/detail/${user_id}/point/update`,
+        url: `/admin/ajax/user/detail/${user_id}/point/update`,
         type: 'POST',
         dataType: 'json',
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -700,12 +700,12 @@ function updatePoints() {
 
 /**
  * 消費ポイントの更新処理(削除予定)
- * @param {*} button 
+ * @param {*} button
  */
 function payPoints() {
     let user_id = $('#user_id').data('id');
     $.ajax({
-        url: `/ajax/user/detail/${user_id}/point/pay`,
+        url: `/admin/ajax/user/detail/${user_id}/point/pay`,
         type: 'POST',
         dataType: 'json',
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -770,11 +770,11 @@ function initList(search) {
         // tableのID
         'main_list',
         // 取得URLおよびパラメタ
-        '/ajax/user',
+        '/admin/ajax/user',
         {
             'id': $('#id').val(),
             'name': $('#name').val(),
-            'email': $('#email').val(),
+            'user_unique_id': $('#user_unique_id').val(),
             'firebase_uid': $('#firebase_uid').val(),
             'status': $('#status').val(),
         },
@@ -783,8 +783,8 @@ function initList(search) {
         [
             { data: 'id' },
             { data: 'name' },
-            { data: 'email' },
-            { 
+            { data: 'user_unique_id' },
+            {
                 data: function (p) {
                     if (p.firebase_uid) {
                         return (`<span style='color: green'>O</span>`);
@@ -828,7 +828,7 @@ function initList(search) {
                     // 登録場所・参加コミュニティ・編集ボタンの設定
                     return getListLink('detail', p.id, '', 'list-button') +
                         getListLink('community', p.id, '', 'list-button') +
-                        getListLink('edit', p.id, '/user/edit/' + p.id, 'list-button');
+                        getListLink('edit', p.id, '/admin/user/edit/' + p.id, 'list-button');
                 }
             }
         ],
@@ -862,7 +862,7 @@ function isDuplicateEmailAjax() {
     }
 
     return $.ajax({
-        url: '/ajax/is_duplicate_email',
+        url: '/admin/ajax/is_duplicate_email',
         type: 'POST',
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
         data: { 'email': email, 'id': id }

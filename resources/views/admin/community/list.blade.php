@@ -81,7 +81,7 @@
     ])
 
     {{-- 削除Form読み込み --}}
-    @include('admin.layouts.components.remove_form', ['url' => url('community/remove')])
+    @include('admin.layouts.components.remove_form', ['url' => url('admin/community/remove')])
 
     {{-- 詳細Modal読み込み --}}
     @include('admin.community.detail')

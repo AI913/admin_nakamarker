@@ -68,6 +68,7 @@ class UserController extends BaseApiController
             $userData = Auth::user();
             return $this->success([
                 'name' => $userData->name,
+                'user_unique_id' => $userData->user_unique_id,
                 'isAuthPhone' => !is_null($userData->firebase_uid),
                 'image_url' => $userData->image_url
             ]);
@@ -405,7 +406,7 @@ class UserController extends BaseApiController
             $order = $this->getSortOrder($request);
 
             $returnData = [];
-            
+
             foreach ($this->userService->getUserMarkerQuery($conditions, $order) as $markers) {
                 array_push($returnData, [
                     'marker_id' => $markers['marker_id'],
@@ -436,7 +437,7 @@ class UserController extends BaseApiController
                     'image_url' => Common::getImageUrl($markers['image_file'], "markers")
                 ]);
             }
-            
+
             return $this->success(['marker_list' => Common::getUniqueArray($returnData, 'marker_id')]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
@@ -474,7 +475,7 @@ class UserController extends BaseApiController
                     'pay_charge_point' => $points['charge_points'],
                 ];
             }
-            
+
             $this->userMarkerService->save($data);
 
             // ポイント取得
@@ -519,7 +520,7 @@ class UserController extends BaseApiController
             // 検索条件
             $conditions = [];
             $conditions['id'] = Auth::user()->id;
-            
+
             $order = $this->getSortOrder($request);
 
             return $this->success(['community_list' => $this->userService->getUserCommunityQuery($conditions, $order)]);

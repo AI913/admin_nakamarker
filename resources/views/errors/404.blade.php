@@ -21,9 +21,6 @@
                 <h4 class="pt-3">ページが見つかりません</h4>
                 <p class="text-muted">page not found</p>
             </div>
-            <div class="input-prepend">
-                <a href="/" class="btn btn-primary">HOMEへ戻る</a>
-            </div>
         </div>
     </div>
 </div>

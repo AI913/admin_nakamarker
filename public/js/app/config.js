@@ -10,7 +10,7 @@ $(function(){
  * @returns {boolean}
  */
 function customCheck() {
-        
+
     $('#main_form').submit();
 }
 
@@ -24,7 +24,7 @@ function initList(search) {
         // tableのID
         'main_list',
         // 取得URLおよびパラメタ
-        '/ajax/config',
+        '/admin/ajax/config',
         {
             'id': $('#id').val(),
             'key': $('#key').val(),
@@ -41,7 +41,7 @@ function initList(search) {
             {
                 data: function (p) {
                     // 詳細・編集・削除
-                    return getListLink('edit', p.id, '/config/edit/'+p.id, 'list-button') +
+                    return getListLink('edit', p.id, '/admin/config/edit/'+p.id, 'list-button') +
                         getListLink('remove', p.id, '', 'list-button');
                 }
             }

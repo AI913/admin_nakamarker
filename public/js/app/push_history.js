@@ -24,7 +24,7 @@ $(function(){
  */
 function setDetailView(data, button) {
     console.log(data)
-    /* 
+    /*
      *   モーダルに表示するプッシュ通知情報
      */
         $('#detail_title').html(data.title);
@@ -58,9 +58,9 @@ function setDetailView(data, button) {
  * @returns {boolean}
  */
 function customCheck() {
-    
+
     $('#main_form').submit();
-            
+
 }
 
 /**
@@ -71,7 +71,7 @@ function initList(search) {
     settingDataTables(
         // 取得
         'main_list',
-        '/ajax/push',
+        '/admin/ajax/push',
         {
             'id': $('#id').val(),
             'title': $('#title').val(),
@@ -107,7 +107,7 @@ function initList(search) {
                 data: function (p) {
                     // 詳細・編集・削除
                     return getListLink('detail', p.id, '', 'list-button') +
-                           getListLink('edit', 0, '/push/edit/'+p.id, 'list-button') +
+                           getListLink('edit', 0, '/admin/push/edit/'+p.id, 'list-button') +
                            getListLink('remove', p.id, '', 'list-button');
                 }
             }

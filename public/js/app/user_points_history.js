@@ -66,7 +66,7 @@ function setDetailView(data, button) {
 
 /**
  * ユーザごとのポイント履歴テーブルを生成
- * @param id 
+ * @param id
  */
 function setPointTable(id) {
     // DataTable設定
@@ -75,7 +75,7 @@ function setPointTable(id) {
         // tableのID
         'user_points_list',
         // 取得URLおよびパラメタ
-        '/user-points-history/detail/'+ id +'/point_histories',
+        '/admin/user-points-history/detail/'+ id +'/point_histories',
         {},
         // 各列ごとの表示定義
         [
@@ -144,14 +144,14 @@ $(function(){
  * DataTables一覧初期化
  */
 function initList(search) {
-    
+
     // DataTable設定
     settingDataTables(
         // 取得
         // tableのID
         'main_list',
         // 取得URLおよびパラメタ
-        '/ajax/user-points-history',
+        '/admin/ajax/user-points-history',
         {
             'id':          $('#id').val(),
             'type':        $('#type').val(),

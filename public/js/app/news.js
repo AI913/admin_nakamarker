@@ -6,7 +6,7 @@ $(function(){
         initList(false);
 
         // 一覧詳細ボタンクリック
-        settingDetailAjax('/news/detail/');
+        settingDetailAjax('/admin/news/detail/');
     }
 
     // 公開フラグのvalue値設定
@@ -53,7 +53,7 @@ $(function () {
     $('#drop_area').on('click', function () {
       $('#image').click();
     });
-  
+
     $('#image').on('change', function () {
       // 画像が複数選択されていた場合(files.length : ファイルの数)
       if (this.files.length > 1) {
@@ -85,9 +85,9 @@ $(function () {
     // #2ドラッグしている要素がドロップされたとき
     $('#drop_area').on('drop', function (event) {
         event.preventDefault();
-    
+
         $('#image')[0].files = event.originalEvent.dataTransfer.files;
-    
+
         // 画像が複数選択されていた場合
         if ($('#image')[0].files.length > 1) {
             alert('アップロードできる画像は1つだけです');
@@ -113,7 +113,7 @@ $(function () {
         }
 
         reader.onload = (function (file) {  // 読み込みが完了したら
-            
+
             // previeクラスのdivにimgタグを以下のプロパティ付きで実装
             return function(e) {
                 $('.preview').empty();
@@ -155,7 +155,7 @@ $(function () {
 // @2 プレビュー画像削除時の設定
 $(function(){
     // 画像のセット
-    let outImage = 'http://nakamarker.localhost/images/noImage/no_image.png';
+    let outImage = 'images/noImage/no_image.png';
 
     $('#cancel').on('click', function(){
         $preview = $(".preview");
@@ -166,7 +166,7 @@ $(function(){
         if($('#image_flg').val()) {
             $('#image_flg').val(null);
         }
-        
+
         // .prevewの領域の中にロードした画像を表示するimageタグを追加
         $preview.append($('<img>').attr({
             src: outImage,
@@ -177,7 +177,7 @@ $(function(){
         }));
 
         $('#drop_area').removeClass('solid'); // 枠を点線に戻す
-        
+
         // 削除フラグを設定
         $('#img_delete').val(1);
     });
@@ -223,7 +223,7 @@ function initList(search) {
         // tableのID
         'main_list',
         // 取得URLおよびパラメタ
-        '/ajax/news',
+        '/admin/ajax/news',
         {
             'id': $('#id').val(),
             'title': $('#title').val(),
@@ -238,7 +238,7 @@ function initList(search) {
             {
                 // サムネイルの画像を表示(モーダル形式)
                 data: function (p) {
-                    
+
                     return `
                         <a href="" data-toggle="modal" data-target="#modal${p.id}">
                             <img src="${p.image_url}" height="45" width="65">
@@ -285,7 +285,7 @@ function initList(search) {
                 data: function (p) {
                     // 詳細・編集・削除
                     return getListLink('detail', p.id, '', 'list-button') +
-                        getListLink('edit', 0, '/news/edit/'+p.id, 'list-button') +
+                        getListLink('edit', 0, '/admin/news/edit/'+p.id, 'list-button') +
                         getListLink('remove', p.id, '', 'list-button');
                 }
             }
