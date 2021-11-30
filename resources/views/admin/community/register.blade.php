@@ -33,25 +33,25 @@
                                     <label class="col-md-3 col-form-label">コミュニティタイプ<span class="text-danger">※</span></label>
                                     <div class="col-md-9 form-inline" id="type_checked">
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
-                                            <input type="radio" class="custom-control-input" id="type1" name="type" value="{{ config('const.community_official') }}" data-type="{{ config('const.community_official_name') }}" 
+                                            <input type="radio" class="custom-control-input" id="type1" name="type" value="{{ config('const.community_official') }}" data-type="{{ config('const.community_official_name') }}"
                                             {{ !$data->type || $data->type == config('const.community_official') || old('type') == config('const.community_official') ? 'checked' : '' }}>
 
                                             <label class="custom-control-label cursor-pointer" for="type1">{{ config('const.community_official_name') }}</label>
                                         </div>
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
-                                            <input type="radio" class="custom-control-input" id="type2" name="type" value="{{ config('const.community_official_free') }}" data-type="{{ config('const.community_official_free_name') }}" 
+                                            <input type="radio" class="custom-control-input" id="type2" name="type" value="{{ config('const.community_official_free') }}" data-type="{{ config('const.community_official_free_name') }}"
                                             {{ $data->type == config('const.community_official_free') || old('type') == config('const.community_official_free') ? 'checked' : '' }}>
 
                                             <label class="custom-control-label cursor-pointer" for="type2">{{ config('const.community_official_free_name') }}</label>
                                         </div>
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
-                                            <input type="radio" class="custom-control-input" id="type3" name="type" value="{{ config('const.community_personal') }}" data-type="{{ config('const.community_personal_name') }}" 
+                                            <input type="radio" class="custom-control-input" id="type3" name="type" value="{{ config('const.community_personal') }}" data-type="{{ config('const.community_personal_name') }}"
                                             {{ $data->type == config('const.community_personal') || old('type') == config('const.community_personal') ? 'checked' : '' }}>
 
                                             <label class="custom-control-label cursor-pointer" for="type3">{{ config('const.community_personal_name') }}</label>
                                         </div>
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
-                                            <input type="radio" class="custom-control-input" id="type4" name="type" value="{{ config('const.community_personal_open') }}" data-type="{{ config('const.community_personal_open_name') }}" 
+                                            <input type="radio" class="custom-control-input" id="type4" name="type" value="{{ config('const.community_personal_open') }}" data-type="{{ config('const.community_personal_open_name') }}"
                                             {{ $data->type == config('const.community_personal_open') || old('type') == config('const.community_personal_open') ? 'checked' : '' }}>
 
                                             <label class="custom-control-label cursor-pointer" for="type4">{{ config('const.community_personal_open_name') }}</label>
@@ -89,16 +89,16 @@
                                         <div id="drop_area" class="drop_area">
                                             <div class="preview">
                                                 @if ($data->image_file && $data->image_file === config('const.out_image'))
-                                                    <img id="preview" 
+                                                    <img id="preview"
                                                         src="{{ session('file_path') ? session('file_path') : asset('images/noImage/out_images.png') }}"
-                                                        width="350" 
+                                                        width="350"
                                                         height="250"
                                                     >
                                                 @else
-                                                    <img id="preview" 
+                                                    <img id="preview"
                                                         {{-- src="{{ $data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : (session('file_path') ? session('file_path') : asset('images/noImage/no_image.png')) }}" --}}
                                                         src="{{ session('file_path') ? session('file_path') : ($data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : asset('images/noImage/no_image.png')) }}"
-                                                        width="350" 
+                                                        width="350"
                                                         height="250"
                                                     >
                                                 @endif
@@ -130,7 +130,7 @@
                                 <input type="hidden" id="register_mode" name="register_mode" value="{{ $register_mode }}" />
                                 <input type="hidden" id="image_file" name="image_file" value="{{ $data->image_file ? $data->image_file : '' }}" />
                                 @include('admin.layouts.components.button.register', ['register_mode' => $register_mode])
-                                @include('admin.layouts.components.button.cancel', ['url' => "/community"])
+                                @include('admin.layouts.components.button.cancel', ['url' => "admin/community"])
                             </div>
                         </div>
                     </form>

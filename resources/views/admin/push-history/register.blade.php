@@ -87,7 +87,7 @@
                                 <input type="hidden" name="id" id="id" value="{{ $data->id }}" />
                                 <input type="hidden" id="register_mode" name="register_mode" value="{{ $register_mode }}" />
                                 @include('admin.layouts.components.button.register', ['register_mode' => $register_mode])
-                                @include('admin.layouts.components.button.cancel', ['url' => "/push"])
+                                @include('admin.layouts.components.button.cancel', ['url' => "admin/push"])
                             </div>
                         </div>
                     </form>

@@ -62,15 +62,15 @@
                                         <div id="drop_area" class="drop_area">
                                             <div class="preview">
                                                 @if ($data->image_file && $data->image_file === config('const.out_image'))
-                                                    <img id="preview" 
+                                                    <img id="preview"
                                                         src="{{ session('file_path') ? session('file_path') : asset('images/noImage/out_images.png') }}"
-                                                        width="350" 
+                                                        width="350"
                                                         height="250"
                                                     >
                                                 @else
-                                                    <img id="preview" 
+                                                    <img id="preview"
                                                         src="{{ session('file_path') ? session('file_path') : ($data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : asset('images/noImage/no_image.png')) }}"
-                                                        width="350" 
+                                                        width="350"
                                                         height="250"
                                                     >
                                                 @endif
@@ -112,7 +112,7 @@
                                 <input type="hidden" id="register_mode" name="register_mode" value="{{ $register_mode }}" />
                                 @include('admin.layouts.components.button.register', ['register_mode' => $register_mode])
                                 @include('admin.layouts.components.button.detail')
-                                @include('admin.layouts.components.button.cancel', ['url' => "/news"])
+                                @include('admin.layouts.components.button.cancel', ['url' => "admin/news"])
                             </div>
                         </div>
                     </form>

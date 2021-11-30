@@ -33,26 +33,26 @@
                                     <label class="col-md-3 col-form-label">マーカータイプ<span class="text-danger">※</span></label>
                                     <div class="col-md-9 form-inline" id="type_checked">
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
-                                            <input type="radio" class="custom-control-input" id="type1" name="type" value="{{ config('const.marker_type_register') }}" data-type="{{ config('const.marker_type_register_name') }}" 
+                                            <input type="radio" class="custom-control-input" id="type1" name="type" value="{{ config('const.marker_type_register') }}" data-type="{{ config('const.marker_type_register_name') }}"
                                             {{ !$data->type || $data->type == config('const.marker_type_register') || old('type') == config('const.marker_type_register') ? 'checked' : '' }}>
 
                                             <label class="custom-control-label cursor-pointer" for="type1">{{ config('const.marker_type_register_name') }}</label>
                                         </div>
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
-                                            <input type="radio" class="custom-control-input" id="type2" name="type" value="{{ config('const.marker_type_function') }}" data-type="{{ config('const.marker_type_function_name') }}" 
+                                            <input type="radio" class="custom-control-input" id="type2" name="type" value="{{ config('const.marker_type_function') }}" data-type="{{ config('const.marker_type_function_name') }}"
                                             {{ $data->type == config('const.marker_type_function') || old('type') == config('const.marker_type_function') ? 'checked' : '' }}>
 
                                             <label class="custom-control-label cursor-pointer" for="type2">{{ config('const.marker_type_function_name') }}</label>
                                         </div>
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
-                                            <input type="radio" class="custom-control-input" id="type3" name="type" value="{{ config('const.marker_type_search') }}" data-type="{{ config('const.marker_type_search_name') }}" 
+                                            <input type="radio" class="custom-control-input" id="type3" name="type" value="{{ config('const.marker_type_search') }}" data-type="{{ config('const.marker_type_search_name') }}"
                                             {{ $data->type == config('const.marker_type_search') || old('type') == config('const.marker_type_search') ? 'checked' : '' }}>
 
                                             <label class="custom-control-label cursor-pointer" for="type3">{{ config('const.marker_type_search_name') }}</label>
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="form-group row">
                                     <label class="col-md-3 col-form-label" for="name">マーカー名<span class="text-danger">※</span></label>
                                     <div class="col-md-9">
@@ -91,15 +91,15 @@
                                         <div id="drop_area" class="drop_area">
                                             <div class="preview">
                                                 @if ($data->image_file && $data->image_file === config('const.out_image'))
-                                                    <img id="preview" 
+                                                    <img id="preview"
                                                         src="{{ session('file_path') ? session('file_path') : asset('images/noImage/out_images.png') }}"
-                                                        width="350" 
+                                                        width="350"
                                                         height="250"
                                                     >
                                                 @else
-                                                    <img id="preview" 
+                                                    <img id="preview"
                                                         src="{{ session('file_path') ? session('file_path') : ($data->image_file ? Storage::url("images/".$folder."/".$data->image_file) : asset('images/noImage/no_image.png')) }}"
-                                                        width="350" 
+                                                        width="350"
                                                         height="250"
                                                     >
                                                 @endif
@@ -119,19 +119,19 @@
                                     <span class="col-md-9 col-form-label" style="color: blue">※無償で提供する場合は"デフォルト"に✓を入れてください</span>
                                     <div class="offset-md-3 col-md-9 form-inline" id="type_checked">
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
-                                            <input type="radio" class="custom-control-input" id="flg1" name="charge_type" value="{{ config('const.charge_type_off') }}" data-type="{{ config('const.charge_type_off_name') }}" 
+                                            <input type="radio" class="custom-control-input" id="flg1" name="charge_type" value="{{ config('const.charge_type_off') }}" data-type="{{ config('const.charge_type_off_name') }}"
                                             {{ !$data->charge_type || $data->charge_type == config('const.charge_type_off') || old('charge_type') == config('const.charge_type_off') ? 'checked' : '' }}>
 
                                             <label class="custom-control-label cursor-pointer" for="flg1">{{ config('const.charge_type_off_name') }}</label>
                                         </div>
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
-                                            <input type="radio" class="custom-control-input" id="flg2" name="charge_type" value="{{ config('const.charge_type_on') }}" data-type="{{ config('const.charge_type_on_name') }}" 
+                                            <input type="radio" class="custom-control-input" id="flg2" name="charge_type" value="{{ config('const.charge_type_on') }}" data-type="{{ config('const.charge_type_on_name') }}"
                                             {{ $data->charge_type == config('const.charge_type_on') || old('charge_type') == config('const.charge_type_on') ? 'checked' : '' }}>
 
                                             <label class="custom-control-label cursor-pointer" for="flg2">{{ config('const.charge_type_on_name') }}</label>
                                         </div>
                                         <div class="custom-control custom-radio cursor-pointer mr-3">
-                                            <input type="radio" class="custom-control-input" id="flg3" name="charge_type" value="{{ config('const.charge_type_default') }}" data-type="{{ config('const.charge_type_default_name') }}" 
+                                            <input type="radio" class="custom-control-input" id="flg3" name="charge_type" value="{{ config('const.charge_type_default') }}" data-type="{{ config('const.charge_type_default_name') }}"
                                             {{ $data->charge_type == config('const.charge_type_default') || old('charge_type') == config('const.charge_type_default') ? 'checked' : '' }}>
 
                                             <label class="custom-control-label cursor-pointer" for="flg3">{{ config('const.charge_type_default_name') }}</label>
@@ -154,7 +154,7 @@
                                 <input type="hidden" id="register_mode" name="register_mode" value="{{ $register_mode }}" />
                                 <input type="hidden" id="image_file" name="image_file" value="{{ $data->image_file ? $data->image_file : '' }}" />
                                 @include('admin.layouts.components.button.register', ['register_mode' => $register_mode])
-                                @include('admin.layouts.components.button.cancel', ['url' => "/marker"])
+                                @include('admin.layouts.components.button.cancel', ['url' => "admin/marker"])
                             </div>
                         </div>
                     </form>
