@@ -13,16 +13,18 @@ class DatabaseSeeder extends Seeder
     {
         // Seedファイル実行
         $this->call(UserTableSeeder::class);
-        $this->call(MarkerTableSeeder::class);
-        $this->call(CommunityTableSeeder::class);
         $this->call(ConfigTableSeeder::class);
-        $this->call(NewsTableSeeder::class);
-        $this->call(PushHistoryTableSeeder::class);
-        $this->call(UserLocationTableSeeder::class);
-        $this->call(UserMarkerTableSeeder::class);
-        $this->call(UserPointsHistoryTableSeeder::class);
-        $this->call(CommunityHistoryTableSeeder::class);
-        $this->call(CommunityLocationTableSeeder::class);
-        $this->call(CommunityMarkerTableSeeder::class);
+        if (env('APP_DEBUG')) {
+            $this->call(MarkerTableSeeder::class);
+            $this->call(CommunityTableSeeder::class);
+            $this->call(NewsTableSeeder::class);
+            $this->call(PushHistoryTableSeeder::class);
+            $this->call(UserLocationTableSeeder::class);
+            $this->call(UserMarkerTableSeeder::class);
+            $this->call(UserPointsHistoryTableSeeder::class);
+            $this->call(CommunityHistoryTableSeeder::class);
+            $this->call(CommunityLocationTableSeeder::class);
+            $this->call(CommunityMarkerTableSeeder::class);
+        }
     }
 }
