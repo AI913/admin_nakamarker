@@ -83,7 +83,7 @@ return [
     'charge_type_off_name'       => '無料',
     'charge_type_on_name'        => '有料',
     'charge_type_default_name'   => 'デフォルト',
-    
+
     // ニュース情報種別
     'official_type'        => 1,
     'community_type'       => 2,
@@ -115,4 +115,7 @@ return [
 
     // キャッシュのキー名
     'config_cache_key'      => 'cache_config_list',
+
+    // アプリバージョン
+    'app_version'           => '1.0.0',
 ];
