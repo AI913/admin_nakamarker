@@ -191,6 +191,7 @@ class UserService extends BaseService
         $model = $this->newModel();
         $model->fill($data);
         $model->login_time = $now;
+        $model->update_user_id = 1;
         $model->created_at = $now;
         $model->updated_at = $now;
         $model->save();
