@@ -10,7 +10,6 @@
 </head>
 
 <body>
-<h3>ヘルプ</h3>
 <div class="content">
     <div class="content-title">・登録マーカーとは何ですか？</div>
     <div class="content-body">

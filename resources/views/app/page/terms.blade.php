@@ -11,7 +11,6 @@
 </head>
 
 <body>
-<h3>利用規約</h3>
 <div class="content">
     <div class="content-title">■第1条（規約の適用）</div>
     <div class="content-body">
