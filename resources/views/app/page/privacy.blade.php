@@ -6,14 +6,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
     <title>プライバシーポリシー</title>
-    <link rel="stylesheet" type="text/css" href="/css/app/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/app/style.css?v=1.0.0">
 </head>
 
 <body>
+<h3>プライバシーポリシー</h3>
 <div class="content">
-    <h3>プライバシーポリシー</h3>
     <div class="content-body">
-        ＿＿＿＿＿＿＿＿（以下，「当社」といいます。）は，本ウェブサイト上で提供するサービス（以下,「本サービス」といいます。）における，ユーザーの個人情報の取扱いについて，以下のとおりプライバシーポリシー（以下，「本ポリシー」といいます。）を定めます。
+        ナカマーカーは，本アプリ上で提供するサービス（以下,「本サービス」といいます。）における，ユーザーの個人情報の取扱いについて，以下のとおりプライバシーポリシー（以下，「本ポリシー」といいます。）を定めます。
     </div>
     <div class="content-title">■第1条（個人情報）</div>
     <div class="content-body">
@@ -86,12 +86,9 @@
     </div>
     <div class="content-title">■第10条（お問い合わせ窓口）</div>
     <div class="content-body">
-        本ポリシーに関するお問い合わせは，下記の窓口までお願いいたします。<br>
+        本ポリシーに関するお問い合わせは，下記サイトよりお問い合わせ願います。<br>
         <br>
-        住所：<br>
-        社名：<br>
-        担当部署：<br>
-        Eメールアドレス：<br>
+        <a href="https://nakamarker.jp">ナカマーカー問い合わせ</a>
     </div>
 </div>
 </body>

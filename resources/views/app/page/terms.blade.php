@@ -7,12 +7,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
     <title>利用規約</title>
-    <link rel="stylesheet" type="text/css" href="/css/app/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/app/style.css?v=1.0.0">
 </head>
 
 <body>
+<h3>利用規約</h3>
 <div class="content">
-    <h3>利用規約</h3>
     <div class="content-title">■第1条（規約の適用）</div>
     <div class="content-body">
         (1) ナカマーカー利用規約（以下、「本規約」という）は、スマートフォン向けアプリケーション「ナカマーカー」（以下、「本アプリ」という）の利用に対して適用されます。<br>
