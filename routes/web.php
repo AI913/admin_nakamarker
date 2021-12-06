@@ -2,21 +2,21 @@
 // ★サイト用ページ
 Route::get('/', function() { return view('index'); });
 Route::get('/index', function() { return view('index'); });
-
+// 問い合わせ
+Route::get('/contact', function() { return view('contact'); });
+Route::post('/contact/send',   'App\AppController@send');
 
 // ★アプリ用ページ
 // 利用規約
-Route::get('/app/page/terms', function() {
-    return view('app.page.terms');
-});
+Route::get('/app/page/terms', function() { return view('app.page.terms'); });
+Route::get('/terms', function() { return view('app.page.terms'); });
 // プライバシーポリシー
-Route::get('/app/page/privacy', function() {
-    return view('app.page.privacy');
-});
+Route::get('/app/page/privacy', function() { return view('app.page.privacy'); });
+Route::get('/privacy', function() { return view('app.page.privacy'); });
 // ヘルプ
-Route::get('/app/page/help', function() {
-    return view('app.page.help');
-});
+Route::get('/app/page/help', function() { return view('app.page.help'); });
+Route::get('/help', function() { return view('app.page.help'); });
+
 
 
 // ※管理者用のプレフィックス作成
