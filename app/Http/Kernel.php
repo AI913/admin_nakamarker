@@ -40,7 +40,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:60,1',
+            'throttle:300,1', // TODO 1分間に300リクエストまでOK
             'bindings', // Remember Meに関する設定
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
