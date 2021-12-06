@@ -552,9 +552,12 @@ class CommunityController extends BaseApiController
 
             // ユーザーが参加しているコミニティIDのみ取得
             $active_community = $this->communityHistoryService->searchQuery(['user_id' => Auth::user()->id])->pluck('community_id');
-            Log::info(json_encode($active_community));
 
-            $list = $this->communityLocationService->getCommunityLocationUpadateQuery([], $order, $limit, $request->input('offset'));
+            if (!$active_community) {
+                return $this->success(['update_list' => []]);
+            }
+
+            $list = $this->communityLocationService->getCommunityLocationUpadateQuery(['community_id@in' => $active_community], $order, $limit, $request->input('offset'));
 
             return $this->success(['update_list' => $list]);
         } catch (\Exception $e) {
