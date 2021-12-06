@@ -115,4 +115,12 @@ class Util {
             return false;
         }
     }
+    /*
+     * BR タグを改行コードに変換する
+     */
+    public static function br2nl($string)
+    {
+        // 大文字・小文字を区別しない
+        return preg_replace('/<br[[:space:]]*\/?[[:space:]]*>/i', "\n", $string);
+    }
 }

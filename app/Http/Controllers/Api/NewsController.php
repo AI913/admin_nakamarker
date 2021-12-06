@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Lib\Util;
 use Illuminate\Http\Request;
 use App\Services\Api\NewsService;
 use App\Services\Api\ConfigService;
@@ -37,7 +38,7 @@ class NewsController extends BaseApiController
               array_push($returnData, [
                 'id'   => $data['id'],
                 'title' => $data['title'],
-                'body' => $data['body'],
+                'body' => strip_tags(Util::br2nl($data['body'])),
                 'image_url' => $data['image_url'],
                 'condition_start_time' => $data['condition_start_time'],
                 'condition_end_time' => $data['condition_end_time']
