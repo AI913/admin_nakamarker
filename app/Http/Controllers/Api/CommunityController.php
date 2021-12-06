@@ -551,7 +551,7 @@ class CommunityController extends BaseApiController
             $limit = $this->configService->searchOne(['key' => 'news_list'])->value;
 
             // ユーザーが参加しているコミニティIDのみ取得
-            $active_community = $this->communityHistoryService->searchQuery(['user_id' => Auth::user()->id])->get('community_id')->toArray();
+            $active_community = $this->communityHistoryService->searchQuery(['user_id' => Auth::user()->id])->pluck('community_id');
             Log::info(json_encode($active_community));
 
             $list = $this->communityLocationService->getCommunityLocationUpadateQuery([], $order, $limit, $request->input('offset'));
