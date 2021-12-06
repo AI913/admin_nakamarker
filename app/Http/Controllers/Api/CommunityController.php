@@ -14,6 +14,7 @@ use App\Services\Api\ConfigService;
 use App\Lib\Message;
 use App\Lib\Common;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CommunityController extends BaseApiController
 {
@@ -549,7 +550,11 @@ class CommunityController extends BaseApiController
 
             $limit = $this->configService->searchOne(['key' => 'news_list'])->value;
 
-            $list = $this->communityLocationService->getCommunityLocationUpadateQuery(['user_id' => Auth::user()->id], $order, $limit, $request->input('offset'));
+            // ユーザーが参加しているコミニティIDのみ取得
+            $active_community = $this->communityHistoryService->searchQuery(['user_id' => Auth::user()->id])->get('community_id')->toArray();
+            Log::info(json_encode($active_community));
+
+            $list = $this->communityLocationService->getCommunityLocationUpadateQuery([], $order, $limit, $request->input('offset'));
 
             return $this->success(['update_list' => $list]);
         } catch (\Exception $e) {
