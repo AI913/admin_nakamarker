@@ -14,24 +14,24 @@ $(function(){
         $('#status').val(1);
         // 未入力のバリデーションチェック用クラスを追加
         $('#condition_start_time').addClass('required-text');
-        $('#condition_end_time').addClass('required-text');
+        // $('#condition_end_time').addClass('required-text');
     } else {
         $('#status').val(0);
         // 未入力のバリデーションチェック用クラスを削除
         $('#condition_start_time').removeClass('required-text');
-        $('#condition_end_time').removeClass('required-text');
+        // $('#condition_end_time').removeClass('required-text');
     }
     $('#open_flg').change(function() {
         if($('#open_flg').prop('checked')) {
             $('#status').val(1);
             // 未入力のバリデーションチェック用クラスを追加
             $('#condition_start_time').addClass('required-text');
-            $('#condition_end_time').addClass('required-text');
+            // $('#condition_end_time').addClass('required-text');
         } else {
             $('#status').val(0);
             // 未入力のバリデーションチェック用クラスを削除
             $('#condition_start_time').removeClass('required-text');
-            $('#condition_end_time').removeClass('required-text');
+            // $('#condition_end_time').removeClass('required-text');
         }
     })
     //プレビューボタン押下時

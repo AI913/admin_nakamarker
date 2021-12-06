@@ -14,7 +14,7 @@ class NewsController extends BaseAdminController
      * Class NewsController
      * @package App\Http\Controllers
      */
-    public function __construct(NewsService $mainService) 
+    public function __construct(NewsService $mainService)
     {
         parent::__construct();
         $this->mainService  = $mainService;
@@ -40,7 +40,7 @@ class NewsController extends BaseAdminController
         if ($request->type) { $conditions['news.type'] = $request->type; }
         // statusのリクエストがあり、かつリクエストが数値の場合に検索条件の値をセットする
         if ($request->has('status') && is_numeric($request->status)) { $conditions['news.status'] = $request->status; }
-        
+
         // 〇ソート条件
         $sort = [];
         // 〇リレーション
@@ -78,11 +78,11 @@ class NewsController extends BaseAdminController
         // 〇リレーション
         $relations = [];
         $data = $this->mainService->searchOne($conditions, $sort, $relations);
-        
+
         return [
             'status' => 1,
             'data' => $data,
-        ]; 
+        ];
     }
 
     /**
@@ -91,7 +91,7 @@ class NewsController extends BaseAdminController
      * @return array
      */
     public function validation_rules(Request $request)
-    {   
+    {
         if($request->status == config('const.open')) {
             // バリデーションチェック
             return [
@@ -99,9 +99,9 @@ class NewsController extends BaseAdminController
                 'title'         => ['required'],
                 'body'          => ['required'],
 
-                // 公開日の設定日時をチェック
-                'condition_start_time'       => ['after:"now"'],
-                'condition_end_time'         => ['after:"condition_start_time"'],       
+//                // 公開日の設定日時をチェック
+//                'condition_start_time'       => ['after:"now"'],
+//                'condition_end_time'         => ['after:"condition_start_time"'],
             ];
         }
         // バリデーションチェック
@@ -121,12 +121,12 @@ class NewsController extends BaseAdminController
         return [
             'upload_image.image' => '画像は"jpeg, png, bmp, gif, or svg"形式のみでアップロードしてください',
             'upload_image.max'   => '画像は1,024kb以下しか登録できません',
-            
+
             'title.required'      => 'タイトルを入力してください',
             'body.required'      => '内容を入力してください',
 
-            'condition_start_time.after'  => '公開開始日時は現在以前の日時を指定できません',
-            'condition_end_time.after'     => '公開終了日時は公開日時以前の日時を指定できません',
+//            'condition_start_time.after'  => '公開開始日時は現在以前の日時を指定できません',
+//            'condition_end_time.after'     => '公開終了日時は公開日時以前の日時を指定できません',
         ];
     }
 }
