@@ -121,6 +121,10 @@ class Util {
     public static function br2nl($string)
     {
         // 大文字・小文字を区別しない
-        return preg_replace('/<br[[:space:]]*\/?[[:space:]]*>/i', "\n", $string);
+        $str = preg_replace('/<br[[:space:]]*\/?[[:space:]]*>/i', "\n", $string);
+        // &nbsp;削除
+        $str = html_entity_decode($str);
+        $str = preg_replace("/\xC2\xA0/", "", $str);
+        return $str;
     }
 }
