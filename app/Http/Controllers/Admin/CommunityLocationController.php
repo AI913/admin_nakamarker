@@ -24,7 +24,7 @@ class CommunityLocationController extends BaseAdminController
      * Class UserController
      * @package App\Http\Controllers
      */
-    public function __construct(CommunityLocationService $mainService, MarkerService $markerService, CommunityService $communityService) 
+    public function __construct(CommunityLocationService $mainService, MarkerService $markerService, CommunityService $communityService)
     {
         parent::__construct();
         $this->mainService  = $mainService;
@@ -72,7 +72,7 @@ class CommunityLocationController extends BaseAdminController
      */
     // public function main_list(Request $request) {
     //     // マーカ名をマーカーのIDに変換
-    //     if ($request->marker_name) { 
+    //     if ($request->marker_name) {
     //         $marker = $this->markerService->searchOne(['name@like' => $request->marker_name]);
     //     }
     //     echo $this->community->id;
@@ -88,7 +88,7 @@ class CommunityLocationController extends BaseAdminController
 
     /**
      * コミュニティロケーション一覧
-     * 
+     *
      */
     public function index() {
         return parent::index()->with(
@@ -111,7 +111,7 @@ class CommunityLocationController extends BaseAdminController
         return [
             'status' => 1,
             'data' => $data,
-        ]; 
+        ];
     }
 
     /**
@@ -156,7 +156,7 @@ class CommunityLocationController extends BaseAdminController
         $data['map'] = $data->latitude.', '.$data->longitude;
 
         // マーカー名とコミュニティ名を$dataに追加
-        $data['marker_name'] = $marker->name;
+        $data['marker_name'] = isset($marker) ? $marker->name : '';
 
         return view($this->mainRoot.'/register', [
             'register_mode' => 'edit',
@@ -180,10 +180,10 @@ class CommunityLocationController extends BaseAdminController
         $register_mode = $request->register_mode;
         // 選択したマーカーとコミュニティのデータをそれぞれ取得
         $marker = $this->markerService->searchOne(['name' => $request->marker_name]);
-        
+
         // 除外項目
         $input = $request->except($this->except());
-        
+
         // マーカーとコミュニティのIDを配列に追加
         $input['marker_id'] = $marker->id;
 
@@ -192,7 +192,7 @@ class CommunityLocationController extends BaseAdminController
             if(empty($request->file('upload_image')) && $request->delete_flg_on === 'true') {
                 $input['image_file'] = config('const.out_image');
             }
-            
+
             // 強制削除フラグがOFFでかつ画像がアップロードされていない場合、nullをDBに保存
             if(empty($request->file('upload_image')) && $request->delete_flg_on === 'false') {
                 $input['image_file'] = null;
@@ -220,7 +220,7 @@ class CommunityLocationController extends BaseAdminController
         // 緯度・経度を数値化して配列に追加
         $request['latitude'] = $map[0];
         $request['longitude'] = $map[1];
-        
+
         // 加工したリクエストを追加
         $request = $this->addRequest($request);
 
@@ -245,7 +245,7 @@ class CommunityLocationController extends BaseAdminController
         if ($validator->fails()) {
             return $this->validationFailRedirect($request, $validator);
         }
-        
+
         try {
             \DB::beginTransaction();
             // 保存前処理で保存データ作成
