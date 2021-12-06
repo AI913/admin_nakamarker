@@ -13,6 +13,7 @@ use App\Services\Api\UserService;
 use App\Services\Api\ConfigService;
 use App\Lib\Message;
 use App\Lib\Common;
+use Illuminate\Support\Facades\Auth;
 
 class CommunityController extends BaseApiController
 {
@@ -198,7 +199,7 @@ class CommunityController extends BaseApiController
             return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
         }
     }
-    
+
     /**
      * コミュニティの削除
      * @param $request->community_id 削除するコミュニティのid
@@ -211,7 +212,7 @@ class CommunityController extends BaseApiController
             if (!$this->mainService->isHostUser($community_id, \Auth::user()->id)) {
                 return $this->error(-1, ["message" => Message::ERROR_NOT_HOST]);
             }
-            
+
             $data['id'] = $community_id;
             $data['del_flg'] = 1;
 
@@ -338,7 +339,7 @@ class CommunityController extends BaseApiController
             $this->communityMarkerService->remove($request->input('community_markers_id'));
 
             \DB::commit();
-            
+
             return $this->success();
         } catch (\Exception $e) {
             \DB::rollback();
@@ -548,7 +549,8 @@ class CommunityController extends BaseApiController
 
             $limit = $this->configService->searchOne(['key' => 'news_list'])->value;
 
-            $list = $this->communityLocationService->getCommunityLocationUpadateQuery([], $order, $limit, $request->input('offset'));
+            $list = $this->communityLocationService->getCommunityLocationUpadateQuery(['user_id' => Auth::user()->id], $order, $limit, $request->input('offset'));
+
             return $this->success(['update_list' => $list]);
         } catch (\Exception $e) {
             return $this->error(-9, ["message" => __FUNCTION__ . ":" . $e->getMessage()]);
