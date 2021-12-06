@@ -120,7 +120,7 @@ class UserService extends BaseService
               ->select('users.*', 'communities.id as community_id', 'community_histories.status as entry_status',
                        'community_histories.memo as entry_memo', 'community_histories.id as history_id')
             ->where('community_id', '=', $community_id)
-            ->where('community_histories', '=', 0)
+            ->where('community_histories.del_flg', '=', 0)
               ->where('users.del_flg', '=', 0);
 
         // ユーザ情報の詳細を取得する際に設定
