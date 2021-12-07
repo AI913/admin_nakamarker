@@ -16,6 +16,8 @@ class AppController extends BaseController
      * @return int
      */
     public function send(Request $request) {
+        var_dump($request->input());
+        exit;
         // メール送信
         Mail::to(env('SUPPORT_MAIL_ADDRESS'))->send( new SendMail( (object)[
             'email'         => $request->email,
