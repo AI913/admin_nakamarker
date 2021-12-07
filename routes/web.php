@@ -4,7 +4,7 @@ Route::get('/', function() { return view('index'); });
 Route::get('/index', function() { return view('index'); });
 // 問い合わせ
 Route::get('/contact', function() { return view('contact'); });
-Route::post('/contact/send',   'App\AppController@send');
+Route::post('/contact/send',   'App\AppController@send')->name('contact/send');
 
 // ★アプリ用ページ
 // 利用規約
