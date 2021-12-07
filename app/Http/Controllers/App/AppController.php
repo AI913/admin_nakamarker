@@ -17,7 +17,7 @@ class AppController extends BaseController
      */
     public function send(Request $request) {
         // メール送信
-        Mail::to(env('SUPPORT_MAIL_ADDRESS'))->send( new SendMail( (object)[
+        Mail::send( new SendMail( (object)[
             'email'         => $request->email,
             'user_id'       => $request->user_id,
             'user_name'     => $request->user_name,

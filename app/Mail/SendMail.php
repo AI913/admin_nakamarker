@@ -38,6 +38,7 @@ class SendMail extends Mailable
     {
         return $this->text('emails.information')
             ->subject("【ナカマーカー】問い合わせ")
+            ->to(env('SUPPORT_MAIL_ADDRESS'))
             ->with(['info' => $this->info]);
     }
 }
