@@ -1,7 +1,6 @@
 @extends('main')
 @section('app_contents')
 
-<body>
 <div id="page" data-linkscroll='y'>
     <div>
         <div class="pop-header align-c pd-b-0" data-rgen-sm="pd-20">
@@ -11,25 +10,25 @@
         <div class="pop-body" data-rgen-sm="pd-20">
             <!-- form-block -->
             <div class="form-block">
-                <form action="{{ route('contact/send') }}" class="form-widget" method="post">
+                <form class="form-widget" method="post" id="form_contact">
                     @csrf
                     <div class="field-wrp">
                         <div class="form-group">
-                            <input class="form-control" data-label="user_id" required data-msg="ユーザーIDを入力して下さい" type="text" name="user_id" placeholder="ユーザーIDを入力して下さい">
+                            <input class="form-control text-required" data-msg="ユーザーIDを入力して下さい" type="text" name="user_id" id="user_id" placeholder="ユーザーIDを入力して下さい">
                         </div>
                         <div class="form-group">
-                            <input class="form-control" data-label="user_name" required data-msg="ユーザーネームを入力して下さい" type="text" name="user_name" placeholder="ユーザーネームを入力して下さい">
-                        </div>
-
-                        <div class="form-group">
-                            <input class="form-control" data-label="email" required data-msg="メールアドレスを入力して下さい" type="text" name="email" placeholder="メールアドレスを入力して下さい">
+                            <input class="form-control text-required" data-msg="ユーザーネームを入力して下さい" type="text" name="user_name" id="user_name" placeholder="ユーザーネームを入力して下さい">
                         </div>
 
                         <div class="form-group">
-                            <textarea class="form-control" data-label="Message" required data-msg="お問い合わせ内容を入力して下さい" name="contact_body" placeholder="お問い合わせ内容を入力して下さい" cols="30" rows="10"></textarea>
+                            <input class="form-control text-required" data-msg="メールアドレスを入力して下さい" type="text" name="email" id="email" placeholder="メールアドレスを入力して下さい">
+                        </div>
+
+                        <div class="form-group">
+                            <textarea class="form-control text-required" data-msg="お問い合わせ内容を入力して下さい" name="contact_body" id="contact_body" placeholder="お問い合わせ内容を入力して下さい" cols="30" rows="10"></textarea>
                         </div>
                     </div>
-                    <button type="submit" class="btn solid btn-default block"><i class="fa fa-envelope-o"></i> 送信する</button>
+                    <a href="#" class="btn solid btn-default block" id="send"><i class="fa fa-envelope-o"></i> 送信する</a>
                 </form>
             </div>
         </div>
@@ -38,4 +37,53 @@
     @include('_footer')
 
 </div>
+@endsection
+@section('app_js')
+<script>
+    $('#send').on('click', function(){
+        let check = true;
+        $('.text-required').each(function(idx, elm){
+            if (!isInputValue(elm)) {
+                $(elm).focus();
+                $(elm).after("<p class='error'>"+$(elm).attr("data-msg")+"</p>");
+                check = false;
+            }
+        });
+        if (check == false) {
+            return false;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "contact/send",
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            data: {
+                "user_name" : $('#user_name').val() ,
+                "user_id" : $('#user_id').val() ,
+                "email" : $('#email').val() ,
+                "contact_body" : $('#contact_body').val() ,
+            },
+            dataType : "json"
+        }).done(function(data) {
+            location.href = "/contact/result";
+        }).fail(function(XMLHttpRequest, status, e){
+            alert(e);
+        });
+        return false;
+    });
+    /**
+     * 指定Textが入力されているかどうか
+     * @param elm
+     * @returns {boolean}
+     */
+    function isInputValue(elm) {
+        if ($(elm).val() == "" || $(elm).val() == null || $(elm).val() == undefined) {
+            return false;
+        }
+        return true;
+    }
+</script>
+
 @endsection

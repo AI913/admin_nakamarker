@@ -15,9 +15,9 @@
 
 
         <!-- <a href="#" class="link-white">Our items</a> <span class="mr-lr-5" data-rgen-sm="hide">|</span> -->
-        <a href="https://nakamarker.jp" class="link-white">ホーム</a> <span class="mr-lr-5" data-rgen-sm="hide">|</span>
+        <a href="/" class="link-white">ホーム</a> <span class="mr-lr-5" data-rgen-sm="hide">|</span>
         <a href="https://jointconcept.co.jp" class="link-white" target="_blank">運営会社</a> <span class="mr-lr-5" data-rgen-sm="hide">|</span>
-        <a href="https://nakamarker.jp/contact" class="link-white">お問い合わせ</a>
+        <a href="/contact" class="link-white">お問い合わせ</a>
 
         <hr class="light">
 

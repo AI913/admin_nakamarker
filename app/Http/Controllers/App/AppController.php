@@ -13,9 +13,9 @@ class AppController extends BaseController
     /**
      * 問い合わせメール送信
      * @param Request $request
+     * @return int
      */
     public function send(Request $request) {
-
         // メール送信
         Mail::to(env('SUPPORT_MAIL_ADDRESS'))->send( new SendMail( (object)[
             'email'         => $request->email,
@@ -23,5 +23,7 @@ class AppController extends BaseController
             'user_name'     => $request->user_name,
             'contact_body'  => $request->contact_body
         ]) );
+
+        return 1;
     }
 }
