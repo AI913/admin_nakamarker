@@ -17,7 +17,7 @@ class AppController extends BaseController
      */
     public function send(Request $request) {
         // TODO　送信プログラムでエラーが出るので、一旦send_mail関数で送信する
-        $to = 'takao.taniyama@frontarc.co.jp';
+        $to = env('SUPPORT_MAIL_ADDRESS');
         $subject = "[ナカマーカー]問い合わせ";
         $message = "問い合わせがありました";
         $message.= "メールアドレス：".$request->email."\r\n";
