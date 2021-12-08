@@ -53,6 +53,8 @@
             return false;
         }
 
+        $('#send').prop("disabled", true);
+
         $.ajax({
             type: "POST",
             url: "contact/send",
@@ -70,6 +72,7 @@
             location.href = "/contact/result";
         }).fail(function(XMLHttpRequest, status, e){
             alert(e);
+            $('#send').prop("disabled", false);
         });
         return false;
     });
